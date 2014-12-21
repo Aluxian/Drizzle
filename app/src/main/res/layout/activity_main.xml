@@ -1,0 +1,47 @@
+<android.support.v4.widget.DrawerLayout
+    android:id="@+id/drawer_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="@dimen/navBarHeight"
+    tools:context=".MainActivity"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/statusBarHeight"
+            android:background="@color/primary"/>
+
+        <Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/colorPrimary"
+            android:elevation="0dp"
+            android:minHeight="?android:attr/actionBarSize"
+            android:popupTheme="@android:style/ThemeOverlay.Material.Light"
+            android:theme="@android:style/ThemeOverlay.Material.Dark.ActionBar"/>
+
+        <FrameLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/background"/>
+
+    </LinearLayout>
+
+    <fragment
+        android:id="@+id/navigation_drawer"
+        android:name="com.aluxian.drizzle.NavigationDrawerFragment"
+        android:layout_width="@dimen/drawerWidth"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        tools:layout="@layout/fragment_navigation_drawer"/>
+
+</android.support.v4.widget.DrawerLayout>

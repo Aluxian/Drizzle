@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="DrizzleTheme" parent="android:Theme.Material.NoActionBar.TranslucentDecor">
+        <item name="android:colorPrimary">@color/primary</item>
+        <item name="android:colorPrimaryDark">@color/primary_dark</item>
+        <item name="android:colorAccent">@color/accent</item>
+        <item name="android:windowBackground">@color/charcoal</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="DrizzleTheme.Divider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:alpha">0.12</item>
+        <item name="android:background">@drawable/divider_horizontal_dark_opaque</item>
+    </style>
+
+</resources>

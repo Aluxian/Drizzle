@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="primary">@color/pink</color>
+    <color name="primary_dark">#bb3c6d</color>
+    <color name="accent">@color/charcoal</color>
+    <color name="background">#e0e0e0</color>
+
+    <color name="background_hover">#3999</color>
+    <color name="background_pressed">#6999</color>
+
+    <color name="text_drawer">#222222</color>
+    <color name="text_header">#767676</color>
+
+    <color name="white">#fff</color>
+    <color name="black">#000</color>
+
+    <color name="charcoal">#333333</color>
+    <color name="pink">#ea4c89</color>
+    <color name="green">#8aba56</color>
+    <color name="pro">#ff8833</color>
+    <color name="teams">#00b6e3</color>
+    <color name="slate">#9ba5a8</color>
+
+</resources>
