@@ -1,0 +1,33 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="@dimen/navBarHeight"
+    android:orientation="vertical"
+    tools:context=".ShotsActivity">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/statusBarHeight"
+        android:background="@color/primary"/>
+
+    <Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/colorPrimary"
+        android:elevation="0dp"
+        android:minHeight="?android:attr/actionBarSize"
+        android:popupTheme="@android:style/ThemeOverlay.Material.Light"
+        android:theme="@android:style/ThemeOverlay.Material.Dark.ActionBar"/>
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:transitionName="robot"
+        android:adjustViewBounds="true"
+        tools:ignore="ContentDescription"/>
+
+</LinearLayout>

@@ -7,6 +7,11 @@
         <item name="android:colorAccent">@color/accent</item>
         <item name="android:windowBackground">@color/charcoal</item>
         <item name="android:textColor">@color/white</item>
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowEnterTransition">@android:transition/explode</item>
+        <item name="android:windowExitTransition">@android:transition/explode</item>
+        <item name="android:windowSharedElementEnterTransition">@transition/change_image_transform</item>
+        <item name="android:windowSharedElementExitTransition">@transition/change_image_transform</item>
     </style>
 
     <style name="DrizzleTheme.Divider">

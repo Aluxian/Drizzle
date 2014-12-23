@@ -1,4 +1,4 @@
-package com.aluxian.drizzle;
+package com.aluxian.drizzle.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -17,12 +17,15 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 
+import com.aluxian.drizzle.R;
+import com.aluxian.drizzle.recycler.IconTextListAdapter;
+
 import java.util.LinkedHashMap;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
  */
-public class NavigationDrawerFragment extends Fragment {
+public class DrawerFragment extends Fragment {
 
     /**
      * Remember the position of the selected item.
@@ -38,7 +41,7 @@ public class NavigationDrawerFragment extends Fragment {
     /**
      * A pointer to the current callbacks instance (the Activity).
      */
-    private NavigationDrawerCallbacks mCallbacks;
+    private Callbacks mCallbacks;
 
     /**
      * Helper component that ties the action bar to the navigation drawer.
@@ -105,8 +108,8 @@ public class NavigationDrawerFragment extends Fragment {
         });
 
         LinkedHashMap<Integer, Integer> items = new LinkedHashMap<>();
-        items.put(R.string.drawer_pages_feed, R.drawable.ic_search);
-        items.put(R.string.drawer_pages_shots, R.drawable.ic_sort);
+        items.put(R.string.drawer_pages_feed, R.drawable.ic_feed);
+        items.put(R.string.drawer_pages_shots, R.drawable.ic_shots);
 
         pagesListView.setAdapter(new IconTextListAdapter(getActivity(), items));
         pagesListView.setItemChecked(mCurrentSelectedPosition, true);
@@ -134,7 +137,7 @@ public class NavigationDrawerFragment extends Fragment {
 
         LinkedHashMap<Integer, Integer> personalItems = new LinkedHashMap<>();
         personalItems.put(R.string.drawer_personal_buckets, R.drawable.ic_bucket);
-        personalItems.put(R.string.drawer_personal_go_pro, R.drawable.ic_pro);
+        personalItems.put(R.string.drawer_personal_go_pro, R.drawable.ic_dribbble);
         personalItems.put(R.string.drawer_personal_account_settings, R.drawable.ic_account);
         personalItems.put(R.string.drawer_personal_sign_out, R.drawable.ic_sign_out);
 
@@ -208,7 +211,7 @@ public class NavigationDrawerFragment extends Fragment {
         super.onAttach(activity);
 
         try {
-            mCallbacks = (NavigationDrawerCallbacks) activity;
+            mCallbacks = (Callbacks) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException("Activity must implement NavigationDrawerCallbacks.");
         }
@@ -241,7 +244,7 @@ public class NavigationDrawerFragment extends Fragment {
     /**
      * Callbacks interface that all activities using this fragment must implement.
      */
-    public static interface NavigationDrawerCallbacks {
+    public static interface Callbacks {
         /**
          * Called when an item in the navigation drawer is selected.
          */

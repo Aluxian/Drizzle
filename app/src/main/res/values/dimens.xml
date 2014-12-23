@@ -11,9 +11,12 @@
     <dimen name="drawerListTextMargin">72dp</dimen>
     <dimen name="drawerListTextSize">14sp</dimen>
 
-    <dimen name="actionBarElevation">8dp</dimen>
     <dimen name="statusBarHeight">24dp</dimen>
     <dimen name="tabsBarHeight">48dp</dimen>
+    <dimen name="cardBarHeight">40dp</dimen>
     <dimen name="navBarHeight">48dp</dimen>
+
+    <dimen name="actionBarElevation">4dp</dimen>
+    <dimen name="gridSpacing">8dp</dimen>
 
 </resources>

@@ -8,7 +8,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toolbar;
 
-public class MainActivity extends FragmentActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+import com.aluxian.drizzle.fragments.DrawerFragment;
+import com.aluxian.drizzle.fragments.FeedFragment;
+import com.aluxian.drizzle.fragments.ShotsFragment;
+
+public class MainActivity extends FragmentActivity implements DrawerFragment.Callbacks {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,9 +22,10 @@ public class MainActivity extends FragmentActivity implements NavigationDrawerFr
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setActionBar(toolbar);
 
-        NavigationDrawerFragment navigationDrawerFragment = (NavigationDrawerFragment)
-                getFragmentManager().findFragmentById(R.id.navigation_drawer);
-        navigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
+        DrawerFragment drawerFragment = (DrawerFragment) getFragmentManager().findFragmentById(R.id.navigation_drawer);
+        drawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
+
+        getWindow().setAllowEnterTransitionOverlap(true);
     }
 
     @Override

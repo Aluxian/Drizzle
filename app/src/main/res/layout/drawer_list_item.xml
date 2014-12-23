@@ -6,10 +6,11 @@
 
     <ImageView
         android:id="@+id/icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_centerVertical="true"
         android:layout_marginStart="@dimen/horizontalMargin"
+        android:scaleType="center"
         tools:ignore="ContentDescription"/>
 
     <TextView
@@ -19,8 +20,8 @@
         android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/horizontalMargin"
         android:layout_marginStart="@dimen/drawerListTextMargin"
-        android:textColor="@color/drawer_list_text_color"
         android:fontFamily="sans-serif-medium"
+        android:textColor="@color/drawer_list_text_color"
         android:textSize="@dimen/drawerListTextSize"/>
 
 </RelativeLayout>

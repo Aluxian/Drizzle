@@ -1,4 +1,4 @@
-package com.aluxian.drizzle;
+package com.aluxian.drizzle.recycler;
 
 import android.content.Context;
 import android.graphics.PorterDuff;
@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.aluxian.drizzle.R;
 
 import java.util.Collection;
 import java.util.HashMap;

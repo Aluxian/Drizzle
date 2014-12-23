@@ -1,17 +1,10 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingBottom="@dimen/verticalMargin"
-                android:paddingLeft="@dimen/horizontalMargin"
-                android:paddingRight="@dimen/horizontalMargin"
-                android:paddingTop="@dimen/verticalMargin"
-                tools:context=".ShotsFragment$ShotsCategoryFragment">
-
-    <TextView
-        android:id="@+id/section_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello world"/>
-
-</RelativeLayout>
+<android.support.v7.widget.RecyclerView
+    android:id="@+id/grid"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingStart="@dimen/gridSpacing"
+    android:scrollbars="vertical"
+    tools:context=".ShotsFragment$ShotsCategoryFragment"
+    tools:ignore="RtlSymmetry"/>

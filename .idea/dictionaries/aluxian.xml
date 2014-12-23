@@ -2,12 +2,15 @@
   <dictionary name="aluxian">
     <words>
       <w>dribbble</w>
+      <w>gifs</w>
+      <w>hidpi</w>
       <w>mtrl</w>
       <w>navbar</w>
       <w>statusbar</w>
       <w>subheader</w>
       <w>tabbar</w>
       <w>tabsbar</w>
+      <w>timeframe</w>
     </words>
   </dictionary>
 </component>
