@@ -137,8 +137,8 @@ public class DrawerFragment extends Fragment {
 
         LinkedHashMap<Integer, Integer> personalItems = new LinkedHashMap<>();
         personalItems.put(R.string.drawer_personal_buckets, R.drawable.ic_bucket);
-        personalItems.put(R.string.drawer_personal_go_pro, R.drawable.ic_dribbble);
         personalItems.put(R.string.drawer_personal_account_settings, R.drawable.ic_account);
+        personalItems.put(R.string.drawer_personal_go_pro, R.drawable.ic_dribbble);
         personalItems.put(R.string.drawer_personal_sign_out, R.drawable.ic_sign_out);
 
         personalListView.setAdapter(new IconTextListAdapter(getActivity(), personalItems));
