@@ -22,10 +22,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?android:attr/colorPrimary"
+            android:contentInsetStart="72dp"
             android:elevation="0dp"
             android:minHeight="?android:attr/actionBarSize"
-            android:popupTheme="@android:style/ThemeOverlay.Material.Light"
-            android:theme="@android:style/ThemeOverlay.Material.Dark.ActionBar"/>
+            android:theme="@style/DrizzleTheme.Dark"/>
 
         <FrameLayout
             android:id="@+id/container"
@@ -41,6 +41,6 @@
         android:layout_width="@dimen/drawerWidth"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        tools:layout="@layout/fragment_navigation_drawer"/>
+        tools:layout="@layout/fragment_drawer"/>
 
 </android.support.v4.widget.DrawerLayout>

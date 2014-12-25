@@ -26,8 +26,10 @@ public class ShotsFragment extends Fragment {
 
         // Bind the tabs to the ViewPager
         PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
-        tabs.setElevation(getResources().getDimensionPixelSize(R.dimen.actionBarElevation));
         tabs.setViewPager(viewPager);
+
+        /*SlidingTabLayout tabs = (SlidingTabLayout) view.findViewById(R.id.tabs);
+        tabs.setViewPager(viewPager);*/
 
         return view;
     }

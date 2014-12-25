@@ -72,14 +72,14 @@ public class ShotsGridAdapter extends RecyclerView.Adapter<ShotsGridAdapter.View
         holder.commentsCount.setText(String.valueOf(shot.commentsCount));
         holder.likesCount.setText(String.valueOf(shot.likesCount));
 
-        holder.image.setOnClickListener(new View.OnClickListener() {
+        /*holder.image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(activity, ShotActivity.class);
                 ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(activity, holder.image, "robot");
                 activity.startActivity(intent, options.toBundle());
             }
-        });
+        });*/
 
         Picasso.with(holder.image.getContext())
                 .load(shot.images.normal)

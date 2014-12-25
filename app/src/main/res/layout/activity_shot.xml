@@ -19,14 +19,13 @@
         android:background="?android:attr/colorPrimary"
         android:elevation="0dp"
         android:minHeight="?android:attr/actionBarSize"
-        android:popupTheme="@android:style/ThemeOverlay.Material.Light"
-        android:theme="@android:style/ThemeOverlay.Material.Dark.ActionBar"/>
+        android:theme="@style/DrizzleTheme.Dark"/>
 
     <ImageView
         android:id="@+id/image"
         android:layout_width="800dp"
         android:layout_height="600dp"
         android:transitionName="robot"
-        tools:ignore="ContentDescription"/>
+        android:contentDescription="@null"/>
 
 </LinearLayout>

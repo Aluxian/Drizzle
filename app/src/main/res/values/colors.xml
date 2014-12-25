@@ -7,7 +7,7 @@
     <color name="background">#e0e0e0</color>
 
     <color name="background_hover">#3999</color>
-    <color name="background_pressed">#6999</color>
+    <color name="background_pressed">#efefef</color>
 
     <color name="text_drawer">#222222</color>
     <color name="text_header">#767676</color>

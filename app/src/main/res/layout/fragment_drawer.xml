@@ -17,7 +17,7 @@
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
             android:src="@drawable/cover"
-            tools:ignore="ContentDescription"/>
+            android:contentDescription="@null"/>
 
         <View
             android:layout_width="match_parent"
@@ -42,7 +42,7 @@
             android:layout_marginBottom="16dp"
             android:layout_marginStart="16dp"
             android:background="@color/slate"
-            tools:ignore="ContentDescription"/>
+            android:contentDescription="@null"/>
 
     </RelativeLayout>
 

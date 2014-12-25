@@ -84,7 +84,7 @@ public class DrawerFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
+        View view = inflater.inflate(R.layout.fragment_drawer, container, false);
 
         ListView pagesListView = (ListView) view.findViewById(R.id.pages_list);
         ListView personalListView = (ListView) view.findViewById(R.id.personal_list);
@@ -137,8 +137,8 @@ public class DrawerFragment extends Fragment {
 
         LinkedHashMap<Integer, Integer> personalItems = new LinkedHashMap<>();
         personalItems.put(R.string.drawer_personal_buckets, R.drawable.ic_bucket);
-        personalItems.put(R.string.drawer_personal_account_settings, R.drawable.ic_account);
         personalItems.put(R.string.drawer_personal_go_pro, R.drawable.ic_dribbble);
+        personalItems.put(R.string.drawer_personal_account_settings, R.drawable.ic_account);
         personalItems.put(R.string.drawer_personal_sign_out, R.drawable.ic_sign_out);
 
         personalListView.setAdapter(new IconTextListAdapter(getActivity(), personalItems));
