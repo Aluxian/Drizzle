@@ -8,11 +8,11 @@
         android:showAsAction="always"
         android:title="@string/action_search"/>
 
-    <item
+    <!--<item
         android:id="@+id/action_notifications"
         android:icon="@drawable/ic_notifications"
         android:showAsAction="always"
-        android:title="@string/action_notifications"/>
+        android:title="@string/action_notifications"/>-->
 
     <item
         android:id="@+id/action_sort"

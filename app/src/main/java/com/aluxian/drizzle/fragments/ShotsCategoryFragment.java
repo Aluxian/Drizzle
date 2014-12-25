@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.aluxian.drizzle.R;
 import com.aluxian.drizzle.api.Params;
+import com.aluxian.drizzle.recycler.GridItemAnimator;
 import com.aluxian.drizzle.recycler.ShotsGridAdapter;
 
 public class ShotsCategoryFragment extends Fragment {
@@ -32,12 +33,18 @@ public class ShotsCategoryFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_shots_category, container, false);
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.grid);
+
+        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
+        recyclerView.setLayoutManager(layoutManager);
+
+        GridItemAnimator animator = new GridItemAnimator(layoutManager);
+        animator.setSupportsChangeAnimations(true);
+        animator.setAddDuration(400);
+
+        recyclerView.setItemAnimator(animator);
         recyclerView.setHasFixedSize(true);
 
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-
-        gridAdapter = new ShotsGridAdapter(getActivity(), category, Params.Timeframe.NOW, Params.Sort.POPULAR);
+        gridAdapter = new ShotsGridAdapter(getActivity(), layoutManager, category, Params.Timeframe.NOW, Params.Sort.POPULAR, view.findViewById(R.id.loading_indicator));
         recyclerView.setAdapter(gridAdapter);
 
         return view;

@@ -1,13 +1,11 @@
 package com.aluxian.drizzle.recycler;
 
 import android.app.Activity;
-import android.app.ActivityOptions;
-import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aluxian.drizzle.R;
-import com.aluxian.drizzle.ShotActivity;
 import com.aluxian.drizzle.api.Dribbble;
 import com.aluxian.drizzle.api.Params;
 import com.aluxian.drizzle.api.ParsedResponse;
@@ -38,15 +35,24 @@ public class ShotsGridAdapter extends RecyclerView.Adapter<ShotsGridAdapter.View
     private boolean isLoadingItems;
 
     private Activity activity;
+    private GridLayoutManager gridLayoutManager;
+
     private Params.List listParam;
     private Params.Timeframe timeframeParam;
     private Params.Sort sortParam;
 
-    public ShotsGridAdapter(Activity activity, Params.List list, Params.Timeframe timeframe, Params.Sort sort) {
+    private View loadingIndicator;
+
+    public ShotsGridAdapter(Activity activity, GridLayoutManager gridLayoutManager,
+                            Params.List list, Params.Timeframe timeframe, Params.Sort sort, View loadingIndicator) {
         this.activity = activity;
+        this.gridLayoutManager = gridLayoutManager;
+
         this.listParam = list;
         this.timeframeParam = timeframe;
         this.sortParam = sort;
+
+        this.loadingIndicator = loadingIndicator;
 
         // Load first items
         loadItemsIfRequired(0);
@@ -58,7 +64,33 @@ public class ShotsGridAdapter extends RecyclerView.Adapter<ShotsGridAdapter.View
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
+        /*holder.card.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+            @Override
+            public void onViewAttachedToWindow(View v) {
+                if (position <= gridLayoutManager.findLastVisibleItemPosition()
+                        && position >= gridLayoutManager.findFirstVisibleItemPosition()) {
+
+                    holder.card.setAlpha(0.5f);
+                    holder.card.setTranslationY(holder.card.getMeasuredHeight() / 2);
+                    /*holder.card.animate()
+                            .alpha(1)
+                            .setInterpolator(new DecelerateInterpolator())
+                            .setDuration(500)
+                            .translationY(0)
+                            .start();
+
+                }
+
+                holder.card.removeOnAttachStateChangeListener(this);
+            }
+
+            @Override
+            public void onViewDetachedFromWindow(View v) {
+
+            }
+        });*/
+
         Shot shot = shotsList.get(position);
 
         Resources resources = activity.getResources();
@@ -125,6 +157,10 @@ public class ShotsGridAdapter extends RecyclerView.Adapter<ShotsGridAdapter.View
                 protected void onPostExecute(ParsedResponse<List<Shot>> response) {
                     shotsList.addAll(response.data);
                     lastResponse = response;
+
+                    if (loadingIndicator.getAlpha() == 1) {
+                        loadingIndicator.animate().alpha(0);
+                    }
 
                     notifyItemRangeInserted(shotsList.size() - response.data.size(), response.data.size());
                     isLoadingItems = false;

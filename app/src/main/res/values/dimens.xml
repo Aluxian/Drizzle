@@ -3,17 +3,11 @@
     <dimen name="horizontalMargin">16dp</dimen>
     <dimen name="verticalMargin">16dp</dimen>
 
-    <dimen name="drawerWidth">304dp</dimen>
-    <dimen name="drawerAvatarSize">64dp</dimen>
-    <dimen name="drawerCoverHeight">185dp</dimen>
-    <dimen name="drawerSubHeaderHeight">48dp</dimen>
-    <dimen name="drawerListItemHeight">48dp</dimen>
-    <dimen name="drawerListTextMargin">72dp</dimen>
-    <dimen name="drawerListTextSize">14sp</dimen>
+    <dimen name="drawerWidth">280dp</dimen>
+    <dimen name="drawerCoverHeight">150dp</dimen>
 
     <dimen name="statusBarHeight">24dp</dimen>
     <dimen name="tabsBarHeight">48dp</dimen>
-    <dimen name="cardBarHeight">32dp</dimen>
     <dimen name="navBarHeight">48dp</dimen>
 
     <dimen name="actionBarElevation">4dp</dimen>

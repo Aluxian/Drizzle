@@ -20,16 +20,13 @@ public class ShotsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_shots, container, false);
 
-        // Initialize the ViewPager and set an adapter
+        // Initialize the ViewPager and set the adapter
         ViewPager viewPager = (ViewPager) view.findViewById(R.id.view_pager);
         viewPager.setAdapter(new ShotsPagerAdapter(getChildFragmentManager()));
 
         // Bind the tabs to the ViewPager
         PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
         tabs.setViewPager(viewPager);
-
-        /*SlidingTabLayout tabs = (SlidingTabLayout) view.findViewById(R.id.tabs);
-        tabs.setViewPager(viewPager);*/
 
         return view;
     }

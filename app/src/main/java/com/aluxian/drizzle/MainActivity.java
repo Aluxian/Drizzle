@@ -9,7 +9,6 @@ import android.view.MenuItem;
 import android.widget.Toolbar;
 
 import com.aluxian.drizzle.fragments.DrawerFragment;
-import com.aluxian.drizzle.fragments.FeedFragment;
 import com.aluxian.drizzle.fragments.ShotsFragment;
 
 public class MainActivity extends FragmentActivity implements DrawerFragment.Callbacks {
@@ -34,9 +33,6 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
 
         switch (position) {
             case 0:
-                transaction.replace(R.id.container, new FeedFragment());
-                break;
-            case 1:
                 transaction.replace(R.id.container, new ShotsFragment());
                 break;
         }
