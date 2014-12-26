@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:paddingLeft="16dp"
+              android:paddingRight="16dp"
+              android:paddingTop="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Timeframe"
+        android:textColor="@color/text_header"/>
+
+    <Spinner
+        android:id="@+id/timeframe_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:entries="@array/timeframe_settings"
+        android:theme="@style/DrizzleTheme.Spinner"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Sort By"
+        android:textColor="@color/text_header"/>
+
+    <Spinner
+        android:id="@+id/sort_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:entries="@array/sort_settings"
+        android:theme="@style/DrizzleTheme.Spinner"/>
+
+</LinearLayout>

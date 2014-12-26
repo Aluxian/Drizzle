@@ -10,7 +10,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.aluxian.drizzle.R;
@@ -41,10 +43,10 @@ public class ShotsGridAdapter extends RecyclerView.Adapter<ShotsGridAdapter.View
     private Params.Timeframe timeframeParam;
     private Params.Sort sortParam;
 
-    private View loadingIndicator;
+    private ProgressBar loadingIndicator;
 
     public ShotsGridAdapter(Activity activity, GridLayoutManager gridLayoutManager,
-                            Params.List list, Params.Timeframe timeframe, Params.Sort sort, View loadingIndicator) {
+                            Params.List list, Params.Timeframe timeframe, Params.Sort sort, ProgressBar loadingIndicator) {
         this.activity = activity;
         this.gridLayoutManager = gridLayoutManager;
 
@@ -65,32 +67,6 @@ public class ShotsGridAdapter extends RecyclerView.Adapter<ShotsGridAdapter.View
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        /*holder.card.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
-            @Override
-            public void onViewAttachedToWindow(View v) {
-                if (position <= gridLayoutManager.findLastVisibleItemPosition()
-                        && position >= gridLayoutManager.findFirstVisibleItemPosition()) {
-
-                    holder.card.setAlpha(0.5f);
-                    holder.card.setTranslationY(holder.card.getMeasuredHeight() / 2);
-                    /*holder.card.animate()
-                            .alpha(1)
-                            .setInterpolator(new DecelerateInterpolator())
-                            .setDuration(500)
-                            .translationY(0)
-                            .start();
-
-                }
-
-                holder.card.removeOnAttachStateChangeListener(this);
-            }
-
-            @Override
-            public void onViewDetachedFromWindow(View v) {
-
-            }
-        });*/
-
         Shot shot = shotsList.get(position);
 
         Resources resources = activity.getResources();
@@ -135,6 +111,14 @@ public class ShotsGridAdapter extends RecyclerView.Adapter<ShotsGridAdapter.View
         this.sortParam = sortParam;
     }
 
+    public Params.Timeframe getTimeframeParam() {
+        return timeframeParam;
+    }
+
+    public Params.Sort getSortParam() {
+        return sortParam;
+    }
+
     public void loadItemsIfRequired(int position) {
         Log.v("loadItemsIfRequired(" + position + ")");
 
@@ -159,7 +143,11 @@ public class ShotsGridAdapter extends RecyclerView.Adapter<ShotsGridAdapter.View
                     lastResponse = response;
 
                     if (loadingIndicator.getAlpha() == 1) {
-                        loadingIndicator.animate().alpha(0);
+                        loadingIndicator.animate()
+                                .setDuration(500)
+                                .setInterpolator(new DecelerateInterpolator())
+                                .translationY(-50)
+                                .alpha(0);
                     }
 
                     notifyItemRangeInserted(shotsList.size() - response.data.size(), response.data.size());

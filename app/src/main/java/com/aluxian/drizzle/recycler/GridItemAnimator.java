@@ -229,7 +229,7 @@ public class GridItemAnimator extends RecyclerView.ItemAnimator {
         int position = holder.getPosition();
 
         if (position >= gridLayoutManager.findFirstVisibleItemPosition() && position <= gridLayoutManager.findLastVisibleItemPosition()) {
-            delay = position * 100;
+            delay = position * 100 + 500;
         }
 
         animation

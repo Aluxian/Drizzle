@@ -2,12 +2,13 @@ package com.aluxian.drizzle.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.aluxian.drizzle.R;
 import com.aluxian.drizzle.api.Params;
@@ -34,17 +35,21 @@ public class ShotsCategoryFragment extends Fragment {
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.grid);
 
+        ((SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh))
+                .setColorSchemeResources(R.color.primary_dark);
+
         GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
         recyclerView.setLayoutManager(layoutManager);
 
         GridItemAnimator animator = new GridItemAnimator(layoutManager);
         animator.setSupportsChangeAnimations(true);
-        animator.setAddDuration(400);
+        animator.setAddDuration(500);
 
         recyclerView.setItemAnimator(animator);
         recyclerView.setHasFixedSize(true);
 
-        gridAdapter = new ShotsGridAdapter(getActivity(), layoutManager, category, Params.Timeframe.NOW, Params.Sort.POPULAR, view.findViewById(R.id.loading_indicator));
+        gridAdapter = new ShotsGridAdapter(getActivity(), layoutManager, category, Params.Timeframe.NOW, Params.Sort.POPULAR,
+                (ProgressBar) view.findViewById(R.id.loading_indicator));
         recyclerView.setAdapter(gridAdapter);
 
         return view;
@@ -56,6 +61,18 @@ public class ShotsCategoryFragment extends Fragment {
 
     public void setSortParam(Params.Sort sort) {
         gridAdapter.setSortParam(sort);
+    }
+
+    public void applyParams() {
+        // TODO
+    }
+
+    public Params.Timeframe getTimeframeParam() {
+        return gridAdapter.getTimeframeParam();
+    }
+
+    public Params.Sort getSortParam() {
+        return gridAdapter.getSortParam();
     }
 
 }

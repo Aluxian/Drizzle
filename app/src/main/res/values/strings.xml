@@ -21,4 +21,19 @@
     <string name="drawer_close">Close navigation drawer</string>
     <string name="drawer_subheader_personal">Personal</string>
 
+    <string-array name="timeframe_settings">
+        <item>Now</item>
+        <item>This Last Week</item>
+        <item>This Last Month</item>
+        <item>This Last Year</item>
+        <item>All Time</item>
+    </string-array>
+
+    <string-array name="sort_settings">
+        <item>Popular</item>
+        <item>Recent</item>
+        <item>Most Viewed</item>
+        <item>Most Commented</item>
+    </string-array>
+
 </resources>
