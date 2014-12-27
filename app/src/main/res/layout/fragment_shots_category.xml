@@ -12,11 +12,6 @@
         android:indeterminate="false"
         android:progressTint="@color/primary"/>
 
-    <!--<View
-        android:id="@+id/circular_progress"
-        android:layout_width="48dp"
-        android:layout_height="48dp"/>-->
-
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"

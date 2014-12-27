@@ -1,5 +1,8 @@
 package com.aluxian.drizzle.api;
 
+/**
+ * Holds enums with possible parameter values used across the Dribbble API.
+ */
 public class Params {
 
     public enum List {

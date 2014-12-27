@@ -16,6 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.aluxian.drizzle.R;
+import com.aluxian.drizzle.api.ApiRequest;
 import com.aluxian.drizzle.api.Dribbble;
 import com.aluxian.drizzle.api.Params;
 import com.aluxian.drizzle.api.ParsedResponse;
@@ -27,8 +28,6 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import retrofit.client.Response;
 
 public class ShotsGridAdapter extends RecyclerView.Adapter<ShotsGridAdapter.ViewHolder> {
 
@@ -130,10 +129,12 @@ public class ShotsGridAdapter extends RecyclerView.Adapter<ShotsGridAdapter.View
                 @Override
                 protected ParsedResponse<List<Shot>> doInBackground(Void... params) {
                     if (lastResponse != null && lastResponse.nextPageUrl != null) {
-                        return Dribbble.request(lastResponse.nextPageUrl, new TypeToken<List<Shot>>() {});
+                        return new ApiRequest<List<Shot>>()
+                                .responseType(new TypeToken<List<Shot>>() {})
+                                .url(lastResponse.nextPageUrl)
+                                .execute();
                     } else {
-                        Response response = Dribbble.api.listShots(listParam.apiValue, timeframeParam.apiValue, sortParam.apiValue);
-                        return Dribbble.parse(response, new TypeToken<List<Shot>>() {});
+                        return Dribbble.listShots(listParam, timeframeParam, sortParam).execute();
                     }
                 }
 

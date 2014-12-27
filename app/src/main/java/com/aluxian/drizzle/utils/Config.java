@@ -1,9 +1,14 @@
 package com.aluxian.drizzle.utils;
 
+import android.text.format.DateUtils;
+
 public class Config {
 
     /** There have to be at least this many unloaded items in a grid, otherwise more items are loaded. */
     public static final int LOAD_ITEMS_THRESHOLD = 6;
+
+    /** The number of results to load at a time when making requests to the Dribbble API. */
+    public static final int RESULTS_PER_PAGE = 50;
 
     /** The endpoint where Dribbble API requests are made. */
     public static final String API_ENDPOINT = "https://api.dribbble.com/v1";
@@ -16,5 +21,11 @@ public class Config {
 
     /** A token used for read-only API requests. */
     public static final String API_CLIENT_TOKEN = "ff549b889305c04600bab572bc1e9f90fd61272c5eb803bcd5ad5d68b4afa120";
+
+    /** The maximum cache size for API requests. */
+    public static final long CACHE_SIZE = 10 * 1024 * 1024; // 10 MB
+
+    /** Cached responses older than this are declared stale and won't be used. */
+    public static final long CACHE_TIMEOUT = DateUtils.HOUR_IN_MILLIS;
 
 }

@@ -14,10 +14,15 @@ import android.view.View;
 import android.widget.Spinner;
 import android.widget.Toolbar;
 
+import com.aluxian.drizzle.api.ApiRequest;
+import com.aluxian.drizzle.api.Dribbble;
 import com.aluxian.drizzle.api.Params;
 import com.aluxian.drizzle.fragments.DrawerFragment;
 import com.aluxian.drizzle.fragments.ShotsCategoryFragment;
 import com.aluxian.drizzle.fragments.ShotsFragment;
+import com.aluxian.drizzle.utils.Config;
+import com.aluxian.drizzle.utils.Log;
+import com.anupcowkur.reservoir.Reservoir;
 
 import java.util.Arrays;
 
@@ -35,6 +40,12 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
         drawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
 
         getWindow().setAllowEnterTransitionOverlap(true);
+
+        try {
+            Reservoir.init(this, Config.CACHE_SIZE);
+        } catch (Exception e) {
+            Log.e(e);
+        }
     }
 
     @Override
