@@ -36,12 +36,16 @@ public class ApiRequest<T> extends Request.Builder {
             .registerTypeAdapter(Date.class, new DateTypeAdapter())
             .create();
 
+    private Boolean mUseCache = true;
     private Map<String, String> mQueryParams = new HashMap<>();
     private Type mResponseType;
     private String mPath;
     private String mUrl;
 
-    // TODO: Add a method for cache control
+    public ApiRequest<T> useCache(boolean useCache) {
+        mUseCache = useCache;
+        return this;
+    }
 
     public ApiRequest<T> addQueryParam(String name, String value) {
         mQueryParams.put(name, value);
@@ -187,30 +191,32 @@ public class ApiRequest<T> extends Request.Builder {
         String requestHash = request.method() + " " + request.urlString();
         ParsedResponse<T> parsedResponse = null;
 
-        // Try to get a valid response from the cache
-        try {
-            String cached = Reservoir.get(requestHash, String.class);
+        // Try to get a valid response object from the cache
+        if (mUseCache) {
+            try {
+                String cached = Reservoir.get(requestHash, String.class);
 
-            if (cached != null) {
-                Log.d("Loaded " + requestHash + " from cache");
+                if (cached != null) {
+                    Log.d("Loaded " + requestHash + " from cache");
 
-                parsedResponse = mGson.fromJson(cached, new TypeToken<ParsedResponse<JsonElement>>() {}.getType());
+                    parsedResponse = mGson.fromJson(cached, new TypeToken<ParsedResponse<JsonElement>>() {}.getType());
 
-                if (new Date().getTime() - parsedResponse.receivedAt > Config.CACHE_TIMEOUT) {
-                    parsedResponse = null;
-                } else {
-                    // Recover data
-                    //noinspection unchecked
-                    parsedResponse = new ParsedResponse<>(
-                            (T) mGson.fromJson((JsonElement) parsedResponse.data, mResponseType),
-                            parsedResponse.nextPageUrl,
-                            parsedResponse.receivedAt);
+                    if (new Date().getTime() - parsedResponse.receivedAt > Config.CACHE_TIMEOUT) {
+                        parsedResponse = null;
+                    } else {
+                        // Recover data
+                        //noinspection unchecked
+                        parsedResponse = new ParsedResponse<>(
+                                (T) mGson.fromJson((JsonElement) parsedResponse.data, mResponseType),
+                                parsedResponse.nextPageUrl,
+                                parsedResponse.receivedAt);
+                    }
                 }
+            } catch (NullPointerException e) {
+                // Response not in cache
+            } catch (Exception e) {
+                Log.e(e);
             }
-        } catch(NullPointerException e) {
-            // Response not in cache
-        } catch (Exception e) {
-            Log.e(e);
         }
 
         // If nothing valid was found in cache, make the request again
@@ -260,7 +266,7 @@ public class ApiRequest<T> extends Request.Builder {
                     return true;
                 }
             }
-        } catch(NullPointerException e) {
+        } catch (NullPointerException e) {
             // Response not in cache
         } catch (Exception e) {
             Log.e(e);

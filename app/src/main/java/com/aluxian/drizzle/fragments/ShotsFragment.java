@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.aluxian.drizzle.R;
 import com.aluxian.drizzle.api.ApiRequest;
@@ -21,7 +20,9 @@ import com.squareup.okhttp.Request;
 public class ShotsFragment extends Fragment {
 
     private static final String ARG_CATEGORY_NAME = "category_name";
-    private ShotsAdapter gridAdapter;
+
+    private ShotsAdapter mShotsAdapter;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     public static ShotsFragment newInstance(String categoryName) {
         ShotsFragment fragment = new ShotsFragment();
@@ -38,7 +39,7 @@ public class ShotsFragment extends Fragment {
         // Check whether the items should be loaded quickly (without delays or loading indicator)
         Request request = Dribbble.listShots(category, Params.Timeframe.NOW, Params.Sort.POPULAR).build();
         String requestHash = request.method() + " " + request.urlString();
-        boolean fastLoad = !ApiRequest.hasValidCache(requestHash);
+        boolean fastLoad = ApiRequest.hasValidCache(requestHash);
 
         // Set up the recycler
         View view = inflater.inflate(R.layout.fragment_shots, container, false);
@@ -52,57 +53,54 @@ public class ShotsFragment extends Fragment {
         animator.setAddDuration(fastLoad ? 300 : 500);
         animator.setAddDelay(fastLoad ? 0 : 500);
 
+        // TODO: Restore delay/duration values on normal refresh (calculate fastLoad each time?)
+
         recyclerView.setItemAnimator(animator);
         recyclerView.setHasFixedSize(true);
 
         // Swipe refresh
-        final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
-        swipeRefreshLayout.setColorSchemeResources(R.color.accent);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.accent);
 
-        if (fastLoad) {
-            swipeRefreshLayout.post(new Runnable() {
+        // Adapter
+        mShotsAdapter = new ShotsAdapter(getActivity(), mSwipeRefreshLayout, category, Params.Timeframe.NOW, Params.Sort.POPULAR);
+        recyclerView.setAdapter(mShotsAdapter);
+
+        mSwipeRefreshLayout.setOnRefreshListener(mShotsAdapter);
+        if (!fastLoad) {
+            mSwipeRefreshLayout.post(new Runnable() {
                 @Override
                 public void run() {
-                    swipeRefreshLayout.setRefreshing(true);
+                    mSwipeRefreshLayout.setRefreshing(true);
                 }
             });
         }
-
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                Toast.makeText(getActivity(), "refreshing", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        // Adapter
-        gridAdapter = new ShotsAdapter(getActivity(), swipeRefreshLayout, category, Params.Timeframe.NOW, Params.Sort.POPULAR);
-        recyclerView.setAdapter(gridAdapter);
 
         return view;
     }
 
     public void setTimeframeParam(Params.Timeframe timeframe) {
-        gridAdapter.setTimeframeParam(timeframe);
+        mShotsAdapter.setTimeframeParam(timeframe);
     }
 
     public void setSortParam(Params.Sort sort) {
-        gridAdapter.setSortParam(sort);
+        mShotsAdapter.setSortParam(sort);
     }
 
     /**
      * Reload the items with the newly changed parameters.
      */
     public void applyParams() {
-        // TODO
+        mSwipeRefreshLayout.setRefreshing(true);
+        mShotsAdapter.onRefresh();
     }
 
     public Params.Timeframe getTimeframeParam() {
-        return gridAdapter.getTimeframeParam();
+        return mShotsAdapter.getTimeframeParam();
     }
 
     public Params.Sort getSortParam() {
-        return gridAdapter.getSortParam();
+        return mShotsAdapter.getSortParam();
     }
 
 }

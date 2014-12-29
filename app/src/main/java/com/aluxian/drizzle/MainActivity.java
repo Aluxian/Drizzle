@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
+import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.Transformation;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toolbar;
 
@@ -147,6 +151,28 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
         if (mDrawerFragment.isDrawerOpen()) {
             mDrawerFragment.closeDrawer();
         } else {
+            /*TypedArray attrs = getTheme().obtainStyledAttributes(new int[]{android.R.attr.actionBarSize});
+            float actionBarSize = attrs.getDimension(0, 0);
+            attrs.recycle();
+
+            final View actionBarView = findViewById(R.id.toolbar);
+            final float newTopMargin = -actionBarSize;
+
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) actionBarView.getLayoutParams();
+            final int initialMargin = params.topMargin;
+
+            Animation anim = new Animation() {
+                @Override
+                protected void applyTransformation(float interpolatedTime, Transformation t) {
+                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) actionBarView.getLayoutParams();
+                    params.topMargin = (int) (newTopMargin * interpolatedTime) + initialMargin;
+                    actionBarView.setLayoutParams(params);
+                }
+            };
+
+            anim.setDuration(200);
+            actionBarView.startAnimation(anim);*/
+
             super.onBackPressed();
         }
     }

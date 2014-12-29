@@ -28,7 +28,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.ViewHolder> {
+public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.ViewHolder> implements SwipeRefreshLayout.OnRefreshListener {
 
     private List<Shot> mShotsList = new ArrayList<>();
     private ParsedResponse<List<Shot>> mLastResponse;
@@ -155,6 +155,44 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.ViewHolder> 
         }
     }
 
+    @Override
+    public void onRefresh() {
+        Log.e(new Exception("on REFRESH!"));
+
+        if (!mIsLoadingItems) {
+            Log.d("refreshing items");
+            mIsLoadingItems = true;
+
+            new AsyncTask<Void, Void, ParsedResponse<List<Shot>>>() {
+
+                @Override
+                protected ParsedResponse<List<Shot>> doInBackground(Void... params) {
+                    return Dribbble.listShots(mListParam, mTimeframeParam, mSortParam).useCache(false).execute();
+                }
+
+                @Override
+                protected void onPostExecute(ParsedResponse<List<Shot>> response) {
+                    mShotsList = response.data;
+                    mLastResponse = response;
+                    mIsLoadingItems = false;
+
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mSwipeRefreshLayout.setRefreshing(false);
+                        }
+                    }, 500);
+
+                    notifyDataSetChanged();
+                    Log.d("now there are " + mShotsList.size() + " items");
+                }
+
+            }.execute();
+        } else {
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         public final CardView card;
@@ -186,3 +224,35 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.ViewHolder> 
     }
 
 }
+
+/*
+
+                    // Remove
+                    for (int i = 0; i < mShotsList.size(); i++) {
+                        if (!newList.contains(mShotsList.get(i))) {
+                            mShotsList.remove(i);
+                            notifyItemRemoved(i);
+                        }
+                    }
+
+                    int i = 0, j = 0;
+
+                    while (i < oldList.size() && j < mShotsList.size()) {
+                        if (oldList.get(i).equals(mShotsList.get(j))) {
+                            i++;
+                            j++;
+                        } else {
+                            notifyItemInserted(j);
+                            j++;
+                        }
+                    }
+
+                    while (i < oldList.size()) {
+                        notifyItemRemoved(i);
+                        i++;
+                    }
+
+                    while (j < mShotsList.size()) {
+                        notifyItemInserted(j);
+                        j++;
+                    }*/
