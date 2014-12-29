@@ -40,6 +40,8 @@ public class ApiRequest<T> extends Request.Builder {
     private String mPath;
     private String mUrl;
 
+    // TODO: Add a method for cache control
+
     public ApiRequest<T> addQueryParam(String name, String value) {
         mQueryParams.put(name, value);
         return this;
@@ -181,7 +183,7 @@ public class ApiRequest<T> extends Request.Builder {
         }
 
         Request request = build();
-        String requestHash = request.method() + request.urlString();
+        String requestHash = request.method() + " " + request.urlString();
         ParsedResponse<T> parsedResponse = null;
 
         // Try to get a valid response from the cache
@@ -204,12 +206,16 @@ public class ApiRequest<T> extends Request.Builder {
                             parsedResponse.receivedAt);
                 }
             }
+        } catch(NullPointerException e) {
+            // Response not in cache
         } catch (Exception e) {
             Log.e(e);
         }
 
         // If nothing valid was found in cache, make the request again
         if (parsedResponse == null) {
+            Log.d("Loading " + requestHash + " from the API");
+
             try {
                 Response response = mOkHttpClient.newCall(request).execute();
                 String body = response.body().string();

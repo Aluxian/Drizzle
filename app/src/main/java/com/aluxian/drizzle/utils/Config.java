@@ -4,7 +4,7 @@ import android.text.format.DateUtils;
 
 public class Config {
 
-    /** There have to be at least this many unloaded items in a grid, otherwise more items are loaded. */
+    /** There have to be at least this many unloaded mItems in a grid, otherwise more mItems are loaded. */
     public static final int LOAD_ITEMS_THRESHOLD = 6;
 
     /** The number of results to load at a time when making requests to the Dribbble API. */

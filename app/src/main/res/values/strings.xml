@@ -7,21 +7,27 @@
     <string name="action_notifications">Notifications</string>
     <string name="action_sort">Sort</string>
 
-    <string name="drawer_pages_feed">Feed</string>
-    <string name="drawer_pages_shots">Shots</string>
+    <string name="drawer_main_feed">Feed</string>
+    <string name="drawer_main_shots">Shots</string>
 
     <string name="drawer_personal_buckets">Buckets</string>
     <string name="drawer_personal_go_pro">Go PRO</string>
     <string name="drawer_personal_account_settings">Account Settings</string>
     <string name="drawer_personal_sign_out">Sign Out</string>
-
     <string name="drawer_personal_sign_in">Sign In</string>
 
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
-    <string name="drawer_subheader_personal">Personal</string>
+    <string name="drawer_pixels_dribbbled">pixels dribbbled</string>
+    <string name="drawer_personal">Personal</string>
 
-    <string-array name="timeframe_settings">
+    <string name="filter_timeframe">Timeframe</string>
+    <string name="filter_sort_by">Sort By</string>
+
+    <string name="dialog_apply">Apply</string>
+    <string name="dialog_cancel">Cancel</string>
+
+    <string-array name="filter_timeframe_options">
         <item>Now</item>
         <item>This Last Week</item>
         <item>This Last Month</item>
@@ -29,7 +35,7 @@
         <item>All Time</item>
     </string-array>
 
-    <string-array name="sort_settings">
+    <string-array name="filter_sort_options">
         <item>Popular</item>
         <item>Recent</item>
         <item>Most Viewed</item>

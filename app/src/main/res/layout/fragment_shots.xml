@@ -1,23 +1,16 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              tools:context=".ShotsFragment">
+<android.support.v4.widget.SwipeRefreshLayout
+    android:id="@+id/swipe_refresh"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <com.astuetz.PagerSlidingTabStrip
-        android:id="@+id/tabs"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/grid"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/tabsBarHeight"
-        android:background="?android:attr/colorPrimary"
-        android:elevation="@dimen/actionBarElevation"
-        android:theme="@style/DrizzleTheme.Dark"
-        app:pstsTabBackground="?android:attr/selectableItemBackground"/>
+        android:layout_height="match_parent"
+        android:paddingStart="@dimen/gridSpacing"
+        android:scrollbars="vertical"
+        tools:ignore="RtlSymmetry"/>
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/view_pager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
-</LinearLayout>
+</android.support.v4.widget.SwipeRefreshLayout>

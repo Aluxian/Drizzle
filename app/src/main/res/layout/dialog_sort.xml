@@ -10,28 +10,28 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Timeframe"
-        android:textColor="@color/text_header"/>
+        android:text="@string/filter_timeframe"
+        android:textColor="@color/text_subheader"/>
 
     <Spinner
         android:id="@+id/timeframe_spinner"
         android:layout_width="match_parent"
         android:layout_height="32dp"
-        android:entries="@array/timeframe_settings"
+        android:entries="@array/filter_timeframe_options"
         android:theme="@style/DrizzleTheme.Spinner"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Sort By"
-        android:textColor="@color/text_header"/>
+        android:text="@string/filter_sort_by"
+        android:textColor="@color/text_subheader"/>
 
     <Spinner
         android:id="@+id/sort_spinner"
         android:layout_width="match_parent"
         android:layout_height="32dp"
-        android:entries="@array/sort_settings"
+        android:entries="@array/filter_sort_options"
         android:theme="@style/DrizzleTheme.Spinner"/>
 
 </LinearLayout>

@@ -4,15 +4,15 @@ import android.app.Activity;
 import android.content.res.Resources;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.aluxian.drizzle.R;
@@ -29,46 +29,42 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShotsGridAdapter extends RecyclerView.Adapter<ShotsGridAdapter.ViewHolder> {
+public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.ViewHolder> {
 
-    private List<Shot> shotsList = new ArrayList<>();
-    private ParsedResponse<List<Shot>> lastResponse;
-    private boolean isLoadingItems;
+    private List<Shot> mShotsList = new ArrayList<>();
+    private ParsedResponse<List<Shot>> mLastResponse;
+    private boolean mIsLoadingItems;
 
-    private Activity activity;
-    private GridLayoutManager gridLayoutManager;
+    private Activity mActivity;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
-    private Params.List listParam;
-    private Params.Timeframe timeframeParam;
-    private Params.Sort sortParam;
+    private Params.List mListParam;
+    private Params.Timeframe mTimeframeParam;
+    private Params.Sort mSortParam;
 
-    private ProgressBar loadingIndicator;
+    public ShotsAdapter(Activity activity, SwipeRefreshLayout swipeRefreshLayout,
+                        Params.List list, Params.Timeframe timeframe, Params.Sort sort) {
+        mActivity = activity;
+        mSwipeRefreshLayout = swipeRefreshLayout;
 
-    public ShotsGridAdapter(Activity activity, GridLayoutManager gridLayoutManager,
-                            Params.List list, Params.Timeframe timeframe, Params.Sort sort, ProgressBar loadingIndicator) {
-        this.activity = activity;
-        this.gridLayoutManager = gridLayoutManager;
+        mListParam = list;
+        mTimeframeParam = timeframe;
+        mSortParam = sort;
 
-        this.listParam = list;
-        this.timeframeParam = timeframe;
-        this.sortParam = sort;
-
-        this.loadingIndicator = loadingIndicator;
-
-        // Load first items
+        // Load first mItems
         loadItemsIfRequired(0);
     }
 
     @Override
-    public ShotsGridAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.grid_item, parent, false));
+    public ShotsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_shot, parent, false));
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        Shot shot = shotsList.get(position);
+        Shot shot = mShotsList.get(position);
 
-        Resources resources = activity.getResources();
+        Resources resources = mActivity.getResources();
         int iconColor = resources.getColor(R.color.card_actions);
 
         //holder.viewsIcon.setColorFilter(iconColor, PorterDuff.Mode.MULTIPLY);
@@ -93,69 +89,69 @@ public class ShotsGridAdapter extends RecyclerView.Adapter<ShotsGridAdapter.View
                 .placeholder(R.drawable.loading_placeholder)
                 .into(holder.image);
 
-        // If position is near the end of the list, load more items
+        // If position is near the end of the list, load more mItems
         loadItemsIfRequired(position);
     }
 
     @Override
     public int getItemCount() {
-        return shotsList.size();
+        return mShotsList.size();
     }
 
-    public void setTimeframeParam(Params.Timeframe timeframeParam) {
-        this.timeframeParam = timeframeParam;
+    public void setTimeframeParam(Params.Timeframe mTimeframeParam) {
+        this.mTimeframeParam = mTimeframeParam;
     }
 
-    public void setSortParam(Params.Sort sortParam) {
-        this.sortParam = sortParam;
+    public void setSortParam(Params.Sort mSortParam) {
+        this.mSortParam = mSortParam;
     }
 
     public Params.Timeframe getTimeframeParam() {
-        return timeframeParam;
+        return mTimeframeParam;
     }
 
     public Params.Sort getSortParam() {
-        return sortParam;
+        return mSortParam;
     }
 
     public void loadItemsIfRequired(int position) {
         Log.v("loadItemsIfRequired(" + position + ")");
 
-        if (!isLoadingItems && shotsList.size() - position <= Config.LOAD_ITEMS_THRESHOLD) {
+        if (!mIsLoadingItems && mShotsList.size() - position <= Config.LOAD_ITEMS_THRESHOLD) {
             Log.d("loading more items");
-            isLoadingItems = true;
+            mIsLoadingItems = true;
 
             new AsyncTask<Void, Void, ParsedResponse<List<Shot>>>() {
+
                 @Override
                 protected ParsedResponse<List<Shot>> doInBackground(Void... params) {
-                    if (lastResponse != null && lastResponse.nextPageUrl != null) {
+                    if (mLastResponse != null && mLastResponse.nextPageUrl != null) {
                         return new ApiRequest<List<Shot>>()
                                 .responseType(new TypeToken<List<Shot>>() {})
-                                .url(lastResponse.nextPageUrl)
+                                .url(mLastResponse.nextPageUrl)
                                 .execute();
                     } else {
-                        return Dribbble.listShots(listParam, timeframeParam, sortParam).execute();
+                        return Dribbble.listShots(mListParam, mTimeframeParam, mSortParam).execute();
                     }
                 }
 
                 @Override
                 protected void onPostExecute(ParsedResponse<List<Shot>> response) {
-                    shotsList.addAll(response.data);
-                    lastResponse = response;
+                    mShotsList.addAll(response.data);
+                    mLastResponse = response;
+                    mIsLoadingItems = false;
 
-                    if (loadingIndicator.getAlpha() == 1) {
-                        loadingIndicator.animate()
-                                .setDuration(500)
-                                .setInterpolator(new DecelerateInterpolator())
-                                .translationY(-50)
-                                .alpha(0);
-                    }
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mSwipeRefreshLayout.setRefreshing(false);
+                        }
+                    }, 500);
 
-                    notifyItemRangeInserted(shotsList.size() - response.data.size(), response.data.size());
-                    isLoadingItems = false;
-
-                    Log.d("now there are " + shotsList.size() + " items");
+                    notifyItemRangeInserted(mShotsList.size() - response.data.size(), response.data.size());
+                    Log.d("now there are " + mShotsList.size() + " items");
                 }
+
             }.execute();
         }
     }
@@ -173,19 +169,19 @@ public class ShotsGridAdapter extends RecyclerView.Adapter<ShotsGridAdapter.View
         public final TextView commentsCount;
         public final TextView likesCount;
 
-        public ViewHolder(View v) {
-            super(v);
+        public ViewHolder(View itemView) {
+            super(itemView);
 
-            card = (CardView) v;
-            image = (ImageView) v.findViewById(R.id.image);
+            card = (CardView) itemView;
+            image = (ImageView) itemView.findViewById(R.id.image);
 
             //viewsIcon = (ImageView) v.findViewById(R.id.views_icon);
-            commentsIcon = (ImageView) v.findViewById(R.id.comments_icon);
-            likesIcon = (ImageView) v.findViewById(R.id.likes_icon);
+            commentsIcon = (ImageView) itemView.findViewById(R.id.comments_icon);
+            likesIcon = (ImageView) itemView.findViewById(R.id.likes_icon);
 
             //viewsCount = (TextView) v.findViewById(R.id.views_count);
-            commentsCount = (TextView) v.findViewById(R.id.comments_count);
-            likesCount = (TextView) v.findViewById(R.id.likes_count);
+            commentsCount = (TextView) itemView.findViewById(R.id.comments_count);
+            likesCount = (TextView) itemView.findViewById(R.id.likes_count);
         }
 
     }

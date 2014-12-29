@@ -17,7 +17,7 @@ import java.util.List;
 
 /**
  * This implementation of {@link RecyclerView.ItemAnimator} provides basic animations on remove, add, and move events that happen to the
- * items in a RecyclerView. RecyclerView uses a DefaultItemAnimator by default.
+ * mItems in a RecyclerView. RecyclerView uses a DefaultItemAnimator by default.
  *
  * @see RecyclerView#setItemAnimator(RecyclerView.ItemAnimator)
  */

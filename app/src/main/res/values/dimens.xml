@@ -1,10 +1,7 @@
 <resources>
 
-    <dimen name="horizontalMargin">16dp</dimen>
-    <dimen name="verticalMargin">16dp</dimen>
-
-    <dimen name="drawerWidth">280dp</dimen>
-    <dimen name="drawerCoverHeight">150dp</dimen>
+    <dimen name="drawerWidth">304dp</dimen>
+    <dimen name="drawerCoverHeight">180dp</dimen>
 
     <dimen name="statusBarHeight">24dp</dimen>
     <dimen name="tabsBarHeight">48dp</dimen>

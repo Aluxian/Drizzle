@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
@@ -14,12 +15,10 @@ import android.view.View;
 import android.widget.Spinner;
 import android.widget.Toolbar;
 
-import com.aluxian.drizzle.api.ApiRequest;
-import com.aluxian.drizzle.api.Dribbble;
 import com.aluxian.drizzle.api.Params;
 import com.aluxian.drizzle.fragments.DrawerFragment;
-import com.aluxian.drizzle.fragments.ShotsCategoryFragment;
 import com.aluxian.drizzle.fragments.ShotsFragment;
+import com.aluxian.drizzle.fragments.TabsFragment;
 import com.aluxian.drizzle.utils.Config;
 import com.aluxian.drizzle.utils.Log;
 import com.anupcowkur.reservoir.Reservoir;
@@ -28,19 +27,20 @@ import java.util.Arrays;
 
 public class MainActivity extends FragmentActivity implements DrawerFragment.Callbacks {
 
+    private DrawerFragment mDrawerFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setActionBar(toolbar);
-
-        DrawerFragment drawerFragment = (DrawerFragment) getFragmentManager().findFragmentById(R.id.navigation_drawer);
-        drawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
-
+        setActionBar((Toolbar) findViewById(R.id.toolbar));
         getWindow().setAllowEnterTransitionOverlap(true);
 
+        mDrawerFragment = (DrawerFragment) getFragmentManager().findFragmentById(R.id.navigation_drawer);
+        mDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
+
+        // Initialise the cache storage
         try {
             Reservoir.init(this, Config.CACHE_SIZE);
         } catch (Exception e) {
@@ -49,16 +49,21 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
     }
 
     @Override
-    public void onNavigationDrawerItemSelected(int position) {
+    public boolean onNavigationDrawerItemSelected(int titleResourceId) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        boolean remainSelected = true;
 
-        switch (position) {
-            case 0:
-                transaction.replace(R.id.container, new ShotsFragment());
+        switch (titleResourceId) {
+            case R.string.drawer_main_shots:
+                transaction.replace(R.id.container, new TabsFragment());
+                break;
+            case R.string.drawer_personal_sign_in:
+                remainSelected = false;
                 break;
         }
 
         transaction.commit();
+        return remainSelected;
     }
 
     @Override
@@ -72,23 +77,24 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
         switch (item.getItemId()) {
             case R.id.action_sort:
                 @SuppressLint("InflateParams")
-                View view = getLayoutInflater().inflate(R.layout.sort_dialog, null);
+                View view = getLayoutInflater().inflate(R.layout.dialog_sort, null);
 
                 final Spinner timeframeSpinner = (Spinner) view.findViewById(R.id.timeframe_spinner);
                 final Spinner sortSpinner = (Spinner) view.findViewById(R.id.sort_spinner);
 
-                ViewPager viewPager = (ViewPager) findViewById(R.id.container).findViewById(R.id.view_pager);
+                // Get the selected fragment from the ViewPager
+                ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
+                Fragment tabsFragment = getSupportFragmentManager().getFragments().get(0);
+                String fragmentTag = "android:switcher:" + R.id.view_pager + ":" + viewPager.getCurrentItem();
+                final ShotsFragment fragment = (ShotsFragment) tabsFragment.getChildFragmentManager().findFragmentByTag(fragmentTag);
 
-                ShotsFragment shotsFragment = (ShotsFragment) getSupportFragmentManager().getFragments().get(0);
-                final ShotsCategoryFragment fragment = (ShotsCategoryFragment) shotsFragment.getChildFragmentManager()
-                        .findFragmentByTag("android:switcher:" + R.id.view_pager + ":" + viewPager.getCurrentItem());
-
+                // Restore active values
                 timeframeSpinner.setSelection(Arrays.asList(Params.Timeframe.values()).indexOf(fragment.getTimeframeParam()));
                 sortSpinner.setSelection(Arrays.asList(Params.Sort.values()).indexOf(fragment.getSortParam()));
 
-                new AlertDialog.Builder(this)
+                new AlertDialog.Builder(this, R.style.DrizzleTheme_Dialog)
                         .setView(view)
-                        .setPositiveButton("Apply", new DialogInterface.OnClickListener() {
+                        .setPositiveButton(R.string.dialog_apply, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 fragment.setTimeframeParam(Params.Timeframe.values()[timeframeSpinner.getSelectedItemPosition()]);
@@ -96,12 +102,7 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
                                 fragment.applyParams();
                             }
                         })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        })
+                        .setNegativeButton(R.string.dialog_cancel, null)
                         .create()
                         .show();
 
@@ -109,6 +110,15 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mDrawerFragment.isDrawerOpen()) {
+            mDrawerFragment.closeDrawer();
+        } else {
+            super.onBackPressed();
+        }
     }
 
 }

@@ -3,16 +3,16 @@
 
     <color name="primary">@color/pink</color>
     <color name="primary_dark">#bb3c6d</color>
-    <color name="accent">@color/charcoal</color>
+    <color name="accent">@color/pink</color>
     <color name="background">#e0e0e0</color>
 
-    <color name="background_hover">#3999</color>
-    <color name="background_pressed">#efefef</color>
+    <!--<color name="background_hover">#3999</color>
+    <color name="background_pressed">#efefef</color>-->
 
-    <color name="text_drawer">#222222</color>
-    <color name="text_header">#767676</color>
+    <color name="text_drawer">#333</color>
+    <color name="text_subheader">#777</color>
 
-    <color name="card_actions">#7d7d7d</color>
+    <color name="card_actions">#777</color>
 
     <color name="white">#fff</color>
     <color name="black">#000</color>

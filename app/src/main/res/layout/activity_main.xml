@@ -12,20 +12,9 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/statusBarHeight"
-            android:background="@color/primary"/>
+        <include layout="@layout/include_statusbar"/>
 
-        <Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?android:attr/colorPrimary"
-            android:contentInsetStart="72dp"
-            android:elevation="0dp"
-            android:minHeight="?android:attr/actionBarSize"
-            android:theme="@style/DrizzleTheme.Dark"/>
+        <include layout="@layout/include_toolbar"/>
 
         <FrameLayout
             android:id="@+id/container"
