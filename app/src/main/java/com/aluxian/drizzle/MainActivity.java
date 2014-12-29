@@ -3,6 +3,9 @@ package com.aluxian.drizzle;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -24,6 +27,7 @@ import com.aluxian.drizzle.utils.Log;
 import com.anupcowkur.reservoir.Reservoir;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class MainActivity extends FragmentActivity implements DrawerFragment.Callbacks {
 
@@ -49,7 +53,7 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
     }
 
     @Override
-    public boolean onNavigationDrawerItemSelected(int titleResourceId) {
+    public boolean onDrawerItemSelected(int titleResourceId) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         boolean remainSelected = true;
 
@@ -57,7 +61,33 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
             case R.string.drawer_main_shots:
                 transaction.replace(R.id.container, new TabsFragment());
                 break;
+
             case R.string.drawer_personal_sign_in:
+                remainSelected = false;
+                break;
+
+            case R.string.drawer_app_rate:
+                Intent rateIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + getPackageName()));
+                List<ResolveInfo> list = getPackageManager().queryIntentActivities(rateIntent, 0);
+
+                if (list.size() > 0) {
+                    startActivity(rateIntent);
+                } else {
+                    rateIntent.setData(Uri.parse("https://play.google.com/store/apps/details?id=" + getPackageName()));
+                    startActivity(rateIntent);
+                }
+
+                remainSelected = false;
+                break;
+
+            case R.string.drawer_app_feedback:
+                String uri = "mailto:" + Uri.encode(getString(R.string.send_feedback_email))
+                        + "?subject=" + Uri.encode(getString(R.string.send_feedback_subject))
+                        + "&body=" + Uri.encode(getString(R.string.send_feedback_body));
+
+                Intent sendIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse(uri));
+                startActivity(Intent.createChooser(sendIntent, getString(R.string.send_feedback_with)));
+
                 remainSelected = false;
                 break;
         }

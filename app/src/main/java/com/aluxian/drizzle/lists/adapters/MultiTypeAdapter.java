@@ -1,4 +1,4 @@
-package com.aluxian.drizzle.recycler.adapters;
+package com.aluxian.drizzle.lists.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

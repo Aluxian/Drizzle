@@ -11,9 +11,12 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.aluxian.drizzle.R;
+import com.aluxian.drizzle.api.ApiRequest;
+import com.aluxian.drizzle.api.Dribbble;
 import com.aluxian.drizzle.api.Params;
-import com.aluxian.drizzle.recycler.GridItemAnimator;
-import com.aluxian.drizzle.recycler.ShotsAdapter;
+import com.aluxian.drizzle.lists.GridItemAnimator;
+import com.aluxian.drizzle.lists.ShotsAdapter;
+import com.squareup.okhttp.Request;
 
 public class ShotsFragment extends Fragment {
 
@@ -32,18 +35,38 @@ public class ShotsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Params.List category = Params.List.valueOf(getArguments().getString(ARG_CATEGORY_NAME));
 
+        // Check whether the items should be loaded quickly (without delays or loading indicator)
+        Request request = Dribbble.listShots(category, Params.Timeframe.NOW, Params.Sort.POPULAR).build();
+        String requestHash = request.method() + " " + request.urlString();
+        boolean fastLoad = !ApiRequest.hasValidCache(requestHash);
+
+        // Set up the recycler
         View view = inflater.inflate(R.layout.fragment_shots, container, false);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.grid);
 
+        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
+        recyclerView.setLayoutManager(layoutManager);
+
+        GridItemAnimator animator = new GridItemAnimator(layoutManager);
+        animator.setSupportsChangeAnimations(true);
+        animator.setAddDuration(fastLoad ? 300 : 500);
+        animator.setAddDelay(fastLoad ? 0 : 500);
+
+        recyclerView.setItemAnimator(animator);
+        recyclerView.setHasFixedSize(true);
+
+        // Swipe refresh
         final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
         swipeRefreshLayout.setColorSchemeResources(R.color.accent);
 
-        swipeRefreshLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                swipeRefreshLayout.setRefreshing(true);
-            }
-        });
+        if (fastLoad) {
+            swipeRefreshLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    swipeRefreshLayout.setRefreshing(true);
+                }
+            });
+        }
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -52,16 +75,7 @@ public class ShotsFragment extends Fragment {
             }
         });
 
-        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
-        recyclerView.setLayoutManager(layoutManager);
-
-        GridItemAnimator animator = new GridItemAnimator(layoutManager);
-        animator.setSupportsChangeAnimations(true);
-        animator.setAddDuration(500);
-
-        recyclerView.setItemAnimator(animator);
-        recyclerView.setHasFixedSize(true);
-
+        // Adapter
         gridAdapter = new ShotsAdapter(getActivity(), swipeRefreshLayout, category, Params.Timeframe.NOW, Params.Sort.POPULAR);
         recyclerView.setAdapter(gridAdapter);
 
@@ -76,6 +90,9 @@ public class ShotsFragment extends Fragment {
         gridAdapter.setSortParam(sort);
     }
 
+    /**
+     * Reload the items with the newly changed parameters.
+     */
     public void applyParams() {
         // TODO
     }

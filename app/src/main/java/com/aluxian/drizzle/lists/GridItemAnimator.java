@@ -1,4 +1,4 @@
-package com.aluxian.drizzle.recycler;
+package com.aluxian.drizzle.lists;
 
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
@@ -39,6 +39,7 @@ public class GridItemAnimator extends RecyclerView.ItemAnimator {
     private ArrayList<RecyclerView.ViewHolder> mChangeAnimations = new ArrayList<>();
 
     private GridLayoutManager gridLayoutManager;
+    private int mAddDelay;
 
     public GridItemAnimator(GridLayoutManager gridLayoutManager) {
         this.gridLayoutManager = gridLayoutManager;
@@ -207,6 +208,14 @@ public class GridItemAnimator extends RecyclerView.ItemAnimator {
         mRemoveAnimations.add(holder);
     }
 
+    public void setAddDelay(int delay) {
+        mAddDelay = delay;
+    }
+
+    public int getAddDelay() {
+        return mAddDelay;
+    }
+
     @Override
     public boolean animateAdd(final RecyclerView.ViewHolder holder) {
         endAnimation(holder);
@@ -229,7 +238,7 @@ public class GridItemAnimator extends RecyclerView.ItemAnimator {
         int position = holder.getPosition();
 
         if (position >= gridLayoutManager.findFirstVisibleItemPosition() && position <= gridLayoutManager.findLastVisibleItemPosition()) {
-            delay = position * 100 + 500;
+            delay = position * 100 + getAddDelay();
         }
 
         animation

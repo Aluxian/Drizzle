@@ -16,6 +16,9 @@
     <string name="drawer_personal_sign_out">Sign Out</string>
     <string name="drawer_personal_sign_in">Sign In</string>
 
+    <string name="drawer_app_rate">Rate &amp; Review</string>
+    <string name="drawer_app_feedback">Send Feedback</string>
+
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="drawer_pixels_dribbbled">pixels dribbbled</string>
@@ -26,6 +29,11 @@
 
     <string name="dialog_apply">Apply</string>
     <string name="dialog_cancel">Cancel</string>
+
+    <string name="send_feedback_with">Send feedback with</string>
+    <string name="send_feedback_email">hello@getdrizzle.co</string>
+    <string name="send_feedback_subject">I\'ve got feedback!</string>
+    <string name="send_feedback_body">Hello,\n\n</string>
 
     <string-array name="filter_timeframe_options">
         <item>Now</item>
