@@ -7,7 +7,7 @@
     android:layout_marginStart="72dp"
     android:background="@color/transparent"
     android:orientation="horizontal"
-    android:theme="@style/DrizzleTheme.Search"
+    android:theme="@style/DrizzleTheme.Dark"
     android:visibility="gone">
 
     <ImageButton

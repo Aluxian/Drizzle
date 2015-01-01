@@ -2,7 +2,6 @@ package com.aluxian.drizzle;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
@@ -33,14 +32,17 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
 
     private DrawerLayout mDrawerLayout;
     private DrawerFragment mDrawerFragment;
-
     private AdvancedToolbar mToolbar;
+    private View mSearchContainer;
+    private boolean mContainerHasFragment;
 
     @SuppressLint("InflateParams")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mSearchContainer = findViewById(R.id.search_container);
 
         mToolbar = (AdvancedToolbar) findViewById(R.id.toolbar);
         setActionBar(mToolbar);
@@ -60,15 +62,20 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
         }
     }
 
-    public void displaySearchView(boolean visible) {
+    public void searchMode(boolean visible) {
         if (visible) {
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             mDrawerFragment.toggleActionBarIcon(DrawerFragment.ActionDrawableState.ARROW, true);
             mToolbar.showSearchView();
+
+            mSearchContainer.setVisibility(View.VISIBLE);
+            mSearchContainer.animate().alpha(1);
         } else {
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
             mDrawerFragment.toggleActionBarIcon(DrawerFragment.ActionDrawableState.BURGER, true);
             mToolbar.hideSearchView();
+
+            mSearchContainer.animate().alpha(0).withEndAction(() -> mSearchContainer.setVisibility(View.GONE));
         }
     }
 
@@ -77,9 +84,14 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         boolean remainSelected = true;
 
+        if (mContainerHasFragment) {
+            transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
+        }
+
         switch (titleResourceId) {
             case R.string.drawer_main_shots:
-                transaction.replace(R.id.container, new TabsFragment());
+                transaction.replace(R.id.tabs_container, new TabsFragment());
+                mContainerHasFragment = true;
                 break;
 
             case R.string.drawer_personal_sign_in:
@@ -127,14 +139,14 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
         switch (item.getItemId()) {
             case android.R.id.home:
                 if (mToolbar.isSearchViewShown()) {
-                    displaySearchView(false);
+                    searchMode(false);
                     return true;
                 } else {
                     return false;
                 }
 
             case R.id.action_search:
-                displaySearchView(true);
+                searchMode(true);
                 return true;
 
             case R.id.action_sort:
@@ -156,13 +168,10 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
 
                 new AlertDialog.Builder(this, R.style.DrizzleTheme_Dialog)
                         .setView(view)
-                        .setPositiveButton(R.string.dialog_apply, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                fragment.setTimeframeParam(Params.Timeframe.values()[timeframeSpinner.getSelectedItemPosition()]);
-                                fragment.setSortParam(Params.Sort.values()[sortSpinner.getSelectedItemPosition()]);
-                                fragment.applyParams();
-                            }
+                        .setPositiveButton(R.string.dialog_apply, (dialog, which) -> {
+                            fragment.setTimeframeParam(Params.Timeframe.values()[timeframeSpinner.getSelectedItemPosition()]);
+                            fragment.setSortParam(Params.Sort.values()[sortSpinner.getSelectedItemPosition()]);
+                            fragment.applyParams();
                         })
                         .setNegativeButton(R.string.dialog_cancel, null)
                         .create()

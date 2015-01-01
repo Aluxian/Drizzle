@@ -9,6 +9,8 @@
     <!--<color name="background_hover">#3999</color>
     <color name="background_pressed">#efefef</color>-->
 
+    <color name="ripple_material_lightly">#20000000</color>
+
     <color name="text_drawer">#333</color>
     <color name="text_subheader">#777</color>
 

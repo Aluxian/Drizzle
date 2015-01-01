@@ -21,11 +21,20 @@
         <include layout="@layout/include_statusbar"/>
 
         <FrameLayout
-            android:id="@+id/container"
+            android:id="@+id/tabs_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/toolbar_wrapper"
             android:background="@color/background"/>
+
+        <RelativeLayout
+            android:id="@+id/search_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/toolbar_wrapper"
+            android:alpha="0"
+            android:background="@color/background"
+            android:visibility="gone"/>
 
     </RelativeLayout>
 

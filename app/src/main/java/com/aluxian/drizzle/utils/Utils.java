@@ -5,7 +5,7 @@ import android.content.res.TypedArray;
 import android.text.format.DateUtils;
 import android.util.TypedValue;
 
-import com.aluxian.drizzle.api.ParsedResponse;
+import com.aluxian.drizzle.api.Dribbble;
 import com.anupcowkur.reservoir.Reservoir;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -72,11 +72,11 @@ public class Utils {
 
             if (cached != null) {
                 Gson gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
-                ParsedResponse parsedResponse = gson.fromJson(cached, ParsedResponse.class);
+                Dribbble.Response response = gson.fromJson(cached, Dribbble.Response.class);
 
                 // Make sure it's not expired; also, there should be more than 5 seconds remaining until expiry time
                 // to make sure it doesn't expire immediately after the check is made
-                if (new Date().getTime() - parsedResponse.receivedAt < Config.CACHE_TIMEOUT - 5 * DateUtils.SECOND_IN_MILLIS) {
+                if (new Date().getTime() - response.receivedAt < Config.CACHE_TIMEOUT - 5 * DateUtils.SECOND_IN_MILLIS) {
                     return true;
                 }
             }

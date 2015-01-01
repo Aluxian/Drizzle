@@ -38,12 +38,7 @@ public abstract class MultiTypeAdapter<VH extends MultiTypeAdapter.BaseItem.View
         final AdapterView.OnItemClickListener clickListener = mItemTypes.get(holder.getItemViewType()).clickListener;
 
         if (clickListener != null) {
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    clickListener.onItemClick(null, v, position, getItemId(position));
-                }
-            });
+            holder.itemView.setOnClickListener(v -> clickListener.onItemClick(null, v, position, getItemId(position)));
         }
 
         mItems.get(position).bindViewHolder(holder);

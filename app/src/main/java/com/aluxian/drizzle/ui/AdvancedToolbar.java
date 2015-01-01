@@ -1,10 +1,12 @@
 package com.aluxian.drizzle.ui;
 
+import android.app.Service;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ActionMenuView;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -19,6 +21,8 @@ import java.lang.reflect.Field;
 
 public class AdvancedToolbar extends Toolbar {
 
+    private InputMethodManager inputMethodManager;
+
     // Toolbar views
     private TextView mTitleTextView;
     private ActionMenuView mMenuView;
@@ -29,8 +33,8 @@ public class AdvancedToolbar extends Toolbar {
     private ImageButton mSearchViewClearButton;
 
     private boolean mSearchViewShown;
-    private float mSearchViewTranslation;
-    private float mSearchViewClearButtonTranslation;
+    private float mSearchViewTranslationY;
+    private float mSearchViewClearButtonTranslationX;
 
     public AdvancedToolbar(Context context) {
         super(context);
@@ -44,11 +48,7 @@ public class AdvancedToolbar extends Toolbar {
         super(context, attrs, defStyleAttr);
     }
 
-    public AdvancedToolbar(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-    }
-
-    public TextView getTitleTextView() {
+    private TextView getTitleTextView() {
         if (mTitleTextView == null) {
             try {
                 Field field = Toolbar.class.getDeclaredField("mTitleTextView");
@@ -62,7 +62,7 @@ public class AdvancedToolbar extends Toolbar {
         return mTitleTextView;
     }
 
-    public ActionMenuView getMenuView() {
+    private ActionMenuView getMenuView() {
         if (mMenuView == null) {
             try {
                 Field field = Toolbar.class.getDeclaredField("mMenuView");
@@ -76,7 +76,7 @@ public class AdvancedToolbar extends Toolbar {
         return mMenuView;
     }
 
-    public void showTitleView() {
+    private void showTitleView() {
         getTitleTextView().animate()
                 .setInterpolator(new DecelerateInterpolator())
                 .setDuration(200)
@@ -84,15 +84,15 @@ public class AdvancedToolbar extends Toolbar {
                 .alpha(1);
     }
 
-    public void hideTitleView() {
+    private void hideTitleView() {
         getTitleTextView().animate()
                 .setInterpolator(new AccelerateInterpolator())
                 .setDuration(200)
-                .translationY(-mSearchViewTranslation)
+                .translationY(-mSearchViewTranslationY)
                 .alpha(0);
     }
 
-    public void showMenuView() {
+    private void showMenuView() {
         getMenuView().setVisibility(VISIBLE);
         getMenuView().animate()
                 .setInterpolator(new DecelerateInterpolator())
@@ -101,18 +101,13 @@ public class AdvancedToolbar extends Toolbar {
                 .alpha(1);
     }
 
-    public void hideMenuView() {
+    private void hideMenuView() {
         getMenuView().animate()
                 .setInterpolator(new AccelerateInterpolator())
                 .setDuration(200)
-                .translationY(-mSearchViewTranslation)
+                .translationY(-mSearchViewTranslationY)
                 .alpha(0)
-                .withEndAction(new Runnable() {
-                    @Override
-                    public void run() {
-                        getMenuView().setVisibility(GONE);
-                    }
-                });
+                .withEndAction(() -> getMenuView().setVisibility(GONE));
     }
 
     private void findSearchView() {
@@ -121,15 +116,12 @@ public class AdvancedToolbar extends Toolbar {
             mSearchViewEditText = (EditText) mSearchView.findViewById(R.id.input);
 
             mSearchViewClearButton = (ImageButton) mSearchView.findViewById(R.id.clear);
-            mSearchViewClearButtonTranslation = mSearchViewClearButton.getTranslationX();
-            mSearchViewClearButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mSearchViewEditText.setText("");
-                }
-            });
+            mSearchViewClearButtonTranslationX = mSearchViewClearButton.getTranslationX();
+            mSearchViewClearButton.setOnClickListener(v -> mSearchViewEditText.setText(""));
 
-            mSearchViewTranslation = Utils.getThemeAttr(android.R.attr.actionBarSize, getContext());
+            mSearchViewTranslationY = Utils.getThemeAttr(android.R.attr.actionBarSize, getContext());
+
+            inputMethodManager = (InputMethodManager) getContext().getSystemService(Service.INPUT_METHOD_SERVICE);
         }
     }
 
@@ -145,6 +137,7 @@ public class AdvancedToolbar extends Toolbar {
         hideMenuView();
 
         mSearchViewEditText.requestFocus();
+        mSearchViewEditText.postDelayed(() -> inputMethodManager.showSoftInput(mSearchViewEditText, 0), 500);
     }
 
     public void hideSearchView() {
@@ -152,22 +145,13 @@ public class AdvancedToolbar extends Toolbar {
         findSearchView();
 
         mSearchViewEditText.setText("");
-        mSearchViewEditText.animate()
-                .alpha(0)
-                .withEndAction(new Runnable() {
-                    @Override
-                    public void run() {
-                        mSearchView.setVisibility(View.GONE);
-                    }
-                });
-
-        mSearchViewClearButton.animate().translationX(mSearchViewClearButtonTranslation);
+        mSearchViewEditText.animate().alpha(0).withEndAction(() -> mSearchView.setVisibility(View.GONE));
+        mSearchViewClearButton.animate().translationX(mSearchViewClearButtonTranslationX);
 
         showTitleView();
         showMenuView();
 
-        //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        //imm.hideSoftInputFromWindow(mSearchViewEditText.getWindowToken(), 0);
+        inputMethodManager.hideSoftInputFromWindow(mSearchViewEditText.getWindowToken(), 0);
     }
 
     /**

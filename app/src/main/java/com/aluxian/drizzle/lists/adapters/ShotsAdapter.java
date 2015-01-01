@@ -1,4 +1,4 @@
-package com.aluxian.drizzle.lists;
+package com.aluxian.drizzle.lists.adapters;
 
 import android.app.Activity;
 import android.content.res.Resources;
@@ -18,7 +18,6 @@ import com.aluxian.drizzle.R;
 import com.aluxian.drizzle.api.ApiRequest;
 import com.aluxian.drizzle.api.Dribbble;
 import com.aluxian.drizzle.api.Params;
-import com.aluxian.drizzle.api.ParsedResponse;
 import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.utils.Config;
 import com.aluxian.drizzle.utils.Log;
@@ -31,20 +30,22 @@ import java.util.List;
 public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.ViewHolder> implements SwipeRefreshLayout.OnRefreshListener {
 
     private List<Shot> mShotsList = new ArrayList<>();
-    private ParsedResponse<List<Shot>> mLastResponse;
+    private Dribbble.Response<List<Shot>> mLastResponse;
     private boolean mIsLoadingItems;
 
     private Activity mActivity;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private RecyclerView mRecyclerView;
 
     private Params.List mListParam;
     private Params.Timeframe mTimeframeParam;
     private Params.Sort mSortParam;
 
-    public ShotsAdapter(Activity activity, SwipeRefreshLayout swipeRefreshLayout,
+    public ShotsAdapter(Activity activity, SwipeRefreshLayout swipeRefreshLayout, RecyclerView recyclerView,
                         Params.List list, Params.Timeframe timeframe, Params.Sort sort) {
         mActivity = activity;
         mSwipeRefreshLayout = swipeRefreshLayout;
+        mRecyclerView = recyclerView;
 
         mListParam = list;
         mTimeframeParam = timeframe;
@@ -60,7 +61,7 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
+    public void onBindViewHolder(ViewHolder holder, int position) {
         Shot shot = mShotsList.get(position);
 
         Resources resources = mActivity.getResources();
@@ -83,13 +84,18 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.ViewHolder> 
             }
         });*/
 
-        Picasso.with(holder.image.getContext())
-                .load(shot.images.normal)
-                .placeholder(R.drawable.loading_placeholder)
-                .into(holder.image);
+        if (!shot.images.normal.equals(holder.image.getTag())) {
+            holder.image.setTag(shot.images.normal);
+            Picasso.with(holder.image.getContext())
+                    .load(shot.images.normal)
+                    .placeholder(R.drawable.loading_placeholder)
+                    .into(holder.image);
+        }
 
-        // If position is near the end of the list, load more mItems
+        // If position is near the end of the list, load more items from the API
         loadItemsIfRequired(position);
+
+        preloadViews(position + 1);
     }
 
     @Override
@@ -113,17 +119,17 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.ViewHolder> 
         return mSortParam;
     }
 
-    public void loadItemsIfRequired(int position) {
+    private void loadItemsIfRequired(int position) {
         Log.v("loadItemsIfRequired(" + position + ")");
 
         if (!mIsLoadingItems && mShotsList.size() - position <= Config.LOAD_ITEMS_THRESHOLD) {
             Log.d("loading more items");
             mIsLoadingItems = true;
 
-            new AsyncTask<Void, Void, ParsedResponse<List<Shot>>>() {
+            new AsyncTask<Void, Void, Dribbble.Response<List<Shot>>>() {
 
                 @Override
-                protected ParsedResponse<List<Shot>> doInBackground(Void... params) {
+                protected Dribbble.Response<List<Shot>> doInBackground(Void... params) {
                     if (mLastResponse != null && mLastResponse.nextPageUrl != null) {
                         return new ApiRequest<List<Shot>>()
                                 .responseType(new TypeToken<List<Shot>>() {})
@@ -135,23 +141,38 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.ViewHolder> 
                 }
 
                 @Override
-                protected void onPostExecute(ParsedResponse<List<Shot>> response) {
+                protected void onPostExecute(Dribbble.Response<List<Shot>> response) {
                     mShotsList.addAll(response.data);
                     mLastResponse = response;
                     mIsLoadingItems = false;
 
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            mSwipeRefreshLayout.setRefreshing(false);
-                        }
-                    }, 500);
+                    new Handler().postDelayed(() -> mSwipeRefreshLayout.setRefreshing(false), 500);
 
                     notifyItemRangeInserted(mShotsList.size() - response.data.size(), response.data.size());
+                    //preloadViews(position + 1);
+
                     Log.d("now there are " + mShotsList.size() + " items");
                 }
 
             }.execute();
+        } else {
+            //preloadViews(position + 1);
+        }
+    }
+
+    /**
+     * Start loading the images of the following items.
+     *
+     * @param startPosition The position of the first item to be preloaded.
+     */
+    private void preloadViews(int startPosition) {
+        for (int position = startPosition; position < startPosition + 6 && position < mShotsList.size(); position++) {
+            ViewHolder holder = (ViewHolder) mRecyclerView.findViewHolderForPosition(position);
+            if (holder != null) {
+                onBindViewHolder(holder, position);
+            } else {
+                Picasso.with(mActivity).load(mShotsList.get(position).images.normal);
+            }
         }
     }
 
@@ -161,27 +182,22 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.ViewHolder> 
             Log.d("refreshing items");
             mIsLoadingItems = true;
 
-            new AsyncTask<Void, Void, ParsedResponse<List<Shot>>>() {
+            new AsyncTask<Void, Void, Dribbble.Response<List<Shot>>>() {
 
                 @Override
-                protected ParsedResponse<List<Shot>> doInBackground(Void... params) {
+                protected Dribbble.Response<List<Shot>> doInBackground(Void... params) {
                     return Dribbble.listShots(mListParam, mTimeframeParam, mSortParam).useCache(false).execute();
                 }
 
                 @Override
-                protected void onPostExecute(ParsedResponse<List<Shot>> response) {
+                protected void onPostExecute(Dribbble.Response<List<Shot>> response) {
                     mShotsList = response.data;
                     mLastResponse = response;
                     mIsLoadingItems = false;
 
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            mSwipeRefreshLayout.setRefreshing(false);
-                        }
-                    }, 500);
-
+                    new Handler().postDelayed(() -> mSwipeRefreshLayout.setRefreshing(false), 500);
                     notifyDataSetChanged();
+
                     Log.d("now there are " + mShotsList.size() + " items");
                 }
 

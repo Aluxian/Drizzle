@@ -41,4 +41,23 @@ public class Dribbble {
                 .delete();
     }
 
+    /**
+     * Stores a parsed response from the Dribbble API.
+     *
+     * @param <T> The responseType of the expected response.
+     */
+    public static final class Response<T> {
+
+        public final T data;
+        public final String nextPageUrl;
+        public final long receivedAt;
+
+        public Response(T data, String nextPageUrl, long receivedAt) {
+            this.data = data;
+            this.nextPageUrl = nextPageUrl;
+            this.receivedAt = receivedAt;
+        }
+
+    }
+
 }

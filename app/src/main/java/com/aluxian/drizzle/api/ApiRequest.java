@@ -179,16 +179,16 @@ public class ApiRequest<T> extends Request.Builder {
     /**
      * Execute the request and return the result.
      *
-     * @return A ParsedResponse object.
+     * @return A Dribbble.Response object.
      */
-    public ParsedResponse<T> execute() {
+    public Dribbble.Response<T> execute() {
         if (mResponseType == null) {
             throw new IllegalArgumentException("responseType is null");
         }
 
         Request request = build();
         String requestHash = request.method() + " " + request.urlString();
-        ParsedResponse<T> parsedResponse = null;
+        Dribbble.Response<T> dribbbleResponse = null;
 
         // Try to get a valid response object from the cache
         if (mUseCache) {
@@ -198,17 +198,17 @@ public class ApiRequest<T> extends Request.Builder {
                 if (cached != null) {
                     Log.d("Loaded " + requestHash + " from cache");
 
-                    parsedResponse = mGson.fromJson(cached, new TypeToken<ParsedResponse<JsonElement>>() {}.getType());
+                    dribbbleResponse = mGson.fromJson(cached, new TypeToken<Dribbble.Response<JsonElement>>() {}.getType());
 
-                    if (new Date().getTime() - parsedResponse.receivedAt > Config.CACHE_TIMEOUT) {
-                        parsedResponse = null;
+                    if (new Date().getTime() - dribbbleResponse.receivedAt > Config.CACHE_TIMEOUT) {
+                        dribbbleResponse = null;
                     } else {
                         // Recover data
                         //noinspection unchecked
-                        parsedResponse = new ParsedResponse<>(
-                                (T) mGson.fromJson((JsonElement) parsedResponse.data, mResponseType),
-                                parsedResponse.nextPageUrl,
-                                parsedResponse.receivedAt);
+                        dribbbleResponse = new Dribbble.Response<>(
+                                (T) mGson.fromJson((JsonElement) dribbbleResponse.data, mResponseType),
+                                dribbbleResponse.nextPageUrl,
+                                dribbbleResponse.receivedAt);
                     }
                 }
             } catch (NullPointerException e) {
@@ -219,7 +219,7 @@ public class ApiRequest<T> extends Request.Builder {
         }
 
         // If nothing valid was found in cache, make the request again
-        if (parsedResponse == null) {
+        if (dribbbleResponse == null) {
             Log.d("Loading " + requestHash + " from the API");
 
             try {
@@ -234,13 +234,13 @@ public class ApiRequest<T> extends Request.Builder {
                 // Parse the response
                 T data = mGson.fromJson(body, mResponseType);
                 String nextPageUrl = Utils.extractNextUrl(response.headers().get("Link"));
-                parsedResponse = new ParsedResponse<>(data, nextPageUrl, new Date().getTime());
+                dribbbleResponse = new Dribbble.Response<>(data, nextPageUrl, new Date().getTime());
             } catch (IOException e) {
                 Log.e(e);
             }
 
             // Cache the response
-            Reservoir.putAsync(requestHash, mGson.toJson(parsedResponse), new ReservoirPutCallback() {
+            Reservoir.putAsync(requestHash, mGson.toJson(dribbbleResponse), new ReservoirPutCallback() {
                 @Override
                 public void onSuccess() {}
 
@@ -251,7 +251,7 @@ public class ApiRequest<T> extends Request.Builder {
             });
         }
 
-        return parsedResponse;
+        return dribbbleResponse;
     }
 
 }

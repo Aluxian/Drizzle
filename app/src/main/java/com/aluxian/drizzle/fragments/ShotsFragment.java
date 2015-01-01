@@ -13,7 +13,7 @@ import com.aluxian.drizzle.R;
 import com.aluxian.drizzle.api.Dribbble;
 import com.aluxian.drizzle.api.Params;
 import com.aluxian.drizzle.lists.GridItemAnimator;
-import com.aluxian.drizzle.lists.ShotsAdapter;
+import com.aluxian.drizzle.lists.adapters.ShotsAdapter;
 import com.aluxian.drizzle.utils.Utils;
 import com.squareup.okhttp.Request;
 
@@ -63,17 +63,13 @@ public class ShotsFragment extends Fragment {
         mSwipeRefreshLayout.setColorSchemeResources(R.color.accent);
 
         // Adapter
-        mShotsAdapter = new ShotsAdapter(getActivity(), mSwipeRefreshLayout, category, Params.Timeframe.NOW, Params.Sort.POPULAR);
+        mShotsAdapter = new ShotsAdapter(getActivity(), mSwipeRefreshLayout, recyclerView,
+                category, Params.Timeframe.NOW, Params.Sort.POPULAR);
         recyclerView.setAdapter(mShotsAdapter);
 
         mSwipeRefreshLayout.setOnRefreshListener(mShotsAdapter);
         if (!fastLoad) {
-            mSwipeRefreshLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    mSwipeRefreshLayout.setRefreshing(true);
-                }
-            });
+            mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(true));
         }
 
         return view;

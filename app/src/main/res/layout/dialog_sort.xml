@@ -3,8 +3,8 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
-              android:paddingLeft="16dp"
-              android:paddingRight="16dp"
+              android:paddingEnd="16dp"
+              android:paddingStart="16dp"
               android:paddingTop="16dp">
 
     <TextView
@@ -16,7 +16,7 @@
     <Spinner
         android:id="@+id/timeframe_spinner"
         android:layout_width="match_parent"
-        android:layout_height="32dp"
+        android:layout_height="48dp"
         android:entries="@array/filter_timeframe_options"
         android:theme="@style/DrizzleTheme.Spinner"/>
 
@@ -30,7 +30,7 @@
     <Spinner
         android:id="@+id/sort_spinner"
         android:layout_width="match_parent"
-        android:layout_height="32dp"
+        android:layout_height="48dp"
         android:entries="@array/filter_sort_options"
         android:theme="@style/DrizzleTheme.Spinner"/>
 

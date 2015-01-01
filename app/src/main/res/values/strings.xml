@@ -25,7 +25,7 @@
     <string name="drawer_personal">Personal</string>
 
     <string name="filter_timeframe">Timeframe</string>
-    <string name="filter_sort_by">Sort By</string>
+    <string name="filter_sort_by">Sort by</string>
 
     <string name="dialog_apply">Apply</string>
     <string name="dialog_cancel">Cancel</string>
