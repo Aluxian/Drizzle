@@ -1,7 +1,6 @@
 package com.aluxian.drizzle.api;
 
 import android.net.Uri;
-import android.text.format.DateUtils;
 
 import com.aluxian.drizzle.utils.Config;
 import com.aluxian.drizzle.utils.Log;
@@ -253,26 +252,6 @@ public class ApiRequest<T> extends Request.Builder {
         }
 
         return parsedResponse;
-    }
-
-    public static boolean hasValidCache(String key) {
-        try {
-            String cached = Reservoir.get(key, String.class);
-
-            if (cached != null) {
-                ParsedResponse parsedResponse = mGson.fromJson(cached, ParsedResponse.class);
-
-                if (new Date().getTime() - parsedResponse.receivedAt < Config.CACHE_TIMEOUT - DateUtils.SECOND_IN_MILLIS) {
-                    return true;
-                }
-            }
-        } catch (NullPointerException e) {
-            // Response not in cache
-        } catch (Exception e) {
-            Log.e(e);
-        }
-
-        return false;
     }
 
 }

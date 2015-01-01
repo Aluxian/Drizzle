@@ -10,11 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.aluxian.drizzle.R;
-import com.aluxian.drizzle.api.ApiRequest;
 import com.aluxian.drizzle.api.Dribbble;
 import com.aluxian.drizzle.api.Params;
 import com.aluxian.drizzle.lists.GridItemAnimator;
 import com.aluxian.drizzle.lists.ShotsAdapter;
+import com.aluxian.drizzle.utils.Utils;
 import com.squareup.okhttp.Request;
 
 public class ShotsFragment extends Fragment {
@@ -39,7 +39,7 @@ public class ShotsFragment extends Fragment {
         // Check whether the items should be loaded quickly (without delays or loading indicator)
         Request request = Dribbble.listShots(category, Params.Timeframe.NOW, Params.Sort.POPULAR).build();
         String requestHash = request.method() + " " + request.urlString();
-        boolean fastLoad = ApiRequest.hasValidCache(requestHash);
+        boolean fastLoad = Utils.hasValidCache(requestHash);
 
         // Set up the recycler
         View view = inflater.inflate(R.layout.fragment_shots, container, false);

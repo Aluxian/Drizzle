@@ -157,8 +157,6 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.ViewHolder> 
 
     @Override
     public void onRefresh() {
-        Log.e(new Exception("on REFRESH!"));
-
         if (!mIsLoadingItems) {
             Log.d("refreshing items");
             mIsLoadingItems = true;

@@ -1,5 +1,6 @@
 package com.aluxian.drizzle.fragments;
 
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.res.Configuration;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
@@ -70,6 +72,32 @@ public class DrawerFragment extends Fragment {
 
         // Select either the default item (0) or the last selected item
         selectItem(mCurrentSelectedPosition);
+    }
+
+    public static enum ActionDrawableState {
+        BURGER, ARROW
+    }
+
+    public void toggleActionBarIcon(ActionDrawableState state, boolean animate) {
+        if (animate) {
+            float start = state == ActionDrawableState.BURGER ? 1.0f : 0f;
+            ValueAnimator animator = ValueAnimator.ofFloat(start, Math.abs(start - 1));
+            animator.setDuration(300);
+            animator.setInterpolator(new AccelerateDecelerateInterpolator());
+            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animator) {
+                    mDrawerToggle.onDrawerSlide(null, (Float) animator.getAnimatedValue());
+                }
+            });
+            animator.start();
+        } else {
+            if (state == ActionDrawableState.BURGER) {
+                mDrawerToggle.onDrawerClosed(null);
+            } else {
+                mDrawerToggle.onDrawerOpened(null);
+            }
+        }
     }
 
     @Override
@@ -179,8 +207,7 @@ public class DrawerFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Let the DrawerToggle handle the callback first, otherwise let super do it
-        return mDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item) || mDrawerToggle.onOptionsItemSelected(item);
     }
 
     /**

@@ -12,10 +12,10 @@
         android:layout_height="match_parent">
 
         <include
-            android:id="@+id/toolbar"
+            android:id="@+id/toolbar_wrapper"
             layout="@layout/include_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="?android:attr/actionBarSize"
             android:layout_marginTop="@dimen/statusBarHeight"/>
 
         <include layout="@layout/include_statusbar"/>
@@ -24,7 +24,7 @@
             android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/toolbar"
+            android:layout_below="@id/toolbar_wrapper"
             android:background="@color/background"/>
 
     </RelativeLayout>

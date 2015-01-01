@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
-import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,16 +15,13 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.Transformation;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
-import android.widget.Toolbar;
 
 import com.aluxian.drizzle.api.Params;
 import com.aluxian.drizzle.fragments.DrawerFragment;
 import com.aluxian.drizzle.fragments.ShotsFragment;
 import com.aluxian.drizzle.fragments.TabsFragment;
+import com.aluxian.drizzle.ui.AdvancedToolbar;
 import com.aluxian.drizzle.utils.Config;
 import com.aluxian.drizzle.utils.Log;
 import com.anupcowkur.reservoir.Reservoir;
@@ -35,24 +31,44 @@ import java.util.List;
 
 public class MainActivity extends FragmentActivity implements DrawerFragment.Callbacks {
 
+    private DrawerLayout mDrawerLayout;
     private DrawerFragment mDrawerFragment;
 
+    private AdvancedToolbar mToolbar;
+
+    @SuppressLint("InflateParams")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        setActionBar((Toolbar) findViewById(R.id.toolbar));
+        mToolbar = (AdvancedToolbar) findViewById(R.id.toolbar);
+        setActionBar(mToolbar);
+
         getWindow().setAllowEnterTransitionOverlap(true);
 
+        // Set up the navigation drawer
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerFragment = (DrawerFragment) getFragmentManager().findFragmentById(R.id.navigation_drawer);
-        mDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
+        mDrawerFragment.setUp(R.id.navigation_drawer, mDrawerLayout);
 
         // Initialise the cache storage
         try {
             Reservoir.init(this, Config.CACHE_SIZE);
         } catch (Exception e) {
             Log.e(e);
+        }
+    }
+
+    public void displaySearchView(boolean visible) {
+        if (visible) {
+            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            mDrawerFragment.toggleActionBarIcon(DrawerFragment.ActionDrawableState.ARROW, true);
+            mToolbar.showSearchView();
+        } else {
+            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+            mDrawerFragment.toggleActionBarIcon(DrawerFragment.ActionDrawableState.BURGER, true);
+            mToolbar.hideSearchView();
         }
     }
 
@@ -109,6 +125,18 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home:
+                if (mToolbar.isSearchViewShown()) {
+                    displaySearchView(false);
+                    return true;
+                } else {
+                    return false;
+                }
+
+            case R.id.action_search:
+                displaySearchView(true);
+                return true;
+
             case R.id.action_sort:
                 @SuppressLint("InflateParams")
                 View view = getLayoutInflater().inflate(R.layout.dialog_sort, null);

@@ -16,6 +16,7 @@
 
     <color name="white">#fff</color>
     <color name="black">#000</color>
+    <color name="transparent">#0000</color>
 
     <color name="charcoal">#333333</color>
     <color name="pink">#ea4c89</color>
