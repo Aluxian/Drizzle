@@ -2,7 +2,7 @@
 <resources>
 
     <color name="primary">@color/pink</color>
-    <color name="primary_dark">#bb3c6d</color>
+    <color name="primaryDark">#bb3c6d</color>
     <color name="accent">@color/pink</color>
     <color name="background">#e0e0e0</color>
 

@@ -4,7 +4,7 @@ import android.text.format.DateUtils;
 
 public class Config {
 
-    /** There have to be at least this many unloaded mItems in a grid, otherwise more mItems are loaded. */
+    /** There have to be at least this many unloaded items in a grid, otherwise more items are loaded. */
     public static final int LOAD_ITEMS_THRESHOLD = 6;
 
     /** The number of results to load at a time when making requests to the Dribbble API. */
@@ -21,6 +21,9 @@ public class Config {
 
     /** A token used for read-only API requests. */
     public static final String API_CLIENT_TOKEN = "ff549b889305c04600bab572bc1e9f90fd61272c5eb803bcd5ad5d68b4afa120";
+
+    /** Users are redirected here to create a new account. */
+    public static final String SIGN_UP_URL = "https://dribbble.com/signup";
 
     /** The maximum cache size for API requests. */
     public static final long CACHE_SIZE = 10 * 1024 * 1024; // 10 MB

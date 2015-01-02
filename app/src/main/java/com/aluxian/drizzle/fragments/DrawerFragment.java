@@ -12,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.aluxian.drizzle.R;
@@ -27,25 +26,32 @@ import static com.aluxian.drizzle.lists.DrawerListItem.TYPE_ICON_TEXT;
 import static com.aluxian.drizzle.lists.DrawerListItem.TYPE_SUBHEADER;
 
 /**
- * Fragment used for managing interactions for and presentation of a navigation drawer.
+ * Fragment used for managing interactions and presentation of a navigation drawer.
  */
 public class DrawerFragment extends Fragment {
 
     /** Remember the position of the selected item. */
     private static final String STATE_SELECTED_POSITION = "selected_navigation_drawer_position";
 
-    /** A pointer to the current callbacks instance (the Activity). */
+    /** The callbacks instance (the Activity). */
     private Callbacks mCallbacks;
 
     /** Helper component that ties the action bar to the navigation drawer. */
     private ActionBarDrawerToggle mDrawerToggle;
 
-    /** A map that holds all the items that appear in the drawer. */
+    /** A list that holds all the items that appear in the drawer. */
     private List<DrawerListItem> mItems = new ArrayList<>();
 
+    /** The layout that contains the content of the activity and the drawer view. */
     private DrawerLayout mDrawerLayout;
+
+    /** The view that slides in from the left. */
     private View mDrawerView;
+
+    /** The list of available navigation items. */
     private ListView mListView;
+
+    /** The position of the currently selected item in the list view. */
     private int mCurrentSelectedPosition;
 
     @Override
@@ -74,51 +80,19 @@ public class DrawerFragment extends Fragment {
         selectItem(mCurrentSelectedPosition);
     }
 
-    public static enum ActionDrawableState {
-        BURGER, ARROW
-    }
-
-    public void toggleActionBarIcon(ActionDrawableState state, boolean animate) {
-        if (animate) {
-            float start = state == ActionDrawableState.BURGER ? 1.0f : 0f;
-            ValueAnimator animator = ValueAnimator.ofFloat(start, Math.abs(start - 1));
-            animator.setDuration(300);
-            animator.setInterpolator(new AccelerateDecelerateInterpolator());
-            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animator) {
-                    mDrawerToggle.onDrawerSlide(null, (Float) animator.getAnimatedValue());
-                }
-            });
-            animator.start();
-        } else {
-            if (state == ActionDrawableState.BURGER) {
-                mDrawerToggle.onDrawerClosed(null);
-            } else {
-                mDrawerToggle.onDrawerOpened(null);
-            }
-        }
-    }
-
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        // Indicate that this fragment would like to influence the set of actions in the action bar
+        // Indicate that this fragment would like to influence the set of actions in the toolbar
         setHasOptionsMenu(true);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_drawer, container, false);
+
         mListView = (ListView) view.findViewById(R.id.list);
-
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                selectItem(position);
-            }
-        });
-
+        mListView.setOnItemClickListener((parent, itemView, position, id) -> selectItem(position));
         mListView.setAdapter(new DrawerListAdapter(mItems));
         mListView.setItemChecked(mCurrentSelectedPosition, true);
 
@@ -135,24 +109,32 @@ public class DrawerFragment extends Fragment {
         mDrawerView = getActivity().findViewById(fragmentId);
         mDrawerLayout = drawerLayout;
 
-        // ActionBarDrawerToggle ties together the the proper interactions
-        // between the navigation drawer and the action bar app icon
-        mDrawerToggle = new ActionBarDrawerToggle(
-                getActivity(),                    /* host Activity */
-                mDrawerLayout,                    /* DrawerLayout object */
-                R.string.drawer_open,  /* "open drawer" description for accessibility */
-                R.string.drawer_close  /* "close drawer" description for accessibility */
-        ) {};
+        // ActionBarDrawerToggle ties together the proper interactions between the drawer and the toolbar drawer icon
+        mDrawerToggle = new ActionBarDrawerToggle(getActivity(), mDrawerLayout, R.string.drawer_open, R.string.drawer_close) {};
 
         // Defer code dependent on restoration of previous instance state
-        mDrawerLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                mDrawerToggle.syncState();
-            }
-        });
-
+        mDrawerLayout.post(mDrawerToggle::syncState);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
+    }
+
+    public void toggleDrawerIcon(DrawerIconState state, boolean animate) {
+        if (animate) {
+            float start = state == DrawerIconState.BURGER ? 1.0f : 0f;
+            ValueAnimator iconAnimator = ValueAnimator.ofFloat(start, Math.abs(start - 1));
+            iconAnimator.setDuration(300);
+            iconAnimator.addUpdateListener(animator -> mDrawerToggle.onDrawerSlide(null, (Float) animator.getAnimatedValue()));
+            iconAnimator.start();
+        } else {
+            if (state == DrawerIconState.BURGER) {
+                mDrawerToggle.onDrawerClosed(null);
+            } else {
+                mDrawerToggle.onDrawerOpened(null);
+            }
+        }
+    }
+
+    public void setDrawerLocked(boolean locked) {
+        mDrawerLayout.setDrawerLockMode(locked ? DrawerLayout.LOCK_MODE_LOCKED_CLOSED : DrawerLayout.LOCK_MODE_UNLOCKED);
     }
 
     private void selectItem(int position) {
@@ -223,6 +205,13 @@ public class DrawerFragment extends Fragment {
          */
         boolean onDrawerItemSelected(int titleResourceId);
 
+    }
+
+    /**
+     * The possible states of the icon used in the toolbar to toggle the drawer.
+     */
+    public static enum DrawerIconState {
+        BURGER, ARROW
     }
 
 }

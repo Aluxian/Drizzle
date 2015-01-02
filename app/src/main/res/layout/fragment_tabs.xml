@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/tabsBarHeight"
         android:background="@color/primary"
-        android:elevation="@dimen/actionBarElevation"
+        android:elevation="@dimen/toolbarElevation"
         android:theme="@style/DrizzleTheme.Dark"
         app:pstsTabBackground="?android:attr/selectableItemBackground"/>
 

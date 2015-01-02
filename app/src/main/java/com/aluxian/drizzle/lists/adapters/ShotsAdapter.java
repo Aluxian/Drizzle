@@ -88,7 +88,7 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.ViewHolder> 
             holder.image.setTag(shot.images.normal);
             Picasso.with(holder.image.getContext())
                     .load(shot.images.normal)
-                    .placeholder(R.drawable.loading_placeholder)
+                    .placeholder(R.drawable.bg_placeholder)
                     .into(holder.image);
         }
 

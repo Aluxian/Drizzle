@@ -35,6 +35,13 @@
     <string name="send_feedback_subject">I\'ve got feedback!</string>
     <string name="send_feedback_body">Hello,\n\n</string>
 
+    <string name="intro_title">Hi there!</string>
+    <string name="intro_description">Drizzle is a beautiful app for Dribbble,\ncrafted with care and attention to details.\n\nBrowse,
+        upload and like shots\nlike never before.</string>
+    <string name="intro_sign_in">Sign in</string>
+    <string name="intro_sign_up">or sign up on dribbble.com</string>
+    <string name="intro_skip">Skip</string>
+
     <string-array name="filter_timeframe_options">
         <item>Now</item>
         <item>This Last Week</item>

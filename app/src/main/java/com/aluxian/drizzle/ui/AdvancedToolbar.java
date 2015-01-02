@@ -5,11 +5,14 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
+import android.view.animation.Transformation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ActionMenuView;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toolbar;
 
@@ -159,6 +162,40 @@ public class AdvancedToolbar extends Toolbar {
      */
     public boolean isSearchViewShown() {
         return mSearchViewShown;
+    }
+
+    public void show(boolean animate) {
+        float actionBarSize = Utils.getThemeAttr(android.R.attr.actionBarSize, getContext());
+        int statusBarHeight = getResources().getDimensionPixelSize(R.dimen.statusBarHeight);
+        moveTopMargin(animate, actionBarSize, statusBarHeight - (int) actionBarSize);
+    }
+
+    public void hide(boolean animate) {
+        float actionBarSize = Utils.getThemeAttr(android.R.attr.actionBarSize, getContext());
+        int statusBarHeight = getResources().getDimensionPixelSize(R.dimen.statusBarHeight);
+        moveTopMargin(animate, -actionBarSize, statusBarHeight);
+    }
+
+    private void moveTopMargin(boolean animate, float delta, int initialMargin) {
+        View wrapper = (View) getParent();
+
+        if (animate) {
+            Animation anim = new Animation() {
+                @Override
+                protected void applyTransformation(float interpolatedTime, Transformation t) {
+                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) wrapper.getLayoutParams();
+                    params.topMargin = (int) (delta * interpolatedTime) + initialMargin;
+                    wrapper.setLayoutParams(params);
+                }
+            };
+
+            anim.setDuration(200);
+            startAnimation(anim);
+        } else {
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) wrapper.getLayoutParams();
+            params.topMargin = (int) delta + initialMargin;
+            wrapper.setLayoutParams(params);
+        }
     }
 
 }

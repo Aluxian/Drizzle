@@ -4,7 +4,7 @@
     <style name="DrizzleTheme" parent="android:Theme.Material.Light.NoActionBar.TranslucentDecor">
         <item name="android:colorAccent">@color/primary</item>
         <item name="android:colorPrimary">@color/primary</item>
-        <item name="android:colorPrimaryDark">@color/primary_dark</item>
+        <item name="android:colorPrimaryDark">@color/primaryDark</item>
         <item name="android:colorControlHighlight">@color/ripple_material_lightly</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:windowBackground">@color/charcoal</item>
@@ -18,7 +18,8 @@
     <style name="DrizzleTheme.Dark" parent="android:Theme.Material.NoActionBar.TranslucentDecor">
         <item name="android:colorAccent">@color/white</item>
         <item name="android:colorPrimary">@color/primary</item>
-        <item name="android:colorPrimaryDark">@color/primary_dark</item>
+        <item name="android:colorPrimaryDark">@color/primaryDark</item>
+        <item name="android:colorButtonNormal">@color/primaryDark</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:windowBackground">@color/charcoal</item>
     </style>

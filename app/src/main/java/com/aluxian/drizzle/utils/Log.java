@@ -3,6 +3,7 @@ package com.aluxian.drizzle.utils;
 import android.text.TextUtils;
 
 import com.aluxian.drizzle.BuildConfig;
+import com.google.gson.Gson;
 
 /**
  * Custom logger implementation which wraps around Android's Log class.
@@ -97,6 +98,19 @@ public class Log {
     private static String concatenate(Object[] messages) {
         if (messages.length == 0) {
             return "()";
+        }
+
+        // Convert to json
+        for (int i = 0; i < messages.length; i++) {
+            try {
+                if (!messages[i].getClass().getMethod("toString").getDeclaringClass().equals(Object.class)) {
+                    continue;
+                }
+            } catch (NoSuchMethodException e) {
+                Log.e(e);
+            }
+
+            messages[i] = messages[i].toString() + "=" + new Gson().toJson(messages[i]);
         }
 
         return TextUtils.join(DELIMITER, messages);

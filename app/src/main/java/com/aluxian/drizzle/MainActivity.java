@@ -3,9 +3,11 @@ package com.aluxian.drizzle;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
@@ -18,6 +20,7 @@ import android.widget.Spinner;
 
 import com.aluxian.drizzle.api.Params;
 import com.aluxian.drizzle.fragments.DrawerFragment;
+import com.aluxian.drizzle.fragments.IntroFragment;
 import com.aluxian.drizzle.fragments.ShotsFragment;
 import com.aluxian.drizzle.fragments.TabsFragment;
 import com.aluxian.drizzle.ui.AdvancedToolbar;
@@ -28,31 +31,45 @@ import com.anupcowkur.reservoir.Reservoir;
 import java.util.Arrays;
 import java.util.List;
 
-public class MainActivity extends FragmentActivity implements DrawerFragment.Callbacks {
+import static com.aluxian.drizzle.fragments.DrawerFragment.DrawerIconState;
 
-    private DrawerLayout mDrawerLayout;
+public class MainActivity extends FragmentActivity implements DrawerFragment.Callbacks, IntroFragment.Callbacks {
+
+    private static final String PREF_INTRO_FINISHED = "intro_finished";
+
+    private SharedPreferences mSharedPrefs;
+
     private DrawerFragment mDrawerFragment;
     private AdvancedToolbar mToolbar;
     private View mSearchContainer;
-    private boolean mContainerHasFragment;
+    private boolean mHasFragment;
 
-    @SuppressLint("InflateParams")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mSearchContainer = findViewById(R.id.search_container);
+        mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        mSearchContainer = findViewById(R.id.search_results_container);
 
+        // Set the toolbar
         mToolbar = (AdvancedToolbar) findViewById(R.id.toolbar);
         setActionBar(mToolbar);
 
-        getWindow().setAllowEnterTransitionOverlap(true);
-
         // Set up the navigation drawer
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerFragment = (DrawerFragment) getFragmentManager().findFragmentById(R.id.navigation_drawer);
-        mDrawerFragment.setUp(R.id.navigation_drawer, mDrawerLayout);
+        mDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
+
+        // Intro view
+        if (!mSharedPrefs.getBoolean(PREF_INTRO_FINISHED, false)) {
+            mToolbar.hide(false);
+            mHasFragment = true;
+            mDrawerFragment.setDrawerLocked(true);
+
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.main_container, new IntroFragment());
+            transaction.commit();
+        }
 
         // Initialise the cache storage
         try {
@@ -60,22 +77,35 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
         } catch (Exception e) {
             Log.e(e);
         }
+
+        //getWindow().setAllowEnterTransitionOverlap(true);
     }
 
-    public void searchMode(boolean visible) {
-        if (visible) {
-            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-            mDrawerFragment.toggleActionBarIcon(DrawerFragment.ActionDrawableState.ARROW, true);
+    /**
+     * Toggle search mode. When search mode is active, a view is drawn above the existing tabs and shots grid. Search results will be shown
+     * in this view, along with search suggestions from the past.
+     *
+     * @param active Whether to make search mode active or not.
+     */
+    public void searchMode(boolean active) {
+        if (active) {
             mToolbar.showSearchView();
+            //mSearchContainer.setVisibility(View.VISIBLE);
+            //mSearchContainer.animate().alpha(1);
 
-            mSearchContainer.setVisibility(View.VISIBLE);
-            mSearchContainer.animate().alpha(1);
+            findViewById(R.id.main_container).animate().alpha(0);
+
+            mDrawerFragment.setDrawerLocked(true);
+            mDrawerFragment.toggleDrawerIcon(DrawerIconState.ARROW, true);
         } else {
-            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-            mDrawerFragment.toggleActionBarIcon(DrawerFragment.ActionDrawableState.BURGER, true);
             mToolbar.hideSearchView();
+            //mSearchContainer.setVisibility(View.GONE);
+            //mSearchContainer.animate().alpha(0).withEndAction(() -> mSearchContainer.setVisibility(View.GONE));
 
-            mSearchContainer.animate().alpha(0).withEndAction(() -> mSearchContainer.setVisibility(View.GONE));
+            findViewById(R.id.main_container).animate().alpha(1);
+
+            mDrawerFragment.setDrawerLocked(false);
+            mDrawerFragment.toggleDrawerIcon(DrawerIconState.BURGER, true);
         }
     }
 
@@ -84,14 +114,15 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         boolean remainSelected = true;
 
-        if (mContainerHasFragment) {
+        // Only use a fade animation if there's an existing fragment in the main container already; prevents fading on app start
+        if (mHasFragment) {
             transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
         }
 
         switch (titleResourceId) {
             case R.string.drawer_main_shots:
-                transaction.replace(R.id.tabs_container, new TabsFragment());
-                mContainerHasFragment = true;
+                transaction.replace(R.id.main_container, new TabsFragment());
+                mHasFragment = true;
                 break;
 
             case R.string.drawer_personal_sign_in:
@@ -129,11 +160,42 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
     }
 
     @Override
+    public void onIntroButtonClicked(int id) {
+        Log.d(id);
+
+        switch (id) {
+            case R.id.btn_sign_in:
+                mSharedPrefs.edit().putBoolean(PREF_INTRO_FINISHED, true).apply();
+
+                // TODO: Open sign in view
+
+                break;
+
+            case R.id.btn_sign_up:
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Config.SIGN_UP_URL)));
+                break;
+
+            case R.id.btn_skip:
+                mToolbar.show(true);
+                mDrawerFragment.setDrawerLocked(false);
+                mSharedPrefs.edit().putBoolean(PREF_INTRO_FINISHED, true).apply();
+
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
+                transaction.replace(R.id.main_container, new TabsFragment());
+                transaction.commit();
+
+                break;
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -141,9 +203,9 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
                 if (mToolbar.isSearchViewShown()) {
                     searchMode(false);
                     return true;
-                } else {
-                    return false;
                 }
+
+                return false;
 
             case R.id.action_search:
                 searchMode(true);
@@ -151,16 +213,25 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
 
             case R.id.action_sort:
                 @SuppressLint("InflateParams")
-                View view = getLayoutInflater().inflate(R.layout.dialog_sort, null);
+                View view = getLayoutInflater().inflate(R.layout.dialog_sort, null, false);
 
-                final Spinner timeframeSpinner = (Spinner) view.findViewById(R.id.timeframe_spinner);
-                final Spinner sortSpinner = (Spinner) view.findViewById(R.id.sort_spinner);
+                Spinner timeframeSpinner = (Spinner) view.findViewById(R.id.timeframe_spinner);
+                Spinner sortSpinner = (Spinner) view.findViewById(R.id.sort_spinner);
+
+                Log.d(getSupportFragmentManager().getFragments());
 
                 // Get the selected fragment from the ViewPager
-                ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
-                Fragment tabsFragment = getSupportFragmentManager().getFragments().get(0);
+                Fragment tabsFragment = null;
+
+                for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+                    if (fragment != null && fragment.getClass().equals(TabsFragment.class)) {
+                        tabsFragment = fragment;
+                    }
+                }
+
+                ViewPager viewPager = (ViewPager) tabsFragment.getView().findViewById(R.id.view_pager);
                 String fragmentTag = "android:switcher:" + R.id.view_pager + ":" + viewPager.getCurrentItem();
-                final ShotsFragment fragment = (ShotsFragment) tabsFragment.getChildFragmentManager().findFragmentByTag(fragmentTag);
+                ShotsFragment fragment = (ShotsFragment) tabsFragment.getChildFragmentManager().findFragmentByTag(fragmentTag);
 
                 // Restore active values
                 timeframeSpinner.setSelection(Arrays.asList(Params.Timeframe.values()).indexOf(fragment.getTimeframeParam()));
@@ -188,28 +259,6 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
         if (mDrawerFragment.isDrawerOpen()) {
             mDrawerFragment.closeDrawer();
         } else {
-            /*TypedArray attrs = getTheme().obtainStyledAttributes(new int[]{android.R.attr.actionBarSize});
-            float actionBarSize = attrs.getDimension(0, 0);
-            attrs.recycle();
-
-            final View actionBarView = findViewById(R.id.toolbar);
-            final float newTopMargin = -actionBarSize;
-
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) actionBarView.getLayoutParams();
-            final int initialMargin = params.topMargin;
-
-            Animation anim = new Animation() {
-                @Override
-                protected void applyTransformation(float interpolatedTime, Transformation t) {
-                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) actionBarView.getLayoutParams();
-                    params.topMargin = (int) (newTopMargin * interpolatedTime) + initialMargin;
-                    actionBarView.setLayoutParams(params);
-                }
-            };
-
-            anim.setDuration(200);
-            actionBarView.startAnimation(anim);*/
-
             super.onBackPressed();
         }
     }
