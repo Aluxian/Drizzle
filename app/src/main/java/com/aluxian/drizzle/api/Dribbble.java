@@ -1,8 +1,10 @@
 package com.aluxian.drizzle.api;
 
+import com.aluxian.drizzle.api.models.Credentials;
 import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.utils.Config;
 import com.google.gson.reflect.TypeToken;
+import com.squareup.okhttp.RequestBody;
 
 import java.util.List;
 
@@ -21,7 +23,7 @@ public class Dribbble {
     public static ApiRequest<Shot> getShot(int id) {
         return new ApiRequest<Shot>()
                 .responseType(new TypeToken<Shot>() {})
-                .url("/shots/" + id);
+                .path("/shots/" + id);
     }
 
         /*
@@ -34,11 +36,21 @@ public class Dribbble {
 
         */
 
-    public static ApiRequest<Shot> deleteShot(int id) {
+    /*public static ApiRequest<Shot> deleteShot(int id) {
         return new ApiRequest<Shot>()
                 .responseType(new TypeToken<Shot>() {})
                 .url("/shots/" + id)
                 .delete();
+    }*/
+
+    public static ApiRequest<Credentials> oauthToken(String code) {
+        return new ApiRequest<Credentials>()
+                .responseType(new TypeToken<Credentials>() {})
+                .url("https://dribbble.com/oauth/token")
+                .addQueryParam("client_id", Config.API_CLIENT_ID)
+                .addQueryParam("client_secret", Config.API_CLIENT_SECRET)
+                .addQueryParam("code", code)
+                .post(null);
     }
 
     /**

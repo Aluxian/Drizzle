@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:entries="@array/filter_timeframe_options"
-        android:theme="@style/DrizzleTheme.Spinner"/>
+        android:theme="@style/Drizzle.Spinner"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -32,6 +32,6 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:entries="@array/filter_sort_options"
-        android:theme="@style/DrizzleTheme.Spinner"/>
+        android:theme="@style/Drizzle.Spinner"/>
 
 </LinearLayout>

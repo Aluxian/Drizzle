@@ -15,6 +15,7 @@ public class IntroFragment extends Fragment {
     private Callbacks mCallbacks;
 
     // TODO: Start downloading items so they load instantly when the user exits the intro screen
+    // TODO: Preload sign in webview
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

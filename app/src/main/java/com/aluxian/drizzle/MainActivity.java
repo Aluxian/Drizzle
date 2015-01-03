@@ -35,7 +35,8 @@ import static com.aluxian.drizzle.fragments.DrawerFragment.DrawerIconState;
 
 public class MainActivity extends FragmentActivity implements DrawerFragment.Callbacks, IntroFragment.Callbacks {
 
-    private static final String PREF_INTRO_FINISHED = "intro_finished";
+    public static final String PREF_INTRO_FINISHED = "intro_finished";
+    public static final String PREF_API_AUTH_TOKEN = "api_auth_token";
 
     private SharedPreferences mSharedPrefs;
 
@@ -126,6 +127,7 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
                 break;
 
             case R.string.drawer_personal_sign_in:
+                startActivity(new Intent(this, AuthActivity.class));
                 remainSelected = false;
                 break;
 
@@ -166,9 +168,7 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
         switch (id) {
             case R.id.btn_sign_in:
                 mSharedPrefs.edit().putBoolean(PREF_INTRO_FINISHED, true).apply();
-
-                // TODO: Open sign in view
-
+                startActivity(new Intent(this, AuthActivity.class));
                 break;
 
             case R.id.btn_sign_up:
@@ -237,7 +237,7 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
                 timeframeSpinner.setSelection(Arrays.asList(Params.Timeframe.values()).indexOf(fragment.getTimeframeParam()));
                 sortSpinner.setSelection(Arrays.asList(Params.Sort.values()).indexOf(fragment.getSortParam()));
 
-                new AlertDialog.Builder(this, R.style.DrizzleTheme_Dialog)
+                new AlertDialog.Builder(this, R.style.Drizzle_Dialog)
                         .setView(view)
                         .setPositiveButton(R.string.dialog_apply, (dialog, which) -> {
                             fragment.setTimeframeParam(Params.Timeframe.values()[timeframeSpinner.getSelectedItemPosition()]);

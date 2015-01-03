@@ -42,5 +42,4 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.1.0'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.1.0'
     compile 'com.google.code.gson:gson:2.3'
-    compile 'org.scribe:scribe:1.3.6'
 }

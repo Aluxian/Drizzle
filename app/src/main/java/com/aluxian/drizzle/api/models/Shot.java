@@ -72,14 +72,6 @@ public final class Shot {
             this.teaser = teaser;
         }
 
-        public String getMaxSize() {
-            if (hidpi != null) {
-                return hidpi;
-            }
-
-            return normal;
-        }
-
     }
 
 }

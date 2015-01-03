@@ -11,7 +11,7 @@
         android:layout_height="@dimen/tabsBarHeight"
         android:background="@color/primary"
         android:elevation="@dimen/toolbarElevation"
-        android:theme="@style/DrizzleTheme.Dark"
+        android:theme="@style/Drizzle.Dark"
         app:pstsTabBackground="?android:attr/selectableItemBackground"/>
 
     <android.support.v4.view.ViewPager

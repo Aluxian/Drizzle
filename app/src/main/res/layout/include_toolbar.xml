@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:background="@color/primary"
         android:contentInsetStart="72dp"
-        android:theme="@style/DrizzleTheme.Dark"/>
+        android:theme="@style/Drizzle.Dark"/>
 
     <include layout="@layout/widget_search_view"/>
 

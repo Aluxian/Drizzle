@@ -22,6 +22,9 @@ public class Config {
     /** A token used for read-only API requests. */
     public static final String API_CLIENT_TOKEN = "ff549b889305c04600bab572bc1e9f90fd61272c5eb803bcd5ad5d68b4afa120";
 
+    /** The url the user is redirected to during authorization. */
+    public static final String API_CALLBACK_URL = "drizzle://oauth";
+
     /** Users are redirected here to create a new account. */
     public static final String SIGN_UP_URL = "https://dribbble.com/signup";
 
@@ -29,6 +32,6 @@ public class Config {
     public static final long CACHE_SIZE = 10 * 1024 * 1024; // 10 MB
 
     /** Cached responses older than this are declared stale and won't be used. */
-    public static final long CACHE_TIMEOUT = DateUtils.HOUR_IN_MILLIS;
+    public static final long CACHE_TIMEOUT = DateUtils.HOUR_IN_MILLIS; // TODO: varying
 
 }

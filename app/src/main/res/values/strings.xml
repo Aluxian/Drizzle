@@ -42,6 +42,9 @@
     <string name="intro_sign_up">or sign up on dribbble.com</string>
     <string name="intro_skip">Skip</string>
 
+    <string name="auth_invalid_attempt">Invalid authorization attempt.</string>
+    <string name="auth_unexpected_error">Something went wrong. Please email the developer.</string>
+
     <string-array name="filter_timeframe_options">
         <item>Now</item>
         <item>This Last Week</item>

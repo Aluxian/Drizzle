@@ -35,7 +35,7 @@ public class ApiRequest<T> extends Request.Builder {
             .registerTypeAdapter(Date.class, new DateTypeAdapter())
             .create();
 
-    private Boolean mUseCache = true;
+    private Boolean mUseCache = true; // TODO: false by default
     private Map<String, String> mQueryParams = new HashMap<>();
     private Type mResponseType;
     private String mPath;
