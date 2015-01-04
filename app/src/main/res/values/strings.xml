@@ -4,7 +4,6 @@
     <string name="app_name">Drizzle</string>
 
     <string name="action_search">Search</string>
-    <string name="action_notifications">Notifications</string>
     <string name="action_sort">Sort</string>
 
     <string name="drawer_main_feed">Feed</string>
@@ -31,7 +30,6 @@
     <string name="dialog_cancel">Cancel</string>
 
     <string name="send_feedback_with">Send feedback with</string>
-    <string name="send_feedback_email">hello@getdrizzle.co</string>
     <string name="send_feedback_subject">I\'ve got feedback!</string>
     <string name="send_feedback_body">Hello,\n\n</string>
 
@@ -42,6 +40,7 @@
     <string name="intro_sign_up">or sign up on dribbble.com</string>
     <string name="intro_skip">Skip</string>
 
+    <string name="auth_title">Authorize Drizzle</string>
     <string name="auth_invalid_attempt">Invalid authorization attempt.</string>
     <string name="auth_unexpected_error">Something went wrong. Please email the developer.</string>
 

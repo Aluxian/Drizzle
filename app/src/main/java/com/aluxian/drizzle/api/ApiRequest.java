@@ -2,17 +2,19 @@ package com.aluxian.drizzle.api;
 
 import android.net.Uri;
 
+import com.aluxian.drizzle.api.exceptions.BadRequestException;
+import com.aluxian.drizzle.api.exceptions.TooManyRequestsException;
 import com.aluxian.drizzle.utils.Config;
 import com.aluxian.drizzle.utils.Log;
-import com.aluxian.drizzle.utils.Utils;
-import com.anupcowkur.reservoir.Reservoir;
-import com.anupcowkur.reservoir.ReservoirPutCallback;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.internal.bind.DateTypeAdapter;
 import com.google.gson.reflect.TypeToken;
+import com.iainconnor.objectcache.CacheManager;
+import com.iainconnor.objectcache.DiskCache;
+import com.iainconnor.objectcache.PutCallback;
 import com.squareup.okhttp.CacheControl;
 import com.squareup.okhttp.Headers;
 import com.squareup.okhttp.OkHttpClient;
@@ -24,54 +26,108 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import static com.iainconnor.objectcache.CacheManager.ExpiryTimes;
+
+/**
+ * Request builder for Dribbble API requests. Can be used for any other URL too, but the default is the Dribbble API endpoint.
+ *
+ * @param <T> The type of the expected response.
+ */
 public class ApiRequest<T> extends Request.Builder {
 
-    private static OkHttpClient mOkHttpClient = new OkHttpClient();
+    private static final Pattern LINK_NEXT_URL_PATTERN = Pattern.compile("<([^>]*)>; rel=\"next\"");
+
+    private static CacheManager mCacheManager;
+    private static OkHttpClient mHttpClient = new OkHttpClient();
     private static Gson mGson = new GsonBuilder()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
             .registerTypeAdapter(Date.class, new DateTypeAdapter())
             .create();
 
-    private Boolean mUseCache = true; // TODO: false by default
-    private Map<String, String> mQueryParams = new HashMap<>();
+    private boolean mUseCache;
     private Type mResponseType;
-    private String mPath;
-    private String mUrl;
+    private String mUrl = Config.API_ENDPOINT;
 
+    /**
+     * @param diskCache A DiskCache instance to use for cache storage.
+     */
+    public static void diskCache(DiskCache diskCache) {
+        if (diskCache != null) {
+            mCacheManager = CacheManager.getInstance(diskCache);
+        }
+    }
+
+    /**
+     * @param useCache Whether the request can be loaded from the cache.
+     * @return This instance.
+     */
     public ApiRequest<T> useCache(boolean useCache) {
         mUseCache = useCache;
         return this;
     }
 
-    public ApiRequest<T> addQueryParam(String name, String value) {
-        mQueryParams.put(name, value);
+    /**
+     * Adds a query parameter to the url of the request.
+     *
+     * @param name  The name of the parameter.
+     * @param value The value of the parameter.
+     * @return This instance.
+     */
+    public ApiRequest<T> queryParam(String name, String value) {
+        if (value != null) {
+            Uri.Builder uri = Uri.parse(mUrl).buildUpon();
+            uri.appendQueryParameter(name, value);
+            url(uri.build().toString());
+        }
+
         return this;
     }
 
+    /**
+     * @param responseType A TypeToken used to get the type of the expected response for Gson deserialization.
+     * @return This instance.
+     */
     public ApiRequest<T> responseType(TypeToken<T> responseType) {
         mResponseType = responseType.getType();
         return this;
     }
 
+    /**
+     * @param token The access token to use for this request.
+     * @return This instance.
+     */
+    public ApiRequest<T> accessToken(String token) {
+        if (token != null) {
+            header("Authorization", "Bearer " + token);
+        }
+
+        return this;
+    }
+
+    /**
+     * @param path A path to append to the url.
+     * @return This instance.
+     */
     public ApiRequest<T> path(String path) {
-        mPath = path;
+        Uri.Builder uri = Uri.parse(mUrl).buildUpon();
+        uri.appendEncodedPath(path);
+        url(uri.build().toString());
         return this;
     }
 
     @Override
     public ApiRequest<T> url(String url) {
         mUrl = url;
-        super.url(url);
+        super.url(mUrl);
         return this;
     }
 
     @Override
     public ApiRequest<T> url(URL url) {
-        mUrl = url.toString();
-        super.url(url);
+        url(url.toString());
         return this;
     }
 
@@ -153,96 +209,101 @@ public class ApiRequest<T> extends Request.Builder {
         return this;
     }
 
-    @Override
-    public Request build() {
-        // Add the auth header
-        addHeader("Authorization", "Bearer " + Config.API_CLIENT_TOKEN);
-
-        // Append the path
-        if (mPath != null) {
-            mUrl = Config.API_ENDPOINT + mPath;
-        }
-
-        // Append the query parameters
-        Uri.Builder uri = Uri.parse(mUrl).buildUpon();
-        for (String key : mQueryParams.keySet()) {
-            String value = mQueryParams.get(key);
-            if (value != null) {
-                uri.appendQueryParameter(key, value);
-            }
-        }
-
-        url(uri.build().toString());
-        return super.build();
+    /**
+     * @return Whether the request can be fulfilled immediately (from the cache).
+     */
+    public boolean canLoadImmediately() {
+        Type responseType = new TypeToken<Dribbble.Response>() {}.getType();
+        return mCacheManager != null && mCacheManager.get(build().urlString(), Dribbble.Response.class, responseType) != null;
     }
 
     /**
-     * Execute the request and return the result.
+     * Execute the request and return the result. Cache may be used.
      *
      * @return A Dribbble.Response object.
+     * @throws IOException              For network related errors.
+     * @throws BadRequestException      When the request is invalid.
+     * @throws TooManyRequestsException When too many API requests in a short timeframe were made.
      */
-    public Dribbble.Response<T> execute() {
+    public Dribbble.Response<T> execute() throws IOException, BadRequestException, TooManyRequestsException {
         if (mResponseType == null) {
             throw new IllegalArgumentException("responseType is null");
         }
 
         Request request = build();
-        String requestHash = request.method() + " " + request.urlString();
-        Dribbble.Response<T> dribbbleResponse = null;
+        Dribbble.Response<T> response = null;
 
-        // Try to get a valid response object from the cache
-        if (mUseCache) {
-            try {
-                String cached = Reservoir.get(requestHash, String.class);
+        if (mUseCache && request.method().equalsIgnoreCase("GET")) {
+            response = getFromCache(request.urlString());
+        }
 
-                if (cached != null) {
-                    Log.d("Loaded " + requestHash + " from cache");
+        if (response == null) {
+            response = getFromNetwork(request);
+        }
 
-                    dribbbleResponse = mGson.fromJson(cached, new TypeToken<Dribbble.Response<JsonElement>>() {}.getType());
+        return response;
+    }
 
-                    if (new Date().getTime() - dribbbleResponse.receivedAt > Config.CACHE_TIMEOUT) {
-                        dribbbleResponse = null;
-                    } else {
-                        // Recover data
-                        //noinspection unchecked
-                        dribbbleResponse = new Dribbble.Response<>(
-                                (T) mGson.fromJson((JsonElement) dribbbleResponse.data, mResponseType),
-                                dribbbleResponse.nextPageUrl,
-                                dribbbleResponse.receivedAt);
-                    }
-                }
-            } catch (NullPointerException e) {
-                // Response not in cache
-            } catch (Exception e) {
-                Log.e(e);
+    /**
+     * Try to get a response object from the cache.
+     *
+     * @param key The cache key of the response.
+     * @return The Dribbble.Response object corresponding to the given key if found, otherwise null.
+     */
+    @SuppressWarnings("unchecked")
+    private Dribbble.Response<T> getFromCache(String key) {
+        if (mCacheManager != null) {
+            Dribbble.Response<JsonElement> cached = (Dribbble.Response<JsonElement>)
+                    mCacheManager.get(key, Dribbble.Response.class, new TypeToken<Dribbble.Response<JsonElement>>() {}.getType());
+
+            if (cached != null) {
+                Log.d("Loaded " + key + " from cache");
+                return new Dribbble.Response<>((T) mGson.fromJson(cached.data, mResponseType), cached.nextPageUrl);
             }
         }
 
-        // If nothing valid was found in cache, make the request again
-        if (dribbbleResponse == null) {
-            Log.d("Loading " + requestHash + " from the API");
+        return null;
+    }
 
-            try {
-                Response response = mOkHttpClient.newCall(request).execute();
-                String body = response.body().string();
+    /**
+     * Execute the given network request and parse the response.
+     *
+     * @param request The network request to execute.
+     * @return A Dribbble.Response object.
+     * @throws IOException              For network related errors.
+     * @throws BadRequestException      When the request is invalid.
+     * @throws TooManyRequestsException When too many API requests in a short timeframe were made.
+     */
+    private Dribbble.Response<T> getFromNetwork(Request request) throws IOException, BadRequestException, TooManyRequestsException {
+        String requestHash = request.urlString();
+        Log.d("Loading " + requestHash + " from the API");
 
-                // TODO: Improve error handling
-                if (!response.isSuccessful()) {
-                    throw new IOException("Unexpected code " + response + ". Response json: " + body);
-                }
+        Response httpResponse = mHttpClient.newCall(request).execute();
+        String body = httpResponse.body().string();
 
-                // Parse the response
-                T data = mGson.fromJson(body, mResponseType);
-                String nextPageUrl = Utils.extractNextUrl(response.headers().get("Link"));
-                dribbbleResponse = new Dribbble.Response<>(data, nextPageUrl, new Date().getTime());
-            } catch (IOException e) {
-                Log.e(e);
+        // Handle errors
+        if (!httpResponse.isSuccessful()) {
+            switch (httpResponse.code()) {
+                case 429:
+                    throw new TooManyRequestsException(body);
+
+                default:
+                    throw new BadRequestException(httpResponse.code(), body);
             }
+        }
 
-            // Cache the response
-            Reservoir.putAsync(requestHash, mGson.toJson(dribbbleResponse), new ReservoirPutCallback() {
+        // Parse the response
+        T data = mGson.fromJson(body, mResponseType);
+        String nextPageUrl = extractNextPageUrl(httpResponse.headers().get("Link"));
+        Dribbble.Response<T> dribbbleResponse = new Dribbble.Response<>(data, nextPageUrl);
+
+        // Cache the response
+        if (mCacheManager != null && request.method().equalsIgnoreCase("GET")) {
+            mCacheManager.putAsync(requestHash, dribbbleResponse, ExpiryTimes.ONE_HOUR.asSeconds(), false, new PutCallback() {
                 @Override
-                public void onSuccess() {}
+                public void onSuccess() {
+                    Log.d("Cached " + requestHash);
+                }
 
                 @Override
                 public void onFailure(Exception e) {
@@ -252,6 +313,24 @@ public class ApiRequest<T> extends Request.Builder {
         }
 
         return dribbbleResponse;
+    }
+
+    /**
+     * Parses the value of a Link header in order to extract the url with rel="next".
+     *
+     * @param linkHeader The value of the Link header to parse.
+     * @return The url with rel="next" or null if not found.
+     */
+    private static String extractNextPageUrl(String linkHeader) {
+        if (linkHeader != null) {
+            Matcher matcher = LINK_NEXT_URL_PATTERN.matcher(linkHeader);
+
+            if (matcher.matches()) {
+                return matcher.group(1);
+            }
+        }
+
+        return null;
     }
 
 }

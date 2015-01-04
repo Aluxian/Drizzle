@@ -122,7 +122,7 @@ public class AdvancedToolbar extends Toolbar {
             mSearchViewClearButtonTranslationX = mSearchViewClearButton.getTranslationX();
             mSearchViewClearButton.setOnClickListener(v -> mSearchViewEditText.setText(""));
 
-            mSearchViewTranslationY = Utils.getThemeAttr(android.R.attr.actionBarSize, getContext());
+            mSearchViewTranslationY = getResources().getDimensionPixelSize(R.dimen.toolbarHeight);
 
             inputMethodManager = (InputMethodManager) getContext().getSystemService(Service.INPUT_METHOD_SERVICE);
         }
@@ -165,18 +165,18 @@ public class AdvancedToolbar extends Toolbar {
     }
 
     public void show(boolean animate) {
-        float actionBarSize = Utils.getThemeAttr(android.R.attr.actionBarSize, getContext());
+        int actionBarSize = getResources().getDimensionPixelSize(R.dimen.toolbarHeight);
         int statusBarHeight = getResources().getDimensionPixelSize(R.dimen.statusBarHeight);
-        moveTopMargin(animate, actionBarSize, statusBarHeight - (int) actionBarSize);
+        moveTopMargin(animate, actionBarSize, statusBarHeight - actionBarSize);
     }
 
     public void hide(boolean animate) {
-        float actionBarSize = Utils.getThemeAttr(android.R.attr.actionBarSize, getContext());
+        int actionBarSize = getResources().getDimensionPixelSize(R.dimen.toolbarHeight);
         int statusBarHeight = getResources().getDimensionPixelSize(R.dimen.statusBarHeight);
         moveTopMargin(animate, -actionBarSize, statusBarHeight);
     }
 
-    private void moveTopMargin(boolean animate, float delta, int initialMargin) {
+    private void moveTopMargin(boolean animate, int delta, int initialMargin) {
         View wrapper = (View) getParent();
 
         if (animate) {
@@ -193,7 +193,7 @@ public class AdvancedToolbar extends Toolbar {
             startAnimation(anim);
         } else {
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) wrapper.getLayoutParams();
-            params.topMargin = (int) delta + initialMargin;
+            params.topMargin = delta + initialMargin;
             wrapper.setLayoutParams(params);
         }
     }

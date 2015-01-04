@@ -71,7 +71,7 @@ public class Log {
                 android.util.Log.e(tag(), throwable.getLocalizedMessage(), throwable);
             }
         } else {
-            // Send the exceptions to Crashlytics
+            // TODO: Send the exceptions to Crashlytics
             /*for (Throwable throwable : throwables) {
                 Crashlytics.logException(throwable);
             }*/
@@ -90,7 +90,7 @@ public class Log {
     }
 
     /**
-     * Converts all the given objects to string and joins them with a delimiter.
+     * Converts all the given objects to strings and joins them with a delimiter.
      *
      * @param messages Objects to concatenate.
      * @return The joined string.
@@ -100,7 +100,7 @@ public class Log {
             return "()";
         }
 
-        // Convert to json
+        // Convert objects that don't override the toString() method to JSON
         for (int i = 0; i < messages.length; i++) {
             try {
                 if (!messages[i].getClass().getMethod("toString").getDeclaringClass().equals(Object.class)) {
@@ -117,7 +117,7 @@ public class Log {
     }
 
     /**
-     * @return The calling class and method names to use as a logcat tag.
+     * @return The calling class and method names to use as the logcat tag.
      */
     private static String tag() {
         StackTraceElement element = new Exception().getStackTrace()[2];
@@ -126,7 +126,7 @@ public class Log {
         String method = element.getMethodName();
         int line = element.getLineNumber();
 
-        return TAG_INIT + clazz + ":" + line + "#" + method;
+        return TAG_INIT + clazz + "::" + method + "@L" + line;
     }
 
 }

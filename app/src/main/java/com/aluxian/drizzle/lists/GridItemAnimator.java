@@ -38,12 +38,7 @@ public class GridItemAnimator extends RecyclerView.ItemAnimator {
     private ArrayList<RecyclerView.ViewHolder> mRemoveAnimations = new ArrayList<>();
     private ArrayList<RecyclerView.ViewHolder> mChangeAnimations = new ArrayList<>();
 
-    private GridLayoutManager gridLayoutManager;
     private int mAddDelay;
-
-    public GridItemAnimator(GridLayoutManager gridLayoutManager) {
-        this.gridLayoutManager = gridLayoutManager;
-    }
 
     private static class MoveInfo {
         public RecyclerView.ViewHolder holder;
@@ -234,12 +229,8 @@ public class GridItemAnimator extends RecyclerView.ItemAnimator {
         mAddAnimations.add(holder);
         final ViewPropertyAnimatorCompat animation = ViewCompat.animate(view);
 
-        int delay = 0;
         int position = holder.getPosition();
-
-        if (position >= gridLayoutManager.findFirstVisibleItemPosition() && position <= gridLayoutManager.findLastVisibleItemPosition()) {
-            delay = position * 100 + getAddDelay();
-        }
+        int delay = position * 100 + getAddDelay();
 
         animation
                 .alpha(1)

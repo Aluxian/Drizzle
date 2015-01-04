@@ -1,6 +1,6 @@
 package com.aluxian.drizzle.lists.adapters;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
@@ -15,41 +15,31 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aluxian.drizzle.R;
-import com.aluxian.drizzle.api.ApiRequest;
-import com.aluxian.drizzle.api.Dribbble;
-import com.aluxian.drizzle.api.Params;
+import com.aluxian.drizzle.api.exceptions.BadRequestException;
+import com.aluxian.drizzle.api.exceptions.TooManyRequestsException;
 import com.aluxian.drizzle.api.models.Shot;
+import com.aluxian.drizzle.api.providers.ShotsProvider;
 import com.aluxian.drizzle.utils.Config;
 import com.aluxian.drizzle.utils.Log;
-import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.ViewHolder> implements SwipeRefreshLayout.OnRefreshListener {
 
     private List<Shot> mShotsList = new ArrayList<>();
-    private Dribbble.Response<List<Shot>> mLastResponse;
     private boolean mIsLoadingItems;
 
-    private Activity mActivity;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
-    private RecyclerView mRecyclerView;
+    private ShotsProvider mShotsProvider;
+    private Context mContext;
+    private Callbacks mCallbacks;
 
-    private Params.List mListParam;
-    private Params.Timeframe mTimeframeParam;
-    private Params.Sort mSortParam;
-
-    public ShotsAdapter(Activity activity, SwipeRefreshLayout swipeRefreshLayout, RecyclerView recyclerView,
-                        Params.List list, Params.Timeframe timeframe, Params.Sort sort) {
-        mActivity = activity;
-        mSwipeRefreshLayout = swipeRefreshLayout;
-        mRecyclerView = recyclerView;
-
-        mListParam = list;
-        mTimeframeParam = timeframe;
-        mSortParam = sort;
+    public ShotsAdapter(Context context, Callbacks callbacks, ShotsProvider shotsProvider) {
+        mContext = context;
+        mCallbacks = callbacks;
+        mShotsProvider = shotsProvider;
 
         // Load first mItems
         loadItemsIfRequired(0);
@@ -60,11 +50,15 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.ViewHolder> 
         return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_shot, parent, false));
     }
 
+    public ShotsProvider getShotsProvider() {
+        return mShotsProvider;
+    }
+
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Shot shot = mShotsList.get(position);
 
-        Resources resources = mActivity.getResources();
+        Resources resources = mContext.getResources();
         int iconColor = resources.getColor(R.color.card_actions);
 
         //holder.viewsIcon.setColorFilter(iconColor, PorterDuff.Mode.MULTIPLY);
@@ -103,55 +97,35 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.ViewHolder> 
         return mShotsList.size();
     }
 
-    public void setTimeframeParam(Params.Timeframe mTimeframeParam) {
-        this.mTimeframeParam = mTimeframeParam;
-    }
-
-    public void setSortParam(Params.Sort mSortParam) {
-        this.mSortParam = mSortParam;
-    }
-
-    public Params.Timeframe getTimeframeParam() {
-        return mTimeframeParam;
-    }
-
-    public Params.Sort getSortParam() {
-        return mSortParam;
-    }
-
     private void loadItemsIfRequired(int position) {
-        Log.v("loadItemsIfRequired(" + position + ")");
-
         if (!mIsLoadingItems && mShotsList.size() - position <= Config.LOAD_ITEMS_THRESHOLD) {
-            Log.d("loading more items");
             mIsLoadingItems = true;
 
-            new AsyncTask<Void, Void, Dribbble.Response<List<Shot>>>() {
+            new AsyncTask<Void, Void, List<Shot>>() {
 
                 @Override
-                protected Dribbble.Response<List<Shot>> doInBackground(Void... params) {
-                    if (mLastResponse != null && mLastResponse.nextPageUrl != null) {
-                        return new ApiRequest<List<Shot>>()
-                                .responseType(new TypeToken<List<Shot>>() {})
-                                .url(mLastResponse.nextPageUrl)
-                                .execute();
-                    } else {
-                        return Dribbble.listShots(mListParam, mTimeframeParam, mSortParam).execute();
+                protected List<Shot> doInBackground(Void... params) {
+                    try {
+                        return mShotsProvider.load();
+                    } catch (IOException | BadRequestException | TooManyRequestsException e) {
+                        Log.d(e);
+                        return null;
                     }
                 }
 
                 @Override
-                protected void onPostExecute(Dribbble.Response<List<Shot>> response) {
-                    mShotsList.addAll(response.data);
-                    mLastResponse = response;
+                protected void onPostExecute(List<Shot> response) {
+                    if (response != null) {
+                        mShotsList.addAll(response);
+                        notifyItemRangeInserted(mShotsList.size() - response.size(), response.size());
+                    } else {
+                        mCallbacks.onAdapterLoadingError(mShotsList.size() > 0);
+                    }
+
                     mIsLoadingItems = false;
+                    new Handler().postDelayed(() -> mCallbacks.onAdapterLoadingFinished(response != null), 500);
 
-                    new Handler().postDelayed(() -> mSwipeRefreshLayout.setRefreshing(false), 500);
-
-                    notifyItemRangeInserted(mShotsList.size() - response.data.size(), response.data.size());
                     //preloadViews(position + 1);
-
-                    Log.d("now there are " + mShotsList.size() + " items");
                 }
 
             }.execute();
@@ -167,12 +141,12 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.ViewHolder> 
      */
     private void preloadViews(int startPosition) {
         for (int position = startPosition; position < startPosition + 6 && position < mShotsList.size(); position++) {
-            ViewHolder holder = (ViewHolder) mRecyclerView.findViewHolderForPosition(position);
-            if (holder != null) {
-                onBindViewHolder(holder, position);
-            } else {
-                Picasso.with(mActivity).load(mShotsList.get(position).images.normal);
-            }
+            //ViewHolder holder = (ViewHolder) mRecyclerView.findViewHolderForPosition(position);
+            //if (holder != null) {
+            //    onBindViewHolder(holder, position);
+            //} else {
+            Picasso.with(mContext).load(mShotsList.get(position).images.normal);
+            //}
         }
     }
 
@@ -182,28 +156,37 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.ViewHolder> 
             Log.d("refreshing items");
             mIsLoadingItems = true;
 
-            new AsyncTask<Void, Void, Dribbble.Response<List<Shot>>>() {
+            new AsyncTask<Void, Void, List<Shot>>() {
 
                 @Override
-                protected Dribbble.Response<List<Shot>> doInBackground(Void... params) {
-                    return Dribbble.listShots(mListParam, mTimeframeParam, mSortParam).useCache(false).execute();
+                protected List<Shot> doInBackground(Void... params) {
+                    try {
+                        return mShotsProvider.refresh();
+                    } catch (IOException | BadRequestException | TooManyRequestsException e) {
+                        Log.d(e);
+                    }
+
+                    return null;
                 }
 
                 @Override
-                protected void onPostExecute(Dribbble.Response<List<Shot>> response) {
-                    mShotsList = response.data;
-                    mLastResponse = response;
-                    mIsLoadingItems = false;
+                protected void onPostExecute(List<Shot> response) {
+                    if (response != null) {
+                        mShotsList = response;
+                        notifyDataSetChanged();
+                    } else {
+                        mCallbacks.onAdapterLoadingError(mShotsList.size() > 0);
+                    }
 
-                    new Handler().postDelayed(() -> mSwipeRefreshLayout.setRefreshing(false), 500);
-                    notifyDataSetChanged();
+                    mIsLoadingItems = false;
+                    new Handler().postDelayed(() -> mCallbacks.onAdapterLoadingFinished(response != null), 500);
 
                     Log.d("now there are " + mShotsList.size() + " items");
                 }
 
             }.execute();
         } else {
-            mSwipeRefreshLayout.setRefreshing(false);
+            mCallbacks.onAdapterLoadingFinished(false);
         }
     }
 
@@ -234,6 +217,27 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.ViewHolder> 
             commentsCount = (TextView) itemView.findViewById(R.id.comments_count);
             likesCount = (TextView) itemView.findViewById(R.id.likes_count);
         }
+
+    }
+
+    /**
+     * Callbacks interface that users of this adapter must implement.
+     */
+    public static interface Callbacks {
+
+        /**
+         * Called when the adapter finishes refreshing or loading items.
+         *
+         * @param successful Whether the adapter was successful and items were added to the list.
+         */
+        void onAdapterLoadingFinished(boolean successful);
+
+        /**
+         * Called when there's an error while loading results.
+         *
+         * @param hasItems Whether the adapter has at least 1 item.
+         */
+        void onAdapterLoadingError(boolean hasItems);
 
     }
 

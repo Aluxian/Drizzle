@@ -1,7 +1,5 @@
 package com.aluxian.drizzle.utils;
 
-import android.text.format.DateUtils;
-
 public class Config {
 
     /** There have to be at least this many unloaded items in a grid, otherwise more items are loaded. */
@@ -25,13 +23,10 @@ public class Config {
     /** The url the user is redirected to during authorization. */
     public static final String API_CALLBACK_URL = "drizzle://oauth";
 
-    /** Users are redirected here to create a new account. */
-    public static final String SIGN_UP_URL = "https://dribbble.com/signup";
+    /** The email address users will send feedback to. */
+    public static final String FEEDBACK_EMAIL = "hello@getdrizzle.co";
 
-    /** The maximum cache size for API requests. */
-    public static final long CACHE_SIZE = 10 * 1024 * 1024; // 10 MB
-
-    /** Cached responses older than this are declared stale and won't be used. */
-    public static final long CACHE_TIMEOUT = DateUtils.HOUR_IN_MILLIS; // TODO: varying
+    /** The maximum cache size for network requests. */
+    public static final int CACHE_SIZE = 10 * 1024 * 1024; // 10 MB
 
 }

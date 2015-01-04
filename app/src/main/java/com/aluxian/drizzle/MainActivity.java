@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.Spinner;
 
 import com.aluxian.drizzle.api.Params;
+import com.aluxian.drizzle.fragments.AuthFragment;
 import com.aluxian.drizzle.fragments.DrawerFragment;
 import com.aluxian.drizzle.fragments.IntroFragment;
 import com.aluxian.drizzle.fragments.ShotsFragment;
@@ -26,14 +27,15 @@ import com.aluxian.drizzle.fragments.TabsFragment;
 import com.aluxian.drizzle.ui.AdvancedToolbar;
 import com.aluxian.drizzle.utils.Config;
 import com.aluxian.drizzle.utils.Log;
-import com.anupcowkur.reservoir.Reservoir;
+import com.aluxian.drizzle.utils.UserManager;
+import com.aluxian.drizzle.utils.Utils;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static com.aluxian.drizzle.fragments.DrawerFragment.DrawerIconState;
 
-public class MainActivity extends FragmentActivity implements DrawerFragment.Callbacks, IntroFragment.Callbacks {
+public class MainActivity extends FragmentActivity implements AuthFragment.Callbacks, DrawerFragment.Callbacks, IntroFragment.Callbacks {
 
     public static final String PREF_INTRO_FINISHED = "intro_finished";
     public static final String PREF_API_AUTH_TOKEN = "api_auth_token";
@@ -43,6 +45,7 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
     private DrawerFragment mDrawerFragment;
     private AdvancedToolbar mToolbar;
     private View mSearchContainer;
+    private View mMainContainer;
     private boolean mHasFragment;
 
     @Override
@@ -52,6 +55,7 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
 
         mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mSearchContainer = findViewById(R.id.search_results_container);
+        mMainContainer = findViewById(R.id.main_container);
 
         // Set the toolbar
         mToolbar = (AdvancedToolbar) findViewById(R.id.toolbar);
@@ -72,13 +76,6 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
             transaction.commit();
         }
 
-        // Initialise the cache storage
-        try {
-            Reservoir.init(this, Config.CACHE_SIZE);
-        } catch (Exception e) {
-            Log.e(e);
-        }
-
         //getWindow().setAllowEnterTransitionOverlap(true);
     }
 
@@ -94,7 +91,7 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
             //mSearchContainer.setVisibility(View.VISIBLE);
             //mSearchContainer.animate().alpha(1);
 
-            findViewById(R.id.main_container).animate().alpha(0);
+            mMainContainer.animate().alpha(0);
 
             mDrawerFragment.setDrawerLocked(true);
             mDrawerFragment.toggleDrawerIcon(DrawerIconState.ARROW, true);
@@ -103,11 +100,17 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
             //mSearchContainer.setVisibility(View.GONE);
             //mSearchContainer.animate().alpha(0).withEndAction(() -> mSearchContainer.setVisibility(View.GONE));
 
-            findViewById(R.id.main_container).animate().alpha(1);
+            mMainContainer.animate().alpha(1);
 
             mDrawerFragment.setDrawerLocked(false);
             mDrawerFragment.toggleDrawerIcon(DrawerIconState.BURGER, true);
         }
+    }
+
+    @Override
+    public void authFlowEnded() {
+        mDrawerFragment.selectItem(1);
+        mDrawerFragment.refreshItems(new UserManager(this).isSignedIn());
     }
 
     @Override
@@ -121,14 +124,44 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
         }
 
         switch (titleResourceId) {
+            case R.string.drawer_main_feed:
+
+                break;
+
             case R.string.drawer_main_shots:
                 transaction.replace(R.id.main_container, new TabsFragment());
+
+                if (mMainContainer != null) {
+                    mMainContainer.setElevation(getResources().getDimensionPixelSize(R.dimen.toolbarElevation));
+                }
+
                 mHasFragment = true;
                 break;
 
+            case R.string.drawer_personal_buckets:
+
+                break;
+
+            case R.string.drawer_personal_go_pro:
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://dribbble.com/pro")));
+                break;
+
+            case R.string.drawer_personal_account_settings:
+
+                break;
+
+            case R.string.drawer_personal_sign_out:
+
+                break;
+
             case R.string.drawer_personal_sign_in:
-                startActivity(new Intent(this, AuthActivity.class));
-                remainSelected = false;
+                transaction.replace(R.id.main_container, new AuthFragment());
+                mHasFragment = true;
+
+                if (mMainContainer != null) {
+                    mMainContainer.setElevation(0);
+                }
+
                 break;
 
             case R.string.drawer_app_rate:
@@ -146,7 +179,7 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
                 break;
 
             case R.string.drawer_app_feedback:
-                String uri = "mailto:" + Uri.encode(getString(R.string.send_feedback_email))
+                String uri = "mailto:" + Uri.encode(Config.FEEDBACK_EMAIL)
                         + "?subject=" + Uri.encode(getString(R.string.send_feedback_subject))
                         + "&body=" + Uri.encode(getString(R.string.send_feedback_body));
 
@@ -167,12 +200,19 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
 
         switch (id) {
             case R.id.btn_sign_in:
+                mToolbar.show(true);
+                mDrawerFragment.setDrawerLocked(false);
                 mSharedPrefs.edit().putBoolean(PREF_INTRO_FINISHED, true).apply();
-                startActivity(new Intent(this, AuthActivity.class));
+
+                FragmentTransaction transactionAuth = getSupportFragmentManager().beginTransaction();
+                transactionAuth.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
+                transactionAuth.replace(R.id.main_container, new AuthFragment());
+                transactionAuth.commit();
+
                 break;
 
             case R.id.btn_sign_up:
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Config.SIGN_UP_URL)));
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://dribbble.com/signup")));
                 break;
 
             case R.id.btn_skip:
@@ -180,10 +220,10 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
                 mDrawerFragment.setDrawerLocked(false);
                 mSharedPrefs.edit().putBoolean(PREF_INTRO_FINISHED, true).apply();
 
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
-                transaction.replace(R.id.main_container, new TabsFragment());
-                transaction.commit();
+                FragmentTransaction transactionTabs = getSupportFragmentManager().beginTransaction();
+                transactionTabs.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
+                transactionTabs.replace(R.id.main_container, new TabsFragment());
+                transactionTabs.commit();
 
                 break;
         }
@@ -233,17 +273,16 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
                 String fragmentTag = "android:switcher:" + R.id.view_pager + ":" + viewPager.getCurrentItem();
                 ShotsFragment fragment = (ShotsFragment) tabsFragment.getChildFragmentManager().findFragmentByTag(fragmentTag);
 
-                // Restore active values
+                // Restore current values
                 timeframeSpinner.setSelection(Arrays.asList(Params.Timeframe.values()).indexOf(fragment.getTimeframeParam()));
                 sortSpinner.setSelection(Arrays.asList(Params.Sort.values()).indexOf(fragment.getSortParam()));
 
                 new AlertDialog.Builder(this, R.style.Drizzle_Dialog)
                         .setView(view)
-                        .setPositiveButton(R.string.dialog_apply, (dialog, which) -> {
-                            fragment.setTimeframeParam(Params.Timeframe.values()[timeframeSpinner.getSelectedItemPosition()]);
-                            fragment.setSortParam(Params.Sort.values()[sortSpinner.getSelectedItemPosition()]);
-                            fragment.applyParams();
-                        })
+                        .setPositiveButton(R.string.dialog_apply, (dialog, which) -> fragment.updateParameters(
+                                Params.Timeframe.values()[timeframeSpinner.getSelectedItemPosition()],
+                                Params.Sort.values()[sortSpinner.getSelectedItemPosition()]
+                        ))
                         .setNegativeButton(R.string.dialog_cancel, null)
                         .create()
                         .show();

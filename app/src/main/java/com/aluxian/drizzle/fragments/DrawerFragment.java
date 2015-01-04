@@ -11,12 +11,13 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ListView;
 
 import com.aluxian.drizzle.R;
 import com.aluxian.drizzle.lists.DrawerListItem;
 import com.aluxian.drizzle.lists.adapters.DrawerListAdapter;
+import com.aluxian.drizzle.utils.Dp;
+import com.aluxian.drizzle.utils.UserManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +53,7 @@ public class DrawerFragment extends Fragment {
     private ListView mListView;
 
     /** The position of the currently selected item in the list view. */
-    private int mCurrentSelectedPosition;
+    private int mCurrentSelectedPosition = 1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,21 +64,36 @@ public class DrawerFragment extends Fragment {
             mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
         }
 
-        // Add items to the list
-        //mItems.add(new DrawerListItem(TYPE_ICON_TEXT, R.string.drawer_main_feed, R.drawable.ic_feed));
+        refreshItems(new UserManager(getActivity()).isSignedIn());
+    }
+
+    /**
+     * (Re)Add items to the list. This is called when the user signs in or out, and on app start.
+     *
+     * @param authenticated Whether there is an authenticated user.
+     */
+    public void refreshItems(boolean authenticated) {
+        mItems.clear();
+
+        if (authenticated) {
+            mItems.add(new DrawerListItem(TYPE_ICON_TEXT, R.string.drawer_main_feed, R.drawable.ic_feed));
+        }
+
         mItems.add(new DrawerListItem(TYPE_ICON_TEXT, R.string.drawer_main_shots, R.drawable.ic_shots));
         mItems.add(new DrawerListItem(TYPE_SUBHEADER, R.string.drawer_personal, 0));
-        mItems.add(new DrawerListItem(TYPE_ICON_TEXT, R.string.drawer_personal_sign_in, R.drawable.ic_sign_in));
-        //mItems.add(new DrawerListItem(DrawerListItem.TYPE_ICON_TEXT, R.string.drawer_personal_buckets, R.drawable.ic_bucket));
-        //mItems.add(new DrawerListItem(DrawerListItem.TYPE_ICON_TEXT, R.string.drawer_personal_go_pro, R.drawable.ic_dribbble));
-        //mItems.add(new DrawerListItem(DrawerListItem.TYPE_ICON_TEXT, R.string.drawer_personal_account_settings, R.drawable.ic_account));
-        //mItems.add(new DrawerListItem(DrawerListItem.TYPE_ICON_TEXT, R.string.drawer_personal_sign_out, R.drawable.ic_sign_out));
+
+        if (authenticated) {
+            mItems.add(new DrawerListItem(DrawerListItem.TYPE_ICON_TEXT, R.string.drawer_personal_buckets, R.drawable.ic_bucket));
+            mItems.add(new DrawerListItem(DrawerListItem.TYPE_ICON_TEXT, R.string.drawer_personal_go_pro, R.drawable.ic_dribbble));
+            mItems.add(new DrawerListItem(DrawerListItem.TYPE_ICON_TEXT, R.string.drawer_personal_account_settings, R.drawable.ic_account));
+            mItems.add(new DrawerListItem(DrawerListItem.TYPE_ICON_TEXT, R.string.drawer_personal_sign_out, R.drawable.ic_sign_out));
+        } else {
+            mItems.add(new DrawerListItem(TYPE_ICON_TEXT, R.string.drawer_personal_sign_in, R.drawable.ic_sign_in));
+        }
+
         mItems.add(new DrawerListItem(TYPE_DIVIDER, 0, 0));
         mItems.add(new DrawerListItem(TYPE_ICON_TEXT, R.string.drawer_app_rate, R.drawable.ic_rate));
         mItems.add(new DrawerListItem(TYPE_ICON_TEXT, R.string.drawer_app_feedback, R.drawable.ic_feedback));
-
-        // Select either the default item (0) or the last selected item
-        selectItem(mCurrentSelectedPosition);
     }
 
     @Override
@@ -95,6 +111,15 @@ public class DrawerFragment extends Fragment {
         mListView.setOnItemClickListener((parent, itemView, position, id) -> selectItem(position));
         mListView.setAdapter(new DrawerListAdapter(mItems));
         mListView.setItemChecked(mCurrentSelectedPosition, true);
+
+        View spacingView = new View(getActivity());
+        spacingView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) new Dp(8).toPx(getActivity())));
+
+        mListView.addHeaderView(spacingView, null, false);
+        mListView.addFooterView(spacingView, null, false);
+
+        // Select either the default item (1) or the last selected item
+        selectItem(mCurrentSelectedPosition);
 
         return view;
     }
@@ -137,15 +162,14 @@ public class DrawerFragment extends Fragment {
         mDrawerLayout.setDrawerLockMode(locked ? DrawerLayout.LOCK_MODE_LOCKED_CLOSED : DrawerLayout.LOCK_MODE_UNLOCKED);
     }
 
-    private void selectItem(int position) {
-        if (mDrawerLayout != null) {
-            closeDrawer();
-        }
+    public void selectItem(int position) {
+        closeDrawer();
 
-        if (mCallbacks != null && !mCallbacks.onDrawerItemSelected(mItems.get(position).titleResourceId)) {
+        if (position > 0 && mCallbacks != null && !mCallbacks.onDrawerItemSelected(mItems.get(position - 1).titleResourceId)) {
             mListView.setItemChecked(mCurrentSelectedPosition, true);
         } else {
             mCurrentSelectedPosition = position;
+            mListView.setItemChecked(position, true);
         }
     }
 
@@ -154,7 +178,9 @@ public class DrawerFragment extends Fragment {
     }
 
     public void closeDrawer() {
-        mDrawerLayout.closeDrawer(mDrawerView);
+        if (mDrawerLayout != null) {
+            mDrawerLayout.closeDrawer(mDrawerView);
+        }
     }
 
     @Override

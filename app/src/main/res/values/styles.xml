@@ -24,10 +24,6 @@
         <item name="android:windowBackground">@color/charcoal</item>
     </style>
 
-    <style name="Drizzle.AuthWebView" parent="Drizzle">
-        <item name="android:colorPrimary">@color/charcoal</item>
-    </style>
-
     <style name="Drizzle.Dialog" parent="android:Theme.Material.Light.Dialog.Alert">
         <item name="android:colorAccent">@color/primary</item>
         <item name="android:colorControlHighlight">@color/ripple_material_lightly</item>

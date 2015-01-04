@@ -2,8 +2,8 @@ apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 
 repositories {
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-    maven { url "https://raw.github.com/fernandezpablo85/scribe-java/mvn-repo/" }
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+    maven { url 'https://raw.github.com/iainconnor/ObjectCache/master/maven/' }
 }
 
 android {
@@ -31,15 +31,20 @@ android {
     }
 }
 
+// TODO: git versioning
+// TODO: signing configs
+// TODO: gradle.properties or git encrypted keys
+
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.android.support:recyclerview-v7:21.0.3'
     compile 'com.android.support:cardview-v7:21.0.3'
     compile 'com.jpardogo.materialtabstrip:library:1.0.6'
-    compile 'com.github.anupcowkur:reservoir:1.2'
     compile 'com.squareup.picasso:picasso:2.4.0'
     compile 'com.squareup.okhttp:okhttp:2.1.0'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.1.0'
     compile 'com.google.code.gson:gson:2.3'
+    compile 'com.iainconnor:objectcache:0.0.18-SNAPSHOT'
 }
