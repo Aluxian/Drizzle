@@ -66,7 +66,7 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.ViewHolder> 
         holder.likesIcon.setColorFilter(iconColor, PorterDuff.Mode.MULTIPLY);
 
         //holder.viewsCount.setText(String.valueOf(shot.viewsCount));
-        holder.commentsCount.setText(String.valueOf(shot.commentsCount));
+        holder.commentsCount.setText(String.valueOf(shot.viewsCount));
         holder.likesCount.setText(String.valueOf(shot.likesCount));
 
         /*holder.image.setOnClickListener(new View.OnClickListener() {

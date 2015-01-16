@@ -1,5 +1,7 @@
 package com.aluxian.drizzle.lists.adapters.pager;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -10,8 +12,11 @@ import com.aluxian.drizzle.fragments.ShotsFragment;
 
 public class ShotsPagerAdapter extends FragmentPagerAdapter {
 
-    public ShotsPagerAdapter(FragmentManager fm) {
+    private Resources mResources;
+
+    public ShotsPagerAdapter(Context context, FragmentManager fm) {
         super(fm);
+        mResources = context.getResources();
     }
 
     @Override
@@ -21,6 +26,7 @@ public class ShotsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
+        // TODO: use mResources to get the string
         return Params.List.values()[position].humanReadableValue;
     }
 

@@ -79,6 +79,7 @@ public class Dribbble {
     public ApiRequest<List<Shot>> listNextPage(String nextPageUrl) {
         return new ApiRequest<List<Shot>>()
                 .responseType(new TypeToken<List<Shot>>() {})
+                .accessToken(mAccessToken)
                 .useCache(true)
                 .url(nextPageUrl);
     }

@@ -15,7 +15,7 @@ import com.aluxian.drizzle.api.Dribbble;
 import com.aluxian.drizzle.api.Params;
 import com.aluxian.drizzle.api.providers.FilteredShotsProvider;
 import com.aluxian.drizzle.api.providers.ShotsProvider;
-import com.aluxian.drizzle.lists.GridItemAnimator;
+import com.aluxian.drizzle.lists.ShotAnimator;
 import com.aluxian.drizzle.lists.adapters.ShotsAdapter;
 import com.aluxian.drizzle.utils.Log;
 import com.aluxian.drizzle.utils.UserManager;
@@ -57,8 +57,8 @@ public class ShotsFragment extends Fragment implements ShotsAdapter.Callbacks {
      * @param args A Bundle of arguments.
      * @return A ShotsProvider instance.
      */
+    @SuppressWarnings("unchecked")
     private ShotsProvider getShotsProvider(Bundle args) {
-        //noinspection unchecked
         Class<? extends ShotsProvider> clazz = (Class<? extends ShotsProvider>) args.getSerializable(ARG_PROVIDER_CLASS);
 
         try {
@@ -79,24 +79,14 @@ public class ShotsFragment extends Fragment implements ShotsAdapter.Callbacks {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Check whether the items should be loaded quickly (without delays or loading indicator)
-        /*Request request = new Dribbble(Utils.getToken(getActivity())).listShots(category, Params.Timeframe.NOW,
-                Params.Sort.POPULAR).build();
-        String requestHash = request.method() + " " + request.urlString();*/
-
         mShotsAdapter = new ShotsAdapter(getActivity(), this, getShotsProvider(getArguments()));
-
-        boolean fastLoad = mShotsAdapter.getShotsProvider().hasItemsAvailable();//Utils.hasValidCache(requestHash);
 
         View view = inflater.inflate(R.layout.fragment_shots, container, false);
         mErrorView = view.findViewById(R.id.error_view);
 
-        GridItemAnimator animator = new GridItemAnimator();
+        ShotAnimator animator = new ShotAnimator();
         animator.setSupportsChangeAnimations(true);
-        animator.setAddDuration(300);//(fastLoad ? 300 : 500);
-        //animator.setAddDelay(fastLoad ? 0 : 500);
-
-        // TODO: Restore delay/duration values on normal refresh (calculate fastLoad each time?)
+        animator.setAddDuration(300);
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.grid);
         recyclerView.setHasFixedSize(true);
@@ -109,7 +99,7 @@ public class ShotsFragment extends Fragment implements ShotsAdapter.Callbacks {
         mSwipeRefreshLayout.setColorSchemeResources(R.color.accent);
         mSwipeRefreshLayout.setOnRefreshListener(mShotsAdapter);
 
-        if (!fastLoad) {
+        if (!mShotsAdapter.getShotsProvider().hasItemsAvailable()) {
             mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(true));
         }
 

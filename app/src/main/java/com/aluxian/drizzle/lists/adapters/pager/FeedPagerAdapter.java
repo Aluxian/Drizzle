@@ -1,9 +1,12 @@
 package com.aluxian.drizzle.lists.adapters.pager;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.aluxian.drizzle.R;
 import com.aluxian.drizzle.api.providers.FeaturedShotsProvider;
 import com.aluxian.drizzle.api.providers.FollowingShotsProvider;
 import com.aluxian.drizzle.api.providers.ShotsProvider;
@@ -15,15 +18,18 @@ import java.util.Map;
 
 public class FeedPagerAdapter extends FragmentPagerAdapter {
 
-    private static final Map<String, Class<? extends ShotsProvider>> PROVIDERS = new HashMap<>();
+    private static final Map<Integer, Class<? extends ShotsProvider>> PROVIDERS = new HashMap<>();
 
     static {
-        PROVIDERS.put("Following", FollowingShotsProvider.class);
-        PROVIDERS.put("Featured", FeaturedShotsProvider.class);
+        PROVIDERS.put(R.string.provider_following, FollowingShotsProvider.class);
+        PROVIDERS.put(R.string.provider_featured, FeaturedShotsProvider.class);
     }
 
-    public FeedPagerAdapter(FragmentManager fm) {
+    private Resources mResources;
+
+    public FeedPagerAdapter(Context context, FragmentManager fm) {
         super(fm);
+        mResources = context.getResources();
     }
 
     @Override
@@ -33,7 +39,7 @@ public class FeedPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return new ArrayList<>(PROVIDERS.keySet()).get(position);
+        return mResources.getString(new ArrayList<>(PROVIDERS.keySet()).get(position));
     }
 
     @Override

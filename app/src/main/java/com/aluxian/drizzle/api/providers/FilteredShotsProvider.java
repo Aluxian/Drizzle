@@ -12,21 +12,14 @@ import java.util.List;
 /**
  * Provides shots from the /shots endpoint, where items are filtered by the list, timeframe and sort parameters.
  */
-public class FilteredShotsProvider implements ShotsProvider {
+public class FilteredShotsProvider extends ShotsProvider {
 
-    /** The last received response. */
-    private Dribbble.Response<List<Shot>> mLastResponse;
-
-    /** Dribbble ApiRequest generator instance. */
-    private Dribbble mDribbble;
-
-    // Parameters
     public final Params.List listParam;
     public Params.Timeframe timeframeParam = Params.Timeframe.NOW;
     public Params.Sort sortParam = Params.Sort.POPULAR;
 
     public FilteredShotsProvider(Dribbble dribbble, Params.List listParam) {
-        this.mDribbble = dribbble;
+        super(dribbble);
         this.listParam = listParam;
     }
 

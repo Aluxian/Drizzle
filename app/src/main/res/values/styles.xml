@@ -6,8 +6,9 @@
         <item name="android:colorPrimary">@color/primary</item>
         <item name="android:colorPrimaryDark">@color/primaryDark</item>
         <item name="android:colorControlHighlight">@color/ripple_material_lightly</item>
+        <item name="android:navigationBarColor">@color/charcoal</item>
         <item name="android:textColor">@color/white</item>
-        <item name="android:windowBackground">@color/charcoal</item>
+        <item name="android:windowBackground">@color/background</item>
         <item name="android:windowContentTransitions">true</item>
         <item name="android:windowEnterTransition">@android:transition/fade</item>
         <item name="android:windowExitTransition">@android:transition/fade</item>
@@ -25,6 +26,7 @@
     </style>
 
     <style name="Drizzle.Dialog" parent="android:Theme.Material.Light.Dialog.Alert">
+        <item name="android:textColor">@color/charcoal</item>
         <item name="android:colorAccent">@color/primary</item>
         <item name="android:colorControlHighlight">@color/ripple_material_lightly</item>
     </style>
@@ -37,6 +39,7 @@
 
     <style name="Drizzle.Spinner">
         <item name="android:textColor">@color/charcoal</item>
+        <item name="android:spinnerStyle">@color/charcoal</item>
         <item name="android:spinnerDropDownItemStyle">@style/Drizzle.Spinner.DropdownItem</item>
         <item name="android:spinnerItemStyle">@android:style/Widget.Material.Light.TextView.SpinnerItem</item>
     </style>

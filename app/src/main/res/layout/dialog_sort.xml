@@ -1,37 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:paddingEnd="16dp"
-              android:paddingStart="16dp"
-              android:paddingTop="16dp">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingEnd="16dp"
+    android:paddingStart="16dp"
+    android:paddingTop="16dp">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/filter_timeframe"
-        android:textColor="@color/text_subheader"/>
+        android:textColor="@color/text_subheader" />
 
     <Spinner
         android:id="@+id/timeframe_spinner"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:entries="@array/filter_timeframe_options"
-        android:theme="@style/Drizzle.Spinner"/>
+        android:theme="@style/Drizzle.Spinner" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/filter_sort_by"
-        android:textColor="@color/text_subheader"/>
+        android:textColor="@color/text_subheader" />
 
     <Spinner
         android:id="@+id/sort_spinner"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:entries="@array/filter_sort_options"
-        android:theme="@style/Drizzle.Spinner"/>
+        android:theme="@style/Drizzle.Spinner" />
 
 </LinearLayout>

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import static com.aluxian.drizzle.MainActivity.PREF_API_AUTH_TOKEN;
+import static com.aluxian.drizzle.activities.MainActivity.PREF_API_AUTH_TOKEN;
 
 public class UserManager {
 

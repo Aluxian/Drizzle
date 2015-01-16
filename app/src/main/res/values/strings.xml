@@ -26,12 +26,14 @@
     <string name="filter_timeframe">Timeframe</string>
     <string name="filter_sort_by">Sort by</string>
 
+    <string name="dialog_ok">OK</string>
     <string name="dialog_apply">Apply</string>
     <string name="dialog_cancel">Cancel</string>
 
     <string name="send_feedback_with">Send feedback with</string>
     <string name="send_feedback_subject">I\'ve got feedback!</string>
     <string name="send_feedback_body">Hello,\n\n</string>
+    <string name="send_feedback_error">You don\'t have any email apps installed. Please send an email to %s</string>
 
     <string name="intro_title">Hi there!</string>
     <string name="intro_description">Drizzle is a beautiful app for Dribbble,\ncrafted with care and attention to details.\n\nBrowse,
@@ -40,9 +42,13 @@
     <string name="intro_sign_up">or sign up on dribbble.com</string>
     <string name="intro_skip">Skip</string>
 
-    <string name="auth_title">Authorize Drizzle</string>
+    <string name="auth_title">Sign in to Dribbble</string>
     <string name="auth_invalid_attempt">Invalid authorization attempt.</string>
-    <string name="auth_unexpected_error">Something went wrong. Please email the developer.</string>
+    <string name="auth_unexpected_error">Something went wrong. Please email the developer or try again.</string>
+    <string name="auth_connecting">Connecting to Dribbble…</string>
+
+    <string name="provider_following">Following</string>
+    <string name="provider_featured">Featured</string>
 
     <string-array name="filter_timeframe_options">
         <item>Now</item>

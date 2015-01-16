@@ -2,12 +2,10 @@
 
     <dimen name="drawerWidth">304dp</dimen>
 
-    <dimen name="statusBarHeight">25dp</dimen>
-    <dimen name="toolbarHeight">?android:attr/actionBarSize</dimen>
+    <!--<dimen name="toolbarHeight">56dp</dimen>-->
     <dimen name="tabsBarHeight">48dp</dimen>
-    <dimen name="navBarHeight">48dp</dimen>
 
-    <dimen name="toolbarElevation">4dp</dimen>
+    <dimen name="toolbarElevation">8dp</dimen>
     <dimen name="gridSpacing">8dp</dimen>
 
 </resources>

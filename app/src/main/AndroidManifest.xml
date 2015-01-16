@@ -3,7 +3,7 @@
     package="com.aluxian.drizzle"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name=".App"
@@ -13,32 +13,23 @@
         android:theme="@style/Drizzle">
 
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".ShotActivity"/>
-
-        <!--
         <activity
-            android:name=".AuthActivity"
-            android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-
-                <data
-                    android:host="drizzle."
-                    android:scheme="drizzle.io"/>
-            </intent-filter>
-        </activity>
-        -->
+            android:name=".activities.AuthActivity"
+            android:parentActivityName=".activities.MainActivity" />
+        <activity
+            android:name=".activities.IntroActivity"
+            android:parentActivityName=".activities.MainActivity" />
+        <activity
+            android:name=".activities.ShotActivity"
+            android:parentActivityName=".activities.MainActivity" />
 
     </application>
 

@@ -5,7 +5,7 @@
         android:id="@+id/action_search"
         android:icon="@drawable/ic_search"
         android:showAsAction="always"
-        android:title="@string/action_search"/>
+        android:title="@string/action_search" />
 
     <!--<item
         android:id="@+id/action_notifications"
@@ -17,6 +17,6 @@
         android:id="@+id/action_sort"
         android:icon="@drawable/ic_sort"
         android:showAsAction="always"
-        android:title="@string/action_sort"/>
+        android:title="@string/action_sort" />
 
 </menu>

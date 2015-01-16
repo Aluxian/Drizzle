@@ -24,7 +24,6 @@ import java.util.List;
 
 import static com.aluxian.drizzle.lists.DrawerListItem.TYPE_DIVIDER;
 import static com.aluxian.drizzle.lists.DrawerListItem.TYPE_ICON_TEXT;
-import static com.aluxian.drizzle.lists.DrawerListItem.TYPE_SUBHEADER;
 
 /**
  * Fragment used for managing interactions and presentation of a navigation drawer.
@@ -55,6 +54,8 @@ public class DrawerFragment extends Fragment {
     /** The position of the currently selected item in the list view. */
     private int mCurrentSelectedPosition = 1;
 
+    private boolean mAuthenticated;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +74,7 @@ public class DrawerFragment extends Fragment {
      * @param authenticated Whether there is an authenticated user.
      */
     public void refreshItems(boolean authenticated) {
+        mAuthenticated = authenticated;
         mItems.clear();
 
         if (authenticated) {
@@ -80,7 +82,8 @@ public class DrawerFragment extends Fragment {
         }
 
         mItems.add(new DrawerListItem(TYPE_ICON_TEXT, R.string.drawer_main_shots, R.drawable.ic_shots));
-        mItems.add(new DrawerListItem(TYPE_SUBHEADER, R.string.drawer_personal, 0));
+        mItems.add(new DrawerListItem(TYPE_DIVIDER, 0, 0));
+        //mItems.add(new DrawerListItem(TYPE_SUBHEADER, R.string.drawer_personal, 0));
 
         if (authenticated) {
             mItems.add(new DrawerListItem(DrawerListItem.TYPE_ICON_TEXT, R.string.drawer_personal_buckets, R.drawable.ic_bucket));
@@ -94,6 +97,12 @@ public class DrawerFragment extends Fragment {
         mItems.add(new DrawerListItem(TYPE_DIVIDER, 0, 0));
         mItems.add(new DrawerListItem(TYPE_ICON_TEXT, R.string.drawer_app_rate, R.drawable.ic_rate));
         mItems.add(new DrawerListItem(TYPE_ICON_TEXT, R.string.drawer_app_feedback, R.drawable.ic_feedback));
+
+        mCurrentSelectedPosition = 1;
+    }
+
+    public void reloadItem() {
+        selectItem(mCurrentSelectedPosition);
     }
 
     @Override
@@ -216,6 +225,12 @@ public class DrawerFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return super.onOptionsItemSelected(item) || mDrawerToggle.onOptionsItemSelected(item);
+    }
+
+    public void authState(boolean authenticated) {
+        if (mAuthenticated != authenticated) {
+            refreshItems(authenticated);
+        }
     }
 
     /**

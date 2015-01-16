@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 /**
  * Custom logger implementation which wraps around Android's Log class.
  */
+@SuppressWarnings("UnusedDeclaration")
 public class Log {
 
     /** Delimiter for printing several values on the same line. */
