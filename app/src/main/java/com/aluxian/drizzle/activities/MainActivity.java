@@ -109,9 +109,9 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         // Only use a fade animation if there's an existing fragment in the main container already
-        if (getSupportFragmentManager().findFragmentById(R.id.fragment_container) != null) {
-            transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
-        }
+//        if (getSupportFragmentManager().findFragmentById(R.id.fragment_container) != null) {
+//            transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
+//        }
 
         transaction.replace(R.id.fragment_container, fragment);
         transaction.commit();

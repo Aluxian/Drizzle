@@ -6,6 +6,7 @@ import com.aluxian.drizzle.api.exceptions.TooManyRequestsException;
 import com.aluxian.drizzle.api.models.Shot;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,13 +16,21 @@ public class FollowingShotsProvider extends ShotsProvider {
 
     @Override
     public List<Shot> load() throws IOException, BadRequestException, TooManyRequestsException {
-        if (mLastResponse != null && mLastResponse.nextPageUrl != null) {
-            mLastResponse = Dribbble.listNextPage(mLastResponse.nextPageUrl).execute();
-        } else {
+        if (mLastResponse == null) {
             mLastResponse = Dribbble.listFollowing().execute();
+
+            if (mLastResponse != null) {
+                return mLastResponse.data;
+            }
+        } else if (mLastResponse.nextPageUrl != null) {
+            mLastResponse = Dribbble.listNextPage(mLastResponse.nextPageUrl).execute();
+
+            if (mLastResponse != null) {
+                return mLastResponse.data;
+            }
         }
 
-        return mLastResponse.data;
+        return new ArrayList<>();
     }
 
     @Override

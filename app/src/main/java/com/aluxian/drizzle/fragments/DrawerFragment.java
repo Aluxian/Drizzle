@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * Fragment used for managing interactions and presentation of a navigation drawer.
  */
-public class DrawerFragment extends Fragment {
+public class DrawerFragment extends Fragment implements UserManager.AuthStateChangeListener {
 
     /** Remember the position of the selected item. */
     private static final String STATE_SELECTED_POSITION = "selected_navigation_drawer_position";
@@ -159,8 +159,7 @@ public class DrawerFragment extends Fragment {
         boolean authenticated = UserManager.getInstance().isAuthenticated();
 
         if (authenticated != mIsAuthenticated) {
-            loadItems(authenticated);
-            selectItem(1);
+            onAuthenticationStateChanged(authenticated);
         }
     }
 
@@ -215,6 +214,13 @@ public class DrawerFragment extends Fragment {
     public void onStart() {
         super.onStart();
         checkAuthState();
+        UserManager.getInstance().registerStateChangeListener(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        UserManager.getInstance().unregisterStateChangeListener(this);
     }
 
     @Override
@@ -257,6 +263,14 @@ public class DrawerFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return super.onOptionsItemSelected(item) || mDrawerToggle.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onAuthenticationStateChanged(boolean authenticated) {
+        getActivity().runOnUiThread(() -> {
+            loadItems(authenticated);
+            selectItem(1);
+        });
     }
 
     /**

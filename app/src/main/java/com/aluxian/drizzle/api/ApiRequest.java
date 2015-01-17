@@ -5,6 +5,7 @@ import android.net.Uri;
 import com.aluxian.drizzle.api.exceptions.BadCredentialsException;
 import com.aluxian.drizzle.api.exceptions.BadRequestException;
 import com.aluxian.drizzle.api.exceptions.TooManyRequestsException;
+import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.utils.Config;
 import com.aluxian.drizzle.utils.Log;
 import com.aluxian.drizzle.utils.UserManager;
@@ -27,6 +28,7 @@ import com.squareup.okhttp.Response;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -245,6 +247,8 @@ public class ApiRequest<T> extends Request.Builder {
             } catch (BadCredentialsException e) {
                 if (UserManager.getInstance().isAuthenticated()) {
                     UserManager.getInstance().clearAccessToken();
+                    // TODO: move this and mUrl = CT somewhere else
+                    // TODO: show bottom toast: you have been signed out
                 } else {
                     throw new BadRequestException(401, e.getLocalizedMessage());
                 }
@@ -294,6 +298,8 @@ public class ApiRequest<T> extends Request.Builder {
 
         // Handle errors
         if (!httpResponse.isSuccessful()) {
+            Log.d(httpResponse.code(), body);
+
             switch (httpResponse.code()) {
                 case 401:
                     throw new BadCredentialsException(body);

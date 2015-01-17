@@ -19,10 +19,16 @@ public class FeaturedShotsProvider extends ShotsProvider {
     public List<Shot> load() throws IOException, BadRequestException, TooManyRequestsException {
         if (mLastResponse == null) {
             mLastResponse = Dribbble.listBucketShots(Config.FEATURED_BUCKET_ID).execute();
-            return mLastResponse.data;
+
+            if (mLastResponse != null) {
+                return mLastResponse.data;
+            }
         } else if (mLastResponse.nextPageUrl != null) {
             mLastResponse = Dribbble.listNextPage(mLastResponse.nextPageUrl).execute();
-            return mLastResponse.data;
+
+            if (mLastResponse != null) {
+                return mLastResponse.data;
+            }
         }
 
         return new ArrayList<>();

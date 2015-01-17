@@ -39,6 +39,9 @@ public class AuthActivity extends Activity {
     /** The progress bar shown in the toolbar. */
     private ProgressBarWidget mProgressBar;
 
+    /** ProgressDialog shown while the token exchange happens. */
+    private ProgressDialog mDialog;
+
     @SuppressWarnings("ConstantConditions")
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -68,6 +71,14 @@ public class AuthActivity extends Activity {
         webView.loadUrl(AUTHORIZE_URL + mState);
 
         Log.d("Loading authorization url: " + AUTHORIZE_URL + mState);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mDialog != null && mDialog.isShowing()) {
+            mDialog.dismiss();
+        }
     }
 
     /**
@@ -129,8 +140,6 @@ public class AuthActivity extends Activity {
      */
     private class ExchangeTokenAsyncTask extends AsyncTask<String, Void, Dribbble.Response<Credentials>> {
 
-        private ProgressDialog mDialog;
-
         @Override
         protected void onPreExecute() {
             mDialog = new ProgressDialog(AuthActivity.this, R.style.Drizzle_Dialog);
@@ -173,7 +182,10 @@ public class AuthActivity extends Activity {
                 Toast.makeText(AuthActivity.this, getString(R.string.auth_unexpected_error), Toast.LENGTH_LONG).show();
             }
 
-            mDialog.dismiss();
+            if (mDialog.isShowing()) {
+                mDialog.dismiss();
+            }
+
             finish();
         }
 
