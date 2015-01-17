@@ -13,16 +13,12 @@ import java.util.List;
  */
 public class FollowingShotsProvider extends ShotsProvider {
 
-    public FollowingShotsProvider(Dribbble dribbble) {
-        super(dribbble);
-    }
-
     @Override
     public List<Shot> load() throws IOException, BadRequestException, TooManyRequestsException {
         if (mLastResponse != null && mLastResponse.nextPageUrl != null) {
-            mLastResponse = mDribbble.listNextPage(mLastResponse.nextPageUrl).execute();
+            mLastResponse = Dribbble.listNextPage(mLastResponse.nextPageUrl).execute();
         } else {
-            mLastResponse = mDribbble.listFollowing().execute();
+            mLastResponse = Dribbble.listFollowing().execute();
         }
 
         return mLastResponse.data;
@@ -30,13 +26,13 @@ public class FollowingShotsProvider extends ShotsProvider {
 
     @Override
     public List<Shot> refresh() throws IOException, BadRequestException, TooManyRequestsException {
-        mLastResponse = mDribbble.listFollowing().useCache(false).execute();
+        mLastResponse = Dribbble.listFollowing().useCache(false).execute();
         return mLastResponse.data;
     }
 
     @Override
     public boolean hasItemsAvailable() {
-        return mDribbble.listFollowing().canLoadImmediately();
+        return Dribbble.listFollowing().canLoadImmediately();
     }
 
 }

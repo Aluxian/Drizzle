@@ -11,8 +11,8 @@ public class Dp {
         mUnits = units;
     }
 
-    public float toPx(Context context) {
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, mUnits, context.getResources().getDisplayMetrics());
+    public int toPx(Context context) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, mUnits, context.getResources().getDisplayMetrics());
     }
 
 }

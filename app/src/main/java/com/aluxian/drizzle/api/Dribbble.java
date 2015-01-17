@@ -3,41 +3,40 @@ package com.aluxian.drizzle.api;
 import com.aluxian.drizzle.api.models.Credentials;
 import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.utils.Config;
+import com.aluxian.drizzle.utils.UserManager;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.List;
 
 public class Dribbble {
 
-    /** The access token to use for API requests. */
-    private String mAccessToken;
-
-    public Dribbble() {
-        mAccessToken = null;
-    }
-
-    public Dribbble(String authToken) {
-        mAccessToken = authToken;
-    }
-
-    public ApiRequest<List<Shot>> listShots(Params.List list, Params.Timeframe timeframe, Params.Sort sort) {
+    public static ApiRequest<List<Shot>> listShots(Params.List list, Params.Timeframe timeframe, Params.Sort sort) {
         return new ApiRequest<List<Shot>>()
                 .responseType(new TypeToken<List<Shot>>() {})
-                .accessToken(mAccessToken)
+                .accessToken(UserManager.getInstance().getAccessToken())
                 .useCache(true)
                 .queryParam("per_page", String.valueOf(Config.RESULTS_PER_PAGE))
                 .queryParam("list", list.apiValue)
                 .queryParam("timeframe", timeframe.apiValue)
                 .queryParam("sort", sort.apiValue)
-                .path("/shots");
+                .path("shots");
     }
 
-    public ApiRequest<Shot> getShot(int id) {
+    public static ApiRequest<Shot> getShot(int id) {
         return new ApiRequest<Shot>()
                 .responseType(new TypeToken<Shot>() {})
-                .accessToken(mAccessToken)
+                .accessToken(UserManager.getInstance().getAccessToken())
                 .useCache(true)
-                .path("/shots/" + id);
+                .path("shots/" + id);
+    }
+
+    public static ApiRequest<List<Shot>> listBucketShots(int id) {
+        return new ApiRequest<List<Shot>>()
+                .responseType(new TypeToken<List<Shot>>() {})
+                .accessToken(UserManager.getInstance().getAccessToken())
+                .useCache(true)
+                .queryParam("per_page", String.valueOf(Config.RESULTS_PER_PAGE))
+                .path("buckets/" + id + "/shots");
     }
 
         /*
@@ -57,7 +56,7 @@ public class Dribbble {
                 .delete();
     }*/
 
-    public ApiRequest<Credentials> oauthToken(String code) {
+    public static ApiRequest<Credentials> oauthToken(String code) {
         return new ApiRequest<Credentials>()
                 .responseType(new TypeToken<Credentials>() {})
                 .url("https://dribbble.com/oauth/token")
@@ -67,19 +66,19 @@ public class Dribbble {
                 .post(null);
     }
 
-    public ApiRequest<List<Shot>> listFollowing() {
+    public static ApiRequest<List<Shot>> listFollowing() {
         return new ApiRequest<List<Shot>>()
                 .responseType(new TypeToken<List<Shot>>() {})
-                .accessToken(mAccessToken)
+                .accessToken(UserManager.getInstance().getAccessToken())
                 .useCache(true)
                 .queryParam("per_page", String.valueOf(Config.RESULTS_PER_PAGE))
-                .path("/user/following/shots");
+                .path("user/following/shots");
     }
 
-    public ApiRequest<List<Shot>> listNextPage(String nextPageUrl) {
+    public static ApiRequest<List<Shot>> listNextPage(String nextPageUrl) {
         return new ApiRequest<List<Shot>>()
                 .responseType(new TypeToken<List<Shot>>() {})
-                .accessToken(mAccessToken)
+                .accessToken(UserManager.getInstance().getAccessToken())
                 .useCache(true)
                 .url(nextPageUrl);
     }

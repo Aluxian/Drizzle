@@ -11,19 +11,19 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.aluxian.drizzle.R;
-import com.aluxian.drizzle.lists.DrawerListItem;
-import com.aluxian.drizzle.lists.adapters.DrawerListAdapter;
 import com.aluxian.drizzle.utils.Dp;
+import com.aluxian.drizzle.utils.Log;
 import com.aluxian.drizzle.utils.UserManager;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-
-import static com.aluxian.drizzle.lists.DrawerListItem.TYPE_DIVIDER;
-import static com.aluxian.drizzle.lists.DrawerListItem.TYPE_ICON_TEXT;
 
 /**
  * Fragment used for managing interactions and presentation of a navigation drawer.
@@ -40,7 +40,7 @@ public class DrawerFragment extends Fragment {
     private ActionBarDrawerToggle mDrawerToggle;
 
     /** A list that holds all the items that appear in the drawer. */
-    private List<DrawerListItem> mItems = new ArrayList<>();
+    private List<ListItem> mItems = new ArrayList<>();
 
     /** The layout that contains the content of the activity and the drawer view. */
     private DrawerLayout mDrawerLayout;
@@ -54,7 +54,8 @@ public class DrawerFragment extends Fragment {
     /** The position of the currently selected item in the list view. */
     private int mCurrentSelectedPosition = 1;
 
-    private boolean mAuthenticated;
+    /** Whether the user is authenticated. */
+    private boolean mIsAuthenticated;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,51 +66,7 @@ public class DrawerFragment extends Fragment {
             mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
         }
 
-        refreshItems(new UserManager(getActivity()).isSignedIn());
-    }
-
-    /**
-     * (Re)Add items to the list. This is called when the user signs in or out, and on app start.
-     *
-     * @param authenticated Whether there is an authenticated user.
-     */
-    public void refreshItems(boolean authenticated) {
-        mAuthenticated = authenticated;
-        mItems.clear();
-
-        if (authenticated) {
-            mItems.add(new DrawerListItem(TYPE_ICON_TEXT, R.string.drawer_main_feed, R.drawable.ic_feed));
-        }
-
-        mItems.add(new DrawerListItem(TYPE_ICON_TEXT, R.string.drawer_main_shots, R.drawable.ic_shots));
-        mItems.add(new DrawerListItem(TYPE_DIVIDER, 0, 0));
-        //mItems.add(new DrawerListItem(TYPE_SUBHEADER, R.string.drawer_personal, 0));
-
-        if (authenticated) {
-            mItems.add(new DrawerListItem(DrawerListItem.TYPE_ICON_TEXT, R.string.drawer_personal_buckets, R.drawable.ic_bucket));
-            mItems.add(new DrawerListItem(DrawerListItem.TYPE_ICON_TEXT, R.string.drawer_personal_go_pro, R.drawable.ic_dribbble));
-            mItems.add(new DrawerListItem(DrawerListItem.TYPE_ICON_TEXT, R.string.drawer_personal_account_settings, R.drawable.ic_account));
-            mItems.add(new DrawerListItem(DrawerListItem.TYPE_ICON_TEXT, R.string.drawer_personal_sign_out, R.drawable.ic_sign_out));
-        } else {
-            mItems.add(new DrawerListItem(TYPE_ICON_TEXT, R.string.drawer_personal_sign_in, R.drawable.ic_sign_in));
-        }
-
-        mItems.add(new DrawerListItem(TYPE_DIVIDER, 0, 0));
-        mItems.add(new DrawerListItem(TYPE_ICON_TEXT, R.string.drawer_app_rate, R.drawable.ic_rate));
-        mItems.add(new DrawerListItem(TYPE_ICON_TEXT, R.string.drawer_app_feedback, R.drawable.ic_feedback));
-
-        mCurrentSelectedPosition = 1;
-    }
-
-    public void reloadItem() {
-        selectItem(mCurrentSelectedPosition);
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        // Indicate that this fragment would like to influence the set of actions in the toolbar
-        setHasOptionsMenu(true);
+        loadItems(UserManager.getInstance().isAuthenticated());
     }
 
     @Override
@@ -118,16 +75,17 @@ public class DrawerFragment extends Fragment {
 
         mListView = (ListView) view.findViewById(R.id.list);
         mListView.setOnItemClickListener((parent, itemView, position, id) -> selectItem(position));
-        mListView.setAdapter(new DrawerListAdapter(mItems));
+        mListView.setAdapter(new ListAdapter(mItems));
         mListView.setItemChecked(mCurrentSelectedPosition, true);
 
+        // Add a margin at the top and at the bottom of the list
         View spacingView = new View(getActivity());
-        spacingView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) new Dp(8).toPx(getActivity())));
+        spacingView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, new Dp(8).toPx(getActivity())));
 
         mListView.addHeaderView(spacingView, null, false);
         mListView.addFooterView(spacingView, null, false);
 
-        // Select either the default item (1) or the last selected item
+        // Select either the default item or the last selected one
         selectItem(mCurrentSelectedPosition);
 
         return view;
@@ -144,18 +102,22 @@ public class DrawerFragment extends Fragment {
         mDrawerLayout = drawerLayout;
 
         // ActionBarDrawerToggle ties together the proper interactions between the drawer and the toolbar drawer icon
-        mDrawerToggle = new ActionBarDrawerToggle(getActivity(), mDrawerLayout, R.string.drawer_open, R.string.drawer_close) {};
+        mDrawerToggle = new ActionBarDrawerToggle(getActivity(), drawerLayout, R.string.drawer_open, R.string.drawer_close) {};
 
         // Defer code dependent on restoration of previous instance state
         mDrawerLayout.post(mDrawerToggle::syncState);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
 
+    /**
+     * Change the drawer icon.
+     *
+     * @param state   The state to which the drawer icon should be changed.
+     * @param animate Whether to animate the change.
+     */
     public void toggleDrawerIcon(DrawerIconState state, boolean animate) {
         if (animate) {
-            float start = state == DrawerIconState.BURGER ? 1.0f : 0f;
-            ValueAnimator iconAnimator = ValueAnimator.ofFloat(start, Math.abs(start - 1));
-            iconAnimator.setDuration(300);
+            ValueAnimator iconAnimator = ValueAnimator.ofFloat(state.from, state.to);
             iconAnimator.addUpdateListener(animator -> mDrawerToggle.onDrawerSlide(null, (Float) animator.getAnimatedValue()));
             iconAnimator.start();
         } else {
@@ -167,11 +129,78 @@ public class DrawerFragment extends Fragment {
         }
     }
 
+    /**
+     * @param locked Whether the drawer should be locked (cannot be opened) or not.
+     */
     public void setDrawerLocked(boolean locked) {
         mDrawerLayout.setDrawerLockMode(locked ? DrawerLayout.LOCK_MODE_LOCKED_CLOSED : DrawerLayout.LOCK_MODE_UNLOCKED);
     }
 
-    public void selectItem(int position) {
+    /**
+     * @return True if the drawer is currently open.
+     */
+    public boolean isDrawerOpen() {
+        return mDrawerLayout.isDrawerOpen(mDrawerView);
+    }
+
+    /**
+     * Close the drawer.
+     */
+    public void closeDrawer() {
+        if (mDrawerLayout != null) {
+            mDrawerLayout.closeDrawer(mDrawerView);
+        }
+    }
+
+    /**
+     * Checks whether the auth state has changed, and reloads the items if so.
+     */
+    public void checkAuthState() {
+        boolean authenticated = UserManager.getInstance().isAuthenticated();
+
+        if (authenticated != mIsAuthenticated) {
+            loadItems(authenticated);
+            selectItem(1);
+        }
+    }
+
+    /**
+     * (Re)Add items to the list. This is called when the user signs in or out, and on app start.
+     *
+     * @param authenticated Whether there is an authenticated user.
+     */
+    private void loadItems(boolean authenticated) {
+        mIsAuthenticated = authenticated;
+        mItems.clear();
+
+        if (authenticated) {
+            mItems.add(ListItem.IconText(R.string.drawer_main_feed, R.drawable.ic_feed));
+        }
+
+        mItems.add(ListItem.IconText(R.string.drawer_main_shots, R.drawable.ic_shots));
+        mItems.add(ListItem.SubHeader(R.string.drawer_personal));
+        //mItems.add(ListItem.Divider());
+
+        if (authenticated) {
+            mItems.add(ListItem.IconText(R.string.drawer_personal_buckets, R.drawable.ic_bucket));
+            mItems.add(ListItem.IconText(R.string.drawer_personal_go_pro, R.drawable.ic_dribbble));
+            mItems.add(ListItem.IconText(R.string.drawer_personal_account_settings, R.drawable.ic_account));
+            mItems.add(ListItem.IconText(R.string.drawer_personal_sign_out, R.drawable.ic_sign_out));
+        } else {
+            mItems.add(ListItem.IconText(R.string.drawer_personal_sign_in, R.drawable.ic_sign_in));
+        }
+
+        mItems.add(ListItem.Divider());
+        mItems.add(ListItem.IconText(R.string.drawer_app_rate, R.drawable.ic_rate));
+        mItems.add(ListItem.IconText(R.string.drawer_app_feedback, R.drawable.ic_feedback));
+    }
+
+    /**
+     * Called when an item has been clicked to mark it as selected and notify the callbacks object.
+     *
+     * @param position The position of the clicked item in the list.
+     */
+    private void selectItem(int position) {
         closeDrawer();
 
         if (position > 0 && mCallbacks != null && !mCallbacks.onDrawerItemSelected(mItems.get(position - 1).titleResourceId)) {
@@ -182,14 +211,10 @@ public class DrawerFragment extends Fragment {
         }
     }
 
-    public boolean isDrawerOpen() {
-        return mDrawerLayout.isDrawerOpen(mDrawerView);
-    }
-
-    public void closeDrawer() {
-        if (mDrawerLayout != null) {
-            mDrawerLayout.closeDrawer(mDrawerView);
-        }
+    @Override
+    public void onStart() {
+        super.onStart();
+        checkAuthState();
     }
 
     @Override
@@ -216,6 +241,13 @@ public class DrawerFragment extends Fragment {
     }
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        // Indicate that this fragment would like to influence the set of actions in the toolbar
+        setHasOptionsMenu(true);
+    }
+
+    @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         // Forward the new configuration to the drawer toggle component
@@ -225,12 +257,6 @@ public class DrawerFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return super.onOptionsItemSelected(item) || mDrawerToggle.onOptionsItemSelected(item);
-    }
-
-    public void authState(boolean authenticated) {
-        if (mAuthenticated != authenticated) {
-            refreshItems(authenticated);
-        }
     }
 
     /**
@@ -252,7 +278,123 @@ public class DrawerFragment extends Fragment {
      * The possible states of the icon used in the toolbar to toggle the drawer.
      */
     public static enum DrawerIconState {
-        BURGER, ARROW
+        BURGER(1f, 0f),
+        ARROW(0f, 1f);
+
+        public final float from;
+        public final float to;
+
+        DrawerIconState(float from, float to) {
+            this.from = from;
+            this.to = to;
+        }
+    }
+
+    /**
+     * Adapter used by the drawer list to show navigation options.
+     * TODO: Use a ViewHolder
+     */
+    private static class ListAdapter extends BaseAdapter {
+
+        /** The list of displayed items. */
+        private List<ListItem> mItems;
+
+        public ListAdapter(List<ListItem> items) {
+            mItems = items;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ListItem item = mItems.get(position);
+
+            if (convertView == null) {
+                convertView = LayoutInflater.from(parent.getContext()).inflate(item.type.layoutId, parent, false);
+            }
+
+            switch (item.type) {
+                case ICON_TEXT:
+                    ImageView imageView = (ImageView) convertView.findViewById(R.id.icon);
+                    imageView.setImageResource(item.iconResourceId);
+
+                case SUBHEADER:
+                    TextView textView = (TextView) convertView.findViewById(R.id.title);
+                    textView.setText(item.titleResourceId);
+            }
+
+            return convertView;
+        }
+
+        @Override
+        public int getCount() {
+            return mItems.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return mItems.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return Arrays.asList(ListItem.Type.values()).indexOf(mItems.get(position).type);
+        }
+
+        @Override
+        public int getViewTypeCount() {
+            return ListItem.Type.values().length;
+        }
+
+        @Override
+        public boolean isEnabled(int position) {
+            return mItems.get(position).type == ListItem.Type.ICON_TEXT;
+        }
+
+    }
+
+    /**
+     * Object that stores data about an entry in the drawer's list.
+     */
+    private static class ListItem {
+
+        public final Type type;
+        public final int titleResourceId;
+        public final int iconResourceId;
+
+        private ListItem(Type type, int titleResourceId, int iconResourceId) {
+            this.type = type;
+            this.titleResourceId = titleResourceId;
+            this.iconResourceId = iconResourceId;
+        }
+
+        public static ListItem IconText(int titleResourceId, int iconResourceId) {
+            return new ListItem(Type.ICON_TEXT, titleResourceId, iconResourceId);
+        }
+
+        public static ListItem SubHeader(int titleResourceId) {
+            return new ListItem(Type.SUBHEADER, titleResourceId, 0);
+        }
+
+        public static ListItem Divider() {
+            return new ListItem(Type.DIVIDER, 0, 0);
+        }
+
+        public static enum Type {
+            ICON_TEXT(R.layout.item_icon_text),
+            SUBHEADER(R.layout.item_subheader),
+            DIVIDER(R.layout.item_divider);
+
+            public final int layoutId;
+
+            Type(int layoutId) {
+                this.layoutId = layoutId;
+            }
+        }
+
     }
 
 }

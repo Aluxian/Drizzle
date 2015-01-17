@@ -1,7 +1,7 @@
 package com.aluxian.drizzle.api.exceptions;
 
 /**
- * Thrown for errors that appear in the authorization flow.
+ * Thrown for errors that appear in the OAuth web authorization flow.
  */
 public class AuthorizationException extends Exception {
 

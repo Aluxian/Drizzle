@@ -29,29 +29,33 @@ import java.util.List;
 
 public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.ViewHolder> implements SwipeRefreshLayout.OnRefreshListener {
 
+    /** A list with all the displayed items. */
     private List<Shot> mShotsList = new ArrayList<>();
+
+    /** Whether the adapter is currently loading items. */
     private boolean mIsLoadingItems;
 
+    /** A ShotsProvider instance used to load the appropriate shots for this adapter's fragment. */
     private ShotsProvider mShotsProvider;
-    private Context mContext;
+
+    /** A callbacks instance (the adapter's fragment). */
     private Callbacks mCallbacks;
+
+    /** A Context, required by some tasks. */
+    private Context mContext;
 
     public ShotsAdapter(Context context, Callbacks callbacks, ShotsProvider shotsProvider) {
         mContext = context;
         mCallbacks = callbacks;
         mShotsProvider = shotsProvider;
 
-        // Load first mItems
-        loadItemsIfRequired(0);
+        // Load first items
+        new LoadItemsIfRequiredTask(0).execute();
     }
 
     @Override
     public ShotsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_shot, parent, false));
-    }
-
-    public ShotsProvider getShotsProvider() {
-        return mShotsProvider;
     }
 
     @Override
@@ -87,9 +91,9 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.ViewHolder> 
         }
 
         // If position is near the end of the list, load more items from the API
-        loadItemsIfRequired(position);
+        new LoadItemsIfRequiredTask(position).execute();
 
-        preloadViews(position + 1);
+        preloadImages(position + 1);
     }
 
     @Override
@@ -97,99 +101,114 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.ViewHolder> 
         return mShotsList.size();
     }
 
-    private void loadItemsIfRequired(int position) {
-        if (!mIsLoadingItems && mShotsList.size() - position <= Config.LOAD_ITEMS_THRESHOLD) {
-            mIsLoadingItems = true;
+    @Override
+    public void onRefresh() {
+        new RefreshItemsTask().execute();
+    }
 
-            new AsyncTask<Void, Void, List<Shot>>() {
+    public ShotsProvider getShotsProvider() {
+        return mShotsProvider;
+    }
 
-                @Override
-                protected List<Shot> doInBackground(Void... params) {
-                    try {
-                        return mShotsProvider.load();
-                    } catch (IOException | BadRequestException | TooManyRequestsException e) {
-                        Log.d(e);
-                        return null;
-                    }
-                }
+    private class LoadItemsIfRequiredTask extends AsyncTask<Void, Void, List<Shot>> {
 
-                @Override
-                protected void onPostExecute(List<Shot> response) {
-                    if (response != null) {
-                        mShotsList.addAll(response);
-                        notifyItemRangeInserted(mShotsList.size() - response.size(), response.size());
-                    } else {
-                        mCallbacks.onAdapterLoadingError(mShotsList.size() > 0);
-                    }
+        /** The position of the item that executed the task. */
+        private final int mPosition;
 
-                    mIsLoadingItems = false;
-                    new Handler().postDelayed(() -> mCallbacks.onAdapterLoadingFinished(response != null), 500);
-
-                    //preloadViews(position + 1);
-                }
-
-            }.execute();
-        } else {
-            //preloadViews(position + 1);
+        private LoadItemsIfRequiredTask(int position) {
+            mPosition = position;
         }
+
+        @Override
+        protected void onPreExecute() {
+            if (!mIsLoadingItems && mShotsList.size() - mPosition <= Config.LOAD_ITEMS_THRESHOLD) {
+                mIsLoadingItems = true;
+            } else {
+                cancel(true);
+                preloadImages(mPosition + 1);
+            }
+        }
+
+        @Override
+        protected List<Shot> doInBackground(Void... params) {
+            try {
+                return mShotsProvider.load();
+            } catch (IOException | BadRequestException | TooManyRequestsException e) {
+                Log.d(e);
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(List<Shot> response) {
+            if (response != null) {
+                mShotsList.addAll(response);
+                notifyItemRangeInserted(mShotsList.size() - response.size(), response.size());
+            } else {
+                mCallbacks.onAdapterLoadingError(mShotsList.size() > 0);
+            }
+
+            mIsLoadingItems = false;
+            new Handler().postDelayed(() -> mCallbacks.onAdapterLoadingFinished(response != null), 500);
+            preloadImages(mPosition + 1);
+        }
+
     }
 
     /**
-     * Start loading the images of the following items.
+     * Start downloading the images of the following items.
      *
      * @param startPosition The position of the first item to be preloaded.
      */
-    private void preloadViews(int startPosition) {
+    private void preloadImages(int startPosition) {
         for (int position = startPosition; position < startPosition + 6 && position < mShotsList.size(); position++) {
-            //ViewHolder holder = (ViewHolder) mRecyclerView.findViewHolderForPosition(position);
-            //if (holder != null) {
-            //    onBindViewHolder(holder, position);
-            //} else {
-            Picasso.with(mContext).load(mShotsList.get(position).images.normal);
-            //}
+            Picasso.with(mContext).load(mShotsList.get(position).images.normal).fetch();
         }
     }
 
-    @Override
-    public void onRefresh() {
-        if (!mIsLoadingItems) {
-            Log.d("refreshing items");
-            mIsLoadingItems = true;
+    private class RefreshItemsTask extends AsyncTask<Void, Void, List<Shot>> {
 
-            new AsyncTask<Void, Void, List<Shot>>() {
-
-                @Override
-                protected List<Shot> doInBackground(Void... params) {
-                    try {
-                        return mShotsProvider.refresh();
-                    } catch (IOException | BadRequestException | TooManyRequestsException e) {
-                        Log.d(e);
-                    }
-
-                    return null;
-                }
-
-                @Override
-                protected void onPostExecute(List<Shot> response) {
-                    if (response != null) {
-                        mShotsList = response;
-                        notifyDataSetChanged();
-                    } else {
-                        mCallbacks.onAdapterLoadingError(mShotsList.size() > 0);
-                    }
-
-                    mIsLoadingItems = false;
-                    new Handler().postDelayed(() -> mCallbacks.onAdapterLoadingFinished(response != null), 500);
-
-                    Log.d("now there are " + mShotsList.size() + " items");
-                }
-
-            }.execute();
-        } else {
-            mCallbacks.onAdapterLoadingFinished(false);
+        @Override
+        protected void onPreExecute() {
+            if (!mIsLoadingItems) {
+                Log.d("Refreshing items");
+                mIsLoadingItems = true;
+            } else {
+                cancel(false);
+                mCallbacks.onAdapterLoadingFinished(false);
+            }
         }
+
+        @Override
+        protected List<Shot> doInBackground(Void... params) {
+            try {
+                return mShotsProvider.refresh();
+            } catch (IOException | BadRequestException | TooManyRequestsException e) {
+                Log.d(e);
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(List<Shot> response) {
+            if (response != null) {
+                mShotsList.clear();
+                mShotsList.addAll(response);
+                notifyDataSetChanged();
+            } else {
+                mCallbacks.onAdapterLoadingError(mShotsList.size() > 0);
+            }
+
+            mIsLoadingItems = false;
+            new Handler().postDelayed(() -> mCallbacks.onAdapterLoadingFinished(response != null), 500);
+        }
+
     }
 
+    /**
+     * A ViewHolder used by the items of this adapter.
+     */
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         public final CardView card;

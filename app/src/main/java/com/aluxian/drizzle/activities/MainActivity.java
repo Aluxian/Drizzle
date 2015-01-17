@@ -3,10 +3,7 @@ package com.aluxian.drizzle.activities;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
@@ -23,15 +20,16 @@ import android.widget.Spinner;
 
 import com.aluxian.drizzle.R;
 import com.aluxian.drizzle.api.Params;
+import com.aluxian.drizzle.api.providers.FollowingShotsProvider;
 import com.aluxian.drizzle.fragments.DrawerFragment;
 import com.aluxian.drizzle.fragments.ShotsFragment;
 import com.aluxian.drizzle.fragments.TabsFragment;
 import com.aluxian.drizzle.ui.toolbar.EnhancedToolbar;
 import com.aluxian.drizzle.utils.Config;
-import com.aluxian.drizzle.utils.FunctionalList;
 import com.aluxian.drizzle.utils.Log;
 import com.aluxian.drizzle.utils.UserManager;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -39,7 +37,6 @@ import static com.aluxian.drizzle.fragments.DrawerFragment.DrawerIconState;
 
 public class MainActivity extends FragmentActivity implements DrawerFragment.Callbacks {
 
-    public static final String INTENT_FILTER_USER_AUTHENTICATED = "user_authenticated";
     public static final String PREF_INTRO_FINISHED = "intro_finished";
     public static final String PREF_API_AUTH_TOKEN = "api_auth_token";
 
@@ -49,9 +46,6 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
     private EnhancedToolbar mToolbar;
     private View mSearchContainer;
     private View mFragmentContainer;
-
-    private boolean mHasFragment;
-    private boolean mShouldReloadItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,21 +70,6 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
         // Set up the navigation drawer
         mDrawerFragment = (DrawerFragment) getFragmentManager().findFragmentById(R.id.navigation_drawer);
         mDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
-
-        //getWindow().setAllowEnterTransitionOverlap(true);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mDrawerFragment.authState(new UserManager(this).isSignedIn());
-        registerReceiver(mAuthBroadcastReceiver, new IntentFilter(INTENT_FILTER_USER_AUTHENTICATED));
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        unregisterReceiver(mAuthBroadcastReceiver);
     }
 
     /**
@@ -99,7 +78,7 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
      *
      * @param active Whether to make search mode active or not.
      */
-    public void searchMode(boolean active) {
+    private void searchMode(boolean active) {
         if (active) {
             mToolbar.getSearchView().show();
             //mSearchContainer.setVisibility(View.VISIBLE);
@@ -121,48 +100,55 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
         }
     }
 
-    @Override
-    public boolean onDrawerItemSelected(int titleResourceId) {
+    /**
+     * Replaces the fragment displayed in the main fragment container with the given one.
+     *
+     * @param fragment The fragment to display in the container.
+     */
+    private void replaceFragment(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        boolean remainSelected = true;
 
         // Only use a fade animation if there's an existing fragment in the main container already
-        if (mHasFragment) {
+        if (getSupportFragmentManager().findFragmentById(R.id.fragment_container) != null) {
             transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
         }
 
+        transaction.replace(R.id.fragment_container, fragment);
+        transaction.commit();
+    }
+
+    @Override
+    public boolean onDrawerItemSelected(int titleResourceId) {
         switch (titleResourceId) {
             case R.string.drawer_main_feed:
-                transaction.replace(R.id.fragment_container, TabsFragment.newInstance(TabsFragment.Type.FEED));
-                mHasFragment = true;
-                break;
+                replaceFragment(TabsFragment.newInstance(TabsFragment.Type.FEED));
+                //replaceFragment(ShotsFragment.newInstance(FollowingShotsProvider.class, null));
+                return true;
 
             case R.string.drawer_main_shots:
-                transaction.replace(R.id.fragment_container, TabsFragment.newInstance(TabsFragment.Type.SHOTS));
-                mHasFragment = true;
-                break;
+                replaceFragment(TabsFragment.newInstance(TabsFragment.Type.SHOTS));
+                return true;
 
             case R.string.drawer_personal_buckets:
 
-                break;
+                return true;
 
             case R.string.drawer_personal_go_pro:
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://dribbble.com/pro")));
-                break;
+                return false;
 
             case R.string.drawer_personal_account_settings:
 
-                break;
+                return true;
 
             case R.string.drawer_personal_sign_out:
-                mDrawerFragment.authState(false);
-                mDrawerFragment.reloadItem();
-                break;
+                UserManager.getInstance().clearAccessToken();
+                mDrawerFragment.checkAuthState();
+                return false;
 
             case R.string.drawer_personal_sign_in:
                 startActivity(new Intent(this, AuthActivity.class));
-                remainSelected = false;
-                break;
+                return false;
 
             case R.string.drawer_app_rate:
                 Intent rateIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + getPackageName()));
@@ -175,8 +161,7 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
                     startActivity(rateIntent);
                 }
 
-                remainSelected = false;
-                break;
+                return false;
 
             case R.string.drawer_app_feedback:
                 String uri = "mailto:" + Uri.encode(Config.FEEDBACK_EMAIL)
@@ -194,18 +179,11 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
                             .show();
                 }
 
-                remainSelected = false;
-                break;
+                return false;
+
+            default:
+                return true;
         }
-
-        transaction.commit();
-        return remainSelected;
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -233,8 +211,7 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
                 Spinner sortSpinner = (Spinner) view.findViewById(R.id.sort_spinner);
 
                 // Get the selected fragment from the ViewPager
-                FunctionalList<Fragment> fragmentsList = new FunctionalList<>(getSupportFragmentManager().getFragments());
-                TabsFragment tabsFragment = (TabsFragment) fragmentsList.filter(input -> input instanceof TabsFragment).get(0);
+                TabsFragment tabsFragment = (TabsFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
                 ShotsFragment fragment = (ShotsFragment) tabsFragment.getCurrentFragment();
 
                 // Restore current values
@@ -258,6 +235,12 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
     public void onBackPressed() {
         if (mDrawerFragment.isDrawerOpen()) {
             mDrawerFragment.closeDrawer();
@@ -265,13 +248,5 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
             super.onBackPressed();
         }
     }
-
-    private BroadcastReceiver mAuthBroadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            mDrawerFragment.refreshItems(true);
-            mDrawerFragment.reloadItem();
-        }
-    };
 
 }

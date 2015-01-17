@@ -104,7 +104,7 @@ public class Log {
         // Convert objects that don't override the toString() method to JSON
         for (int i = 0; i < messages.length; i++) {
             try {
-                if (!messages[i].getClass().getMethod("toString").getDeclaringClass().equals(Object.class)) {
+                if (messages[i] == null || !messages[i].getClass().getMethod("toString").getDeclaringClass().equals(Object.class)) {
                     continue;
                 }
             } catch (NoSuchMethodException e) {

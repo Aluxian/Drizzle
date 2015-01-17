@@ -7,6 +7,7 @@ import com.aluxian.drizzle.api.exceptions.TooManyRequestsException;
 import com.aluxian.drizzle.api.models.Shot;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,31 +19,32 @@ public class FilteredShotsProvider extends ShotsProvider {
     public Params.Timeframe timeframeParam = Params.Timeframe.NOW;
     public Params.Sort sortParam = Params.Sort.POPULAR;
 
-    public FilteredShotsProvider(Dribbble dribbble, Params.List listParam) {
-        super(dribbble);
+    public FilteredShotsProvider(Params.List listParam) {
         this.listParam = listParam;
     }
 
     @Override
     public List<Shot> load() throws IOException, BadRequestException, TooManyRequestsException {
-        if (mLastResponse != null && mLastResponse.nextPageUrl != null) {
-            mLastResponse = mDribbble.listNextPage(mLastResponse.nextPageUrl).execute();
-        } else {
-            mLastResponse = mDribbble.listShots(listParam, timeframeParam, sortParam).execute();
+        if (mLastResponse == null) {
+            mLastResponse = Dribbble.listShots(listParam, timeframeParam, sortParam).execute();
+            return mLastResponse.data;
+        } else if (mLastResponse.nextPageUrl != null) {
+            mLastResponse = Dribbble.listNextPage(mLastResponse.nextPageUrl).execute();
+            return mLastResponse.data;
         }
 
-        return mLastResponse.data;
+        return new ArrayList<>();
     }
 
     @Override
     public List<Shot> refresh() throws IOException, BadRequestException, TooManyRequestsException {
-        mLastResponse = mDribbble.listShots(listParam, timeframeParam, sortParam).useCache(false).execute();
+        mLastResponse = Dribbble.listShots(listParam, timeframeParam, sortParam).useCache(false).execute();
         return mLastResponse.data;
     }
 
     @Override
     public boolean hasItemsAvailable() {
-        return mDribbble.listShots(listParam, timeframeParam, sortParam).canLoadImmediately();
+        return Dribbble.listShots(listParam, timeframeParam, sortParam).canLoadImmediately();
     }
 
 }

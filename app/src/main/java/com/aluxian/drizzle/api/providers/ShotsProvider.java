@@ -16,13 +16,6 @@ public abstract class ShotsProvider {
     /** The last received response. */
     protected Dribbble.Response<List<Shot>> mLastResponse;
 
-    /** Dribbble ApiRequest generator instance. */
-    protected Dribbble mDribbble;
-
-    public ShotsProvider(Dribbble dribbble) {
-        mDribbble = dribbble;
-    }
-
     /**
      * Load more items (either the default or the next ones).
      *

@@ -3,12 +3,10 @@ package com.aluxian.drizzle.activities;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import android.webkit.CookieManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -24,6 +22,7 @@ import com.aluxian.drizzle.ui.toolbar.EnhancedToolbar;
 import com.aluxian.drizzle.ui.toolbar.ProgressBarWidget;
 import com.aluxian.drizzle.utils.Config;
 import com.aluxian.drizzle.utils.Log;
+import com.aluxian.drizzle.utils.UserManager;
 
 import java.io.IOException;
 import java.util.Set;
@@ -47,6 +46,7 @@ public class AuthActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth);
 
+        // Load the toolbar
         EnhancedToolbar toolbar = (EnhancedToolbar) findViewById(R.id.toolbar);
         toolbar.getNativeToolbar().setTitle(R.string.auth_title);
         toolbar.getProgressBar().show(false);
@@ -55,10 +55,16 @@ public class AuthActivity extends Activity {
         setActionBar(toolbar.getNativeToolbar());
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
+        // Clean previous session data
+        CookieManager.getInstance().removeAllCookies(null);
+
+        // Initialise the WebView
         WebView webView = (WebView) findViewById(R.id.web_view);
         webView.setWebChromeClient(new AuthWebChromeClient());
         webView.setWebViewClient(new AuthWebViewClient());
         webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setSaveFormData(false);
+        webView.setOnLongClickListener(v -> true);
         webView.loadUrl(AUTHORIZE_URL + mState);
 
         Log.d("Loading authorization url: " + AUTHORIZE_URL + mState);
@@ -139,7 +145,7 @@ public class AuthActivity extends Activity {
             long startedAt = System.currentTimeMillis();
 
             try {
-                response = new Dribbble().oauthToken(params[0]).execute();
+                response = Dribbble.oauthToken(params[0]).execute();
             } catch (IOException | BadRequestException | TooManyRequestsException e) {
                 Log.d(e);
             }
@@ -154,7 +160,6 @@ public class AuthActivity extends Activity {
                 }
             }
 
-            // broadcast
             // no internet message /error listener
             return response;
         }
@@ -162,9 +167,8 @@ public class AuthActivity extends Activity {
         @Override
         protected void onPostExecute(Dribbble.Response<Credentials> response) {
             if (response != null) {
-                SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(AuthActivity.this);
-                sharedPrefs.edit().putString(MainActivity.PREF_API_AUTH_TOKEN, response.data.accessToken).apply();
-                sendBroadcast(new Intent(MainActivity.INTENT_FILTER_USER_AUTHENTICATED));
+                Log.d("Token exchange successful, saving token to UserManager");
+                UserManager.getInstance().putAccessToken(response.data.accessToken);
             } else {
                 Toast.makeText(AuthActivity.this, getString(R.string.auth_unexpected_error), Toast.LENGTH_LONG).show();
             }

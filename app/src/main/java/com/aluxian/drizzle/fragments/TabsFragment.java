@@ -29,12 +29,13 @@ public class TabsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tabs, container, false);
+        Type type = Type.valueOf(getArguments().getString(Type.class.getName()));
 
         // Initialize the ViewPager and set the adapter
         mViewPager = (ViewPager) view.findViewById(R.id.view_pager);
         mViewPager.setOffscreenPageLimit(Params.List.values().length);
 
-        switch (Type.valueOf(getArguments().getString(Type.class.getName()))) {
+        switch (type) {
             case FEED:
                 mViewPager.setAdapter(new FeedPagerAdapter(getActivity(), getChildFragmentManager()));
                 break;
@@ -45,8 +46,9 @@ public class TabsFragment extends Fragment {
         }
 
         // Bind the tabs strip to the ViewPager
-        PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
-        tabs.setViewPager(mViewPager);
+        PagerSlidingTabStrip tabStrip = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
+        tabStrip.setShouldExpand(true);
+        tabStrip.setViewPager(mViewPager);
 
         return view;
     }

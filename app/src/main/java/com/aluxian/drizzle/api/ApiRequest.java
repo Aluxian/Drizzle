@@ -2,10 +2,12 @@ package com.aluxian.drizzle.api;
 
 import android.net.Uri;
 
+import com.aluxian.drizzle.api.exceptions.BadCredentialsException;
 import com.aluxian.drizzle.api.exceptions.BadRequestException;
 import com.aluxian.drizzle.api.exceptions.TooManyRequestsException;
 import com.aluxian.drizzle.utils.Config;
 import com.aluxian.drizzle.utils.Log;
+import com.aluxian.drizzle.utils.UserManager;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -32,7 +34,7 @@ import java.util.regex.Pattern;
 import static com.iainconnor.objectcache.CacheManager.ExpiryTimes;
 
 /**
- * Request builder for Dribbble API requests. Can be used for any other URL too, but the default is the Dribbble API endpoint.
+ * Request builder for Dribbble API requests. Can be used for any other URL too.
  *
  * @param <T> The type of the expected response.
  */
@@ -61,7 +63,7 @@ public class ApiRequest<T> extends Request.Builder {
     }
 
     /**
-     * @param useCache Whether the request can be loaded from the cache.
+     * @param useCache Whether the request can be loaded from the cache. Caching is not used by default.
      * @return This instance.
      */
     public ApiRequest<T> useCache(boolean useCache) {
@@ -210,7 +212,7 @@ public class ApiRequest<T> extends Request.Builder {
     }
 
     /**
-     * @return Whether the request can be fulfilled immediately (from the cache).
+     * @return Whether the request can be fulfilled immediately (from cache).
      */
     public boolean canLoadImmediately() {
         Type responseType = new TypeToken<Dribbble.Response>() {}.getType();
@@ -238,7 +240,15 @@ public class ApiRequest<T> extends Request.Builder {
         }
 
         if (response == null) {
-            response = getFromNetwork(request);
+            try {
+                response = getFromNetwork(request);
+            } catch (BadCredentialsException e) {
+                if (UserManager.getInstance().isAuthenticated()) {
+                    UserManager.getInstance().clearAccessToken();
+                } else {
+                    throw new BadRequestException(401, e.getLocalizedMessage());
+                }
+            }
         }
 
         return response;
@@ -274,7 +284,8 @@ public class ApiRequest<T> extends Request.Builder {
      * @throws BadRequestException      When the request is invalid.
      * @throws TooManyRequestsException When too many API requests in a short timeframe were made.
      */
-    private Dribbble.Response<T> getFromNetwork(Request request) throws IOException, BadRequestException, TooManyRequestsException {
+    private Dribbble.Response<T> getFromNetwork(Request request)
+            throws IOException, BadCredentialsException, BadRequestException, TooManyRequestsException {
         String requestHash = request.urlString();
         Log.d("Loading " + requestHash + " from the API");
 
@@ -284,9 +295,10 @@ public class ApiRequest<T> extends Request.Builder {
         // Handle errors
         if (!httpResponse.isSuccessful()) {
             switch (httpResponse.code()) {
+                case 401:
+                    throw new BadCredentialsException(body);
                 case 429:
                     throw new TooManyRequestsException(body);
-
                 default:
                     throw new BadRequestException(httpResponse.code(), body);
             }

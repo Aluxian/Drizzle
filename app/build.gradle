@@ -19,8 +19,17 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField 'boolean', 'STRICT_MODE', 'false'
+        }
+
         release {
-            minifyEnabled false
+            buildConfigField 'boolean', 'STRICT_MODE', 'false'
+
+            //minifyEnabled true
+            //shrinkResources true
+
+            //noinspection GrUnresolvedAccess
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -32,9 +41,9 @@ android {
 }
 
 // TODO: git versioning
-// TODO: signing configs
+// TODO: signing configs (w/ public for ease)
 // TODO: gradle.properties or git encrypted keys
-
+// plugin for deps update
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])

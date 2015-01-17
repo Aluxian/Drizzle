@@ -8,11 +8,11 @@ public class ResizeHeightAnimation extends Animation {
 
     private final int mStartHeight;
     private final int mTargetHeight;
-    private View mTargetView;
+    private final View mTargetView;
 
     public ResizeHeightAnimation(View targetView, int targetHeight) {
         mTargetView = targetView;
-        mStartHeight = targetView.getWidth();
+        mStartHeight = targetView.getHeight();
         mTargetHeight = targetHeight;
     }
 

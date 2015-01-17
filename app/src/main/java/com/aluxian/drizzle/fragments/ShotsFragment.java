@@ -11,14 +11,12 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.aluxian.drizzle.R;
-import com.aluxian.drizzle.api.Dribbble;
 import com.aluxian.drizzle.api.Params;
 import com.aluxian.drizzle.api.providers.FilteredShotsProvider;
 import com.aluxian.drizzle.api.providers.ShotsProvider;
 import com.aluxian.drizzle.lists.ShotAnimator;
 import com.aluxian.drizzle.lists.adapters.ShotsAdapter;
 import com.aluxian.drizzle.utils.Log;
-import com.aluxian.drizzle.utils.UserManager;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -62,14 +60,12 @@ public class ShotsFragment extends Fragment implements ShotsAdapter.Callbacks {
         Class<? extends ShotsProvider> clazz = (Class<? extends ShotsProvider>) args.getSerializable(ARG_PROVIDER_CLASS);
 
         try {
-            Dribbble dribbble = new Dribbble(new UserManager(getActivity()).getAccessToken());
-
             if (clazz.equals(FilteredShotsProvider.class)) {
                 Params.List listParam = Params.List.valueOf(args.getString(ARG_LIST_API_VALUE));
-                return clazz.getConstructor(Dribbble.class, Params.List.class).newInstance(dribbble, listParam);
+                return clazz.getConstructor(Params.List.class).newInstance(listParam);
             }
 
-            return clazz.getConstructor(Dribbble.class).newInstance(dribbble);
+            return clazz.getConstructor().newInstance();
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | java.lang.InstantiationException e) {
             Log.e(e);
         }
