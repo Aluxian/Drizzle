@@ -5,7 +5,6 @@ import android.net.Uri;
 import com.aluxian.drizzle.api.exceptions.BadCredentialsException;
 import com.aluxian.drizzle.api.exceptions.BadRequestException;
 import com.aluxian.drizzle.api.exceptions.TooManyRequestsException;
-import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.utils.Config;
 import com.aluxian.drizzle.utils.Log;
 import com.aluxian.drizzle.utils.UserManager;
@@ -28,7 +27,6 @@ import com.squareup.okhttp.Response;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -259,6 +257,21 @@ public class ApiRequest<T> extends Request.Builder {
     }
 
     /**
+     * Execute the request asynchronously and send the result to the callback. Cache may be used.
+     *
+     * @param callback A callback instance to be called when execution is complete.
+     */
+    public void execute(Callback<T> callback) {
+        new Thread(() -> {
+            try {
+                callback.onSuccess(execute());
+            } catch (IOException | BadRequestException | TooManyRequestsException e) {
+                callback.onError(e);
+            }
+        }).start();
+    }
+
+    /**
      * Try to get a response object from the cache.
      *
      * @param key The cache key of the response.
@@ -349,6 +362,24 @@ public class ApiRequest<T> extends Request.Builder {
         }
 
         return null;
+    }
+
+    public static interface Callback<T> {
+
+        /**
+         * Called when a request execution is completed successfully.
+         *
+         * @param response The response of the execution.
+         */
+        public void onSuccess(Dribbble.Response<T> response);
+
+        /**
+         * Called when an error happens.
+         *
+         * @param e The exception thrown during execution.
+         */
+        public void onError(Exception e);
+
     }
 
 }

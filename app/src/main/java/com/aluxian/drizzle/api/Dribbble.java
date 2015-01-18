@@ -4,6 +4,7 @@ import com.aluxian.drizzle.api.models.Credentials;
 import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.utils.Config;
 import com.aluxian.drizzle.utils.UserManager;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.List;
@@ -64,6 +65,13 @@ public class Dribbble {
                 .queryParam("client_secret", Config.API_CLIENT_SECRET)
                 .queryParam("code", code)
                 .post(null);
+    }
+
+    public static ApiRequest<JsonObject> pixelsDribbbledCount() {
+        return new ApiRequest<JsonObject>()
+                .responseType(new TypeToken<JsonObject>() {})
+                .useCache(true)
+                .url(Config.KIMONO_API_URL);
     }
 
     public static ApiRequest<List<Shot>> listFollowing() {

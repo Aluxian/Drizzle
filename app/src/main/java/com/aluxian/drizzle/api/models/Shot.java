@@ -72,6 +72,14 @@ public final class Shot {
             this.teaser = teaser;
         }
 
+        public String getLargest() {
+            if (hidpi != null) {
+                return hidpi;
+            }
+
+            return normal;
+        }
+
     }
 
 }

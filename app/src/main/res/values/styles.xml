@@ -39,7 +39,6 @@
 
     <style name="Drizzle.Spinner">
         <item name="android:textColor">@color/charcoal</item>
-        <item name="android:spinnerStyle">@color/charcoal</item>
         <item name="android:spinnerDropDownItemStyle">@style/Drizzle.Spinner.DropdownItem</item>
         <item name="android:spinnerItemStyle">@android:style/Widget.Material.Light.TextView.SpinnerItem</item>
     </style>

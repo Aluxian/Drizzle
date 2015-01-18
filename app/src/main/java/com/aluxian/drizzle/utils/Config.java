@@ -11,6 +11,9 @@ public class Config {
     /** The ID of the bucket from which the featured shots are displayed. */
     public static final int FEATURED_BUCKET_ID = 256408;
 
+    /** The ID of the bucket from which the cover shots are displayed in the drawer. */
+    public static final int COVERS_BUCKET_ID = 251815;
+
     /** The endpoint where Dribbble API requests are made. */
     public static final String API_ENDPOINT = "https://api.dribbble.com/v1";
 
@@ -25,6 +28,9 @@ public class Config {
 
     /** The url the user is redirected to during authorization. */
     public static final String API_CALLBACK_URL = "drizzle://oauth";
+
+    /** A URL to the Kimono API used to retrieve the 'pixels dribbbled' count. */
+    public static final String KIMONO_API_URL = "https://www.kimonolabs.com/api/cfxxcg4u?apikey=hQMs8xI09wAzLH5qYKtTnR5o4Na3qnWI";
 
     /** The email address users will send feedback to. */
     public static final String FEEDBACK_EMAIL = "hello@getdrizzle.co";

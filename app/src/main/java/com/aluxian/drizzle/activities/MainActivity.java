@@ -81,7 +81,8 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
     private void searchMode(boolean active) {
         if (active) {
             mToolbar.getSearchView().show();
-            //mSearchContainer.setVisibility(View.VISIBLE);
+            mSearchContainer.setVisibility(View.VISIBLE);
+
             //mSearchContainer.animate().alpha(1);
 
             mFragmentContainer.animate().alpha(0);
@@ -91,9 +92,9 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
         } else {
             mToolbar.getSearchView().hide();
             //mSearchContainer.setVisibility(View.GONE);
-            //mSearchContainer.animate().alpha(0).withEndAction(() -> mSearchContainer.setVisibility(View.GONE));
+            //mSearchContainer.animate().alpha(0).withEndAction(() -> );
 
-            mFragmentContainer.animate().alpha(1);
+            mFragmentContainer.animate().alpha(1).withEndAction(() -> mSearchContainer.setVisibility(View.GONE));
 
             mDrawerFragment.setDrawerLocked(false);
             mDrawerFragment.toggleDrawerIcon(DrawerIconState.BURGER, true);
@@ -201,43 +202,9 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
             case R.id.action_search:
                 searchMode(true);
                 return true;
-
-            case R.id.action_sort:
-                @SuppressLint("InflateParams")
-                View view = getLayoutInflater().inflate(R.layout.dialog_sort, null, false);
-
-                // Parameter spinners
-                Spinner timeframeSpinner = (Spinner) view.findViewById(R.id.timeframe_spinner);
-                Spinner sortSpinner = (Spinner) view.findViewById(R.id.sort_spinner);
-
-                // Get the selected fragment from the ViewPager
-                TabsFragment tabsFragment = (TabsFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-                ShotsFragment fragment = (ShotsFragment) tabsFragment.getCurrentFragment();
-
-                // Restore current values
-                timeframeSpinner.setSelection(Arrays.asList(Params.Timeframe.values()).indexOf(fragment.getTimeframeParam()));
-                sortSpinner.setSelection(Arrays.asList(Params.Sort.values()).indexOf(fragment.getSortParam()));
-
-                new AlertDialog.Builder(this, R.style.Drizzle_Dialog)
-                        .setView(view)
-                        .setPositiveButton(R.string.dialog_apply, (dialog, which) -> fragment.updateParameters(
-                                Params.Timeframe.values()[timeframeSpinner.getSelectedItemPosition()],
-                                Params.Sort.values()[sortSpinner.getSelectedItemPosition()]
-                        ))
-                        .setNegativeButton(R.string.dialog_cancel, null)
-                        .create()
-                        .show();
-
-                return true;
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
     }
 
     @Override

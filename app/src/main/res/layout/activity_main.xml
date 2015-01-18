@@ -19,6 +19,7 @@
                 android:id="@+id/wrapper"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/primary"
                 android:elevation="@dimen/toolbarElevation"
                 android:orientation="vertical">
 
@@ -32,6 +33,8 @@
                     android:layout_height="wrap_content" />
 
             </LinearLayout>
+
+            <include layout="@layout/include_search_results" />
 
             <FrameLayout
                 android:id="@+id/fragment_container"

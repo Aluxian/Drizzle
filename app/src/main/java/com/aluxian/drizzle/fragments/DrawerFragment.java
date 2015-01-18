@@ -17,9 +17,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.aluxian.drizzle.R;
+import com.aluxian.drizzle.api.ApiRequest;
+import com.aluxian.drizzle.api.Dribbble;
+import com.aluxian.drizzle.api.models.Shot;
+import com.aluxian.drizzle.utils.Config;
 import com.aluxian.drizzle.utils.Dp;
 import com.aluxian.drizzle.utils.Log;
 import com.aluxian.drizzle.utils.UserManager;
+import com.google.gson.JsonObject;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -73,6 +79,42 @@ public class DrawerFragment extends Fragment implements UserManager.AuthStateCha
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_drawer, container, false);
 
+        // Load the cover image
+        Dribbble.listBucketShots(Config.COVERS_BUCKET_ID).queryParam("per_page", "1").execute(new ApiRequest.Callback<List<Shot>>() {
+            @SuppressWarnings("CodeBlock2Expr")
+            @Override
+            public void onSuccess(Dribbble.Response<List<Shot>> response) {
+                getActivity().runOnUiThread(() -> {
+                    Picasso.with(getActivity())
+                            .load(response.data.get(0).images.getLargest())
+                            .into((ImageView) view.findViewById(R.id.cover));
+                });
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Log.e(e);
+            }
+        });
+
+        // Load the dribbbled pixels count
+        Dribbble.pixelsDribbbledCount().execute(new ApiRequest.Callback<JsonObject>() {
+            @Override
+            public void onSuccess(Dribbble.Response<JsonObject> response) {
+                String pixels = response.data.getAsJsonObject("results").getAsJsonArray("data")
+                        .get(0).getAsJsonObject().get("pixelCount").getAsString();
+
+                ((TextView) view.findViewById(R.id.pixels_count)).setText(pixels);
+                view.findViewById(R.id.pixels_description).setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Log.e(e);
+            }
+        });
+
+        // Set up the list
         mListView = (ListView) view.findViewById(R.id.list);
         mListView.setOnItemClickListener((parent, itemView, position, id) -> selectItem(position));
         mListView.setAdapter(new ListAdapter(mItems));

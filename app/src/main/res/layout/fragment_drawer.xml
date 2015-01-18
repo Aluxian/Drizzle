@@ -1,5 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
@@ -13,13 +14,12 @@
         app:aspectRatioWidth="16">
 
         <ImageView
-            android:id="@+id/cover_image"
+            android:id="@+id/cover"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:contentDescription="@null"
-            android:scaleType="centerCrop"
-            android:src="@drawable/drawer_cover" />
+            android:scaleType="centerCrop" />
 
         <View
             android:layout_width="match_parent"
@@ -35,18 +35,21 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/pixels_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
-                android:text="290,936,742,552"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                tools:text="290,936,742,552" />
 
             <TextView
+                android:id="@+id/pixels_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/drawer_pixels_dribbbled"
                 android:textColor="#ddd"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:visibility="invisible" />
 
         </LinearLayout>
 
