@@ -4,6 +4,7 @@ import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.res.Configuration;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -104,8 +105,10 @@ public class DrawerFragment extends Fragment implements UserManager.AuthStateCha
                 String pixels = response.data.getAsJsonObject("results").getAsJsonArray("data")
                         .get(0).getAsJsonObject().get("pixelCount").getAsString();
 
-                ((TextView) view.findViewById(R.id.pixels_count)).setText(pixels);
-                view.findViewById(R.id.pixels_description).setVisibility(View.VISIBLE);
+                getActivity().runOnUiThread(() -> {
+                    ((TextView) view.findViewById(R.id.pixels_count)).setText(pixels);
+                    view.findViewById(R.id.pixels_description).setVisibility(View.VISIBLE);
+                });
             }
 
             @Override
@@ -147,8 +150,13 @@ public class DrawerFragment extends Fragment implements UserManager.AuthStateCha
         mDrawerToggle = new ActionBarDrawerToggle(getActivity(), drawerLayout, R.string.drawer_open, R.string.drawer_close) {};
 
         // Defer code dependent on restoration of previous instance state
-        mDrawerLayout.post(mDrawerToggle::syncState);
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        drawerLayout.post(mDrawerToggle::syncState);
+        drawerLayout.setDrawerListener(mDrawerToggle);
+
+        // Set the status bar colour
+        TypedArray a = getActivity().getTheme().obtainStyledAttributes(new int[]{android.R.attr.statusBarColor});
+        drawerLayout.setStatusBarBackgroundColor(a.getColor(0, 0));
+        a.recycle();
     }
 
     /**

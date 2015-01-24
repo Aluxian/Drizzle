@@ -16,8 +16,8 @@ import android.widget.Spinner;
 
 import com.aluxian.drizzle.R;
 import com.aluxian.drizzle.api.Params;
-import com.aluxian.drizzle.lists.adapters.pager.FeedPagerAdapter;
-import com.aluxian.drizzle.lists.adapters.pager.ShotsPagerAdapter;
+import com.aluxian.drizzle.lists.FeedPagerAdapter;
+import com.aluxian.drizzle.lists.ShotsPagerAdapter;
 import com.astuetz.PagerSlidingTabStrip;
 
 import java.util.Arrays;
@@ -72,7 +72,8 @@ public class TabsFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        activity.getActionBar().setTitle(R.string.drawer_main_shots);
+        Type type = Type.valueOf(getArguments().getString(Type.class.getName()));
+        activity.getActionBar().setTitle(type == Type.FEED ? R.string.drawer_main_feed : R.string.drawer_main_shots);
         setHasOptionsMenu(true);
     }
 

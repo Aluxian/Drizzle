@@ -14,19 +14,26 @@
 
         <activity
             android:name=".activities.MainActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:theme="@style/Drizzle.Activity.Main">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
 
         <activity
             android:name=".activities.AuthActivity"
-            android:parentActivityName=".activities.MainActivity" />
+            android:parentActivityName=".activities.MainActivity"
+            android:theme="@style/Drizzle.Activity.Auth" />
+
         <activity
             android:name=".activities.IntroActivity"
-            android:parentActivityName=".activities.MainActivity" />
+            android:parentActivityName=".activities.MainActivity"
+            android:theme="@style/Drizzle.Activity.Intro" />
+
         <activity
             android:name=".activities.ShotActivity"
             android:parentActivityName=".activities.MainActivity" />

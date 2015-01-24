@@ -1,28 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Drizzle" parent="android:Theme.Material.Light.NoActionBar.TranslucentDecor">
+    <style name="Drizzle" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:textColor">@android:color/white</item>
         <item name="android:colorAccent">@color/primary</item>
         <item name="android:colorPrimary">@color/primary</item>
         <item name="android:colorPrimaryDark">@color/primaryDark</item>
         <item name="android:colorControlHighlight">@color/ripple_material_lightly</item>
         <item name="android:navigationBarColor">@color/charcoal</item>
-        <item name="android:textColor">@color/white</item>
         <item name="android:windowBackground">@color/background</item>
-        <item name="android:windowContentTransitions">true</item>
-        <item name="android:windowEnterTransition">@android:transition/fade</item>
-        <item name="android:windowExitTransition">@android:transition/fade</item>
-        <item name="android:windowSharedElementEnterTransition">@transition/change_image_transform</item>
-        <item name="android:windowSharedElementExitTransition">@transition/change_image_transform</item>
     </style>
 
-    <style name="Drizzle.Dark" parent="android:Theme.Material.NoActionBar.TranslucentDecor">
-        <item name="android:colorAccent">@color/white</item>
+    <style name="Drizzle.Dark" parent="android:Theme.Material.NoActionBar">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:colorAccent">@android:color/white</item>
         <item name="android:colorPrimary">@color/primary</item>
         <item name="android:colorPrimaryDark">@color/primaryDark</item>
+        <item name="android:navigationBarColor">@color/charcoal</item>
+    </style>
+
+    <style name="Drizzle.Activity.Main" parent="Drizzle">
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
+    <style name="Drizzle.Activity.Auth" parent="Drizzle.Dark">
+        <item name="android:colorAccent">@color/primary</item>
+        <item name="android:colorControlActivated">@color/primary</item>
+    </style>
+
+    <style name="Drizzle.Activity.Intro" parent="Drizzle.Dark">
+        <item name="android:colorAccent">@color/primary</item>
         <item name="android:colorButtonNormal">@color/primaryDark</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:windowBackground">@color/charcoal</item>
     </style>
 
     <style name="Drizzle.Dialog" parent="android:Theme.Material.Light.Dialog.Alert">
@@ -47,5 +55,11 @@
         <item name="android:gravity">center_vertical</item>
         <item name="android:paddingStart">12dp</item>
     </style>
+
+    <!--<item name="android:windowContentTransitions">true</item>
+    <item name="android:windowEnterTransition">@android:transition/fade</item>
+    <item name="android:windowExitTransition">@android:transition/fade</item>
+    <item name="android:windowSharedElementEnterTransition">@transition/change_image_transform</item>
+    <item name="android:windowSharedElementExitTransition">@transition/change_image_transform</item>-->
 
 </resources>

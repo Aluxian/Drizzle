@@ -1,11 +1,11 @@
 package com.aluxian.drizzle.activities;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -13,24 +13,17 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Spinner;
 
 import com.aluxian.drizzle.R;
-import com.aluxian.drizzle.api.Params;
-import com.aluxian.drizzle.api.providers.FollowingShotsProvider;
 import com.aluxian.drizzle.fragments.DrawerFragment;
-import com.aluxian.drizzle.fragments.ShotsFragment;
 import com.aluxian.drizzle.fragments.TabsFragment;
 import com.aluxian.drizzle.ui.toolbar.EnhancedToolbar;
 import com.aluxian.drizzle.utils.Config;
 import com.aluxian.drizzle.utils.Log;
 import com.aluxian.drizzle.utils.UserManager;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.aluxian.drizzle.fragments.DrawerFragment.DrawerIconState;
@@ -135,11 +128,11 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
                 return true;
 
             case R.string.drawer_personal_go_pro:
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://dribbble.com/pro")));
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://dribbble.com/pro?ref=getdrizzle.co")));
                 return false;
 
             case R.string.drawer_personal_account_settings:
-
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://dribbble.com/account")));
                 return true;
 
             case R.string.drawer_personal_sign_out:

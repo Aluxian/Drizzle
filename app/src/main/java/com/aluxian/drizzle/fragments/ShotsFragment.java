@@ -15,7 +15,7 @@ import com.aluxian.drizzle.api.Params;
 import com.aluxian.drizzle.api.providers.FilteredShotsProvider;
 import com.aluxian.drizzle.api.providers.ShotsProvider;
 import com.aluxian.drizzle.lists.ShotAnimator;
-import com.aluxian.drizzle.lists.adapters.ShotsAdapter;
+import com.aluxian.drizzle.lists.ShotsAdapter;
 import com.aluxian.drizzle.utils.Log;
 
 import java.lang.reflect.InvocationTargetException;

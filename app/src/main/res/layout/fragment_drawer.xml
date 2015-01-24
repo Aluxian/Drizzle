@@ -1,91 +1,91 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.aluxian.drizzle.ui.ScrimInsetsFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:clickable="true"
-    android:orientation="vertical">
-
-    <com.aluxian.drizzle.ui.FixedAspectRatioRelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:aspectRatioHeight="10"
-        app:aspectRatioWidth="16">
-
-        <ImageView
-            android:id="@+id/cover"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:contentDescription="@null"
-            android:scaleType="centerCrop" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/drawer_cover_overlay" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="12dp"
-            android:layout_marginStart="16dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/pixels_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-medium"
-                android:textSize="16sp"
-                tools:text="290,936,742,552" />
-
-            <TextView
-                android:id="@+id/pixels_description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/drawer_pixels_dribbbled"
-                android:textColor="#ddd"
-                android:textSize="12sp"
-                android:visibility="invisible" />
-
-        </LinearLayout>
-
-        <!--<TextView
-            android:id="@+id/username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="16dp"
-            android:layout_marginStart="16dp"
-            android:fontFamily="sans-serif-medium"
-            android:text="Aluxian"
-            android:textSize="14sp"/>
-
-        <ImageView
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_above="@id/username"
-            android:layout_marginBottom="16dp"
-            android:layout_marginStart="16dp"
-            android:background="@color/slate"
-            android:contentDescription="@null"/>-->
-
-    </com.aluxian.drizzle.ui.FixedAspectRatioRelativeLayout>
+    android:fitsSystemWindows="true"
+    app:insetForeground="#4000">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:clickable="true"
         android:orientation="vertical">
 
-        <View style="@style/Drizzle.Divider" />
+        <com.aluxian.drizzle.ui.FixedAspectRatioRelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:aspectRatioHeight="10"
+            app:aspectRatioWidth="16">
+
+            <ImageView
+                android:id="@+id/cover"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:contentDescription="@null"
+                android:scaleType="centerCrop" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/drawer_cover_overlay" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="12dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/pixels_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:textSize="16sp"
+                    tools:text="290,936,742,552" />
+
+                <TextView
+                    android:id="@+id/pixels_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/drawer_pixels_dribbbled"
+                    android:textColor="#ddd"
+                    android:textSize="12sp"
+                    android:visibility="invisible" />
+
+            </LinearLayout>
+
+            <!--<TextView
+                android:id="@+id/username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="16dp"
+                android:layout_marginStart="16dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="Aluxian"
+                android:textSize="14sp"/>
+
+            <ImageView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_above="@id/username"
+                android:layout_marginBottom="16dp"
+                android:layout_marginStart="16dp"
+                android:background="@color/slate"
+                android:contentDescription="@null"/>-->
+
+        </com.aluxian.drizzle.ui.FixedAspectRatioRelativeLayout>
 
         <ListView
             android:id="@+id/list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:choiceMode="singleChoice"
             android:divider="@android:color/transparent"
             android:dividerHeight="0dp"
@@ -93,45 +93,4 @@
 
     </LinearLayout>
 
-    <!--<LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#f7f7f7"
-        android:paddingBottom="12dp"
-        android:paddingTop="12dp">
-
-        <ImageView
-            android:id="@+id/dribbble_logo"
-            android:layout_width="42dp"
-            android:layout_height="42dp"
-            android:layout_marginStart="16dp"
-            android:contentDescription="@null"
-            android:src="@drawable/ic_dribbble_filled"/>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-medium"
-                android:text="290,936,742,552"
-                android:textColor="@color/charcoal"
-                android:textSize="17sp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-medium"
-                android:text="@string/drawer_pixels_dribbbled"
-                android:textColor="#767676"
-                android:textSize="12sp"/>
-
-        </LinearLayout>
-
-    </LinearLayout>-->
-
-</LinearLayout>
+</com.aluxian.drizzle.ui.ScrimInsetsFrameLayout>

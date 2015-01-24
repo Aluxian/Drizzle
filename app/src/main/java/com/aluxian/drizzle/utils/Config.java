@@ -6,7 +6,7 @@ public class Config {
     public static final int LOAD_ITEMS_THRESHOLD = 6;
 
     /** The number of results to load at a time when making requests to the Dribbble API. */
-    public static final int RESULTS_PER_PAGE = 25;
+    public static final int RESULTS_PER_PAGE = 30;
 
     /** The ID of the bucket from which the featured shots are displayed. */
     public static final int FEATURED_BUCKET_ID = 256408;

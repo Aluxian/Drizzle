@@ -1,63 +1,35 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout
+    android:id="@+id/drawer_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".MainActivity">
+    android:fitsSystemWindows="true"
+    tools:context=".activities.MainActivity">
 
-    <android.support.v4.widget.DrawerLayout
-        android:id="@+id/drawer_layout"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="match_parent">
 
-        <RelativeLayout
+        <com.aluxian.drizzle.ui.toolbar.EnhancedToolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:elevation="@dimen/toolbarElevation" />
 
-            <LinearLayout
-                android:id="@+id/wrapper"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/primary"
-                android:elevation="@dimen/toolbarElevation"
-                android:orientation="vertical">
+        <include layout="@layout/include_search_results" />
 
-                <com.aluxian.drizzle.ui.placeholders.StatusBarPlaceholder
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-                <com.aluxian.drizzle.ui.toolbar.EnhancedToolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </LinearLayout>
-
-            <include layout="@layout/include_search_results" />
-
-            <FrameLayout
-                android:id="@+id/fragment_container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@id/wrapper"
-                android:background="@color/background"
-                android:elevation="@dimen/toolbarElevation" />
-
-        </RelativeLayout>
-
-        <fragment
-            android:id="@+id/navigation_drawer"
-            android:name="com.aluxian.drizzle.fragments.DrawerFragment"
-            android:layout_width="@dimen/drawerWidth"
+        <FrameLayout
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="start"
-            tools:layout="@layout/fragment_drawer" />
+            android:layout_below="@id/toolbar"
+            android:background="@color/background"
+            android:elevation="@dimen/toolbarElevation" />
 
-    </android.support.v4.widget.DrawerLayout>
+    </RelativeLayout>
 
-    <com.aluxian.drizzle.ui.placeholders.NavigationBarPlaceholder
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+    <include layout="@layout/include_nav_drawer" />
 
-</LinearLayout>
+</android.support.v4.widget.DrawerLayout>

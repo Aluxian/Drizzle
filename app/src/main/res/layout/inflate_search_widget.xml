@@ -22,7 +22,7 @@
         android:layout_height="match_parent"
         android:layout_toStartOf="@id/clear"
         android:alpha="0"
-        android:background="@color/transparent"
+        android:background="@android:color/transparent"
         android:gravity="center_vertical"
         android:hint="@string/action_search"
         android:imeActionLabel="@string/action_search"

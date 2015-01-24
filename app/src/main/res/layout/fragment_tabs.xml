@@ -9,9 +9,10 @@
         android:id="@+id/tabs"
         android:layout_width="match_parent"
         android:layout_height="@dimen/tabsBarHeight"
-        android:background="@color/primary"
+        android:background="?android:attr/colorPrimary"
         android:elevation="@dimen/toolbarElevation"
         android:theme="@style/Drizzle.Dark"
+        app:pstsIndicatorColor="@android:color/white"
         app:pstsTabBackground="?android:attr/selectableItemBackground" />
 
     <android.support.v4.view.ViewPager

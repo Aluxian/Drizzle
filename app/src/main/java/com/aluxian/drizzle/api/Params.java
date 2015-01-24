@@ -1,56 +1,60 @@
 package com.aluxian.drizzle.api;
 
+import android.content.Context;
+
+import com.aluxian.drizzle.R;
+
+import java.util.Arrays;
+
 /**
  * Holds enums with possible parameter values used across the Dribbble API.
  */
 public class Params {
 
     public enum List {
-        ANY(null, "Any"),
-        TEAM_SHOTS("teams", "Team Shots"),
-        DEBUTS("debuts", "Debuts"),
-        PLAYOFFS("playoffs", "Playoffs"),
-        REBOUNDS("rebounds", "Rebounds"),
-        ANIMATED_GIFS("animated", "Animated GIFs"),
-        WITH_ATTACHMENTS("attachments", "Shots with Attachments");
+        ANY(null),
+        TEAM_SHOTS("teams"),
+        DEBUTS("debuts"),
+        PLAYOFFS("playoffs"),
+        REBOUNDS("rebounds"),
+        ANIMATED_GIFS("animated"),
+        WITH_ATTACHMENTS("attachments");
 
         public final String apiValue;
-        public final String humanReadableValue;
 
-        List(String apiValue, String humanReadableValue) {
+        List(String apiValue) {
             this.apiValue = apiValue;
-            this.humanReadableValue = humanReadableValue;
+        }
+
+        public String getHumanReadableValue(Context context) {
+            return context.getResources().getStringArray(R.array.filter_list_options)[Arrays.asList(List.values()).indexOf(this)];
         }
     }
 
     public enum Timeframe {
-        NOW(null, "Now"),
-        THIS_PAST_WEEK("week", "This Past Week"),
-        THIS_PAST_MONTH("month", "This Past Month"),
-        THIS_PAST_YEAR("year", "This Past Year"),
-        ALL_TIME("ever", "All Time");
+        NOW(null),
+        THIS_PAST_WEEK("week"),
+        THIS_PAST_MONTH("month"),
+        THIS_PAST_YEAR("year"),
+        ALL_TIME("ever");
 
         public final String apiValue;
-        public final String humanReadableValue;
 
-        Timeframe(String apiValue, String humanReadableValue) {
+        Timeframe(String apiValue) {
             this.apiValue = apiValue;
-            this.humanReadableValue = humanReadableValue;
         }
     }
 
     public enum Sort {
-        POPULAR(null, "Popular"),
-        RECENT("recent", "Recent"),
-        MOST_VIEWED("views", "Most Viewed"),
-        MOST_COMMENTED("comments", "Most Commented");
+        POPULAR(null),
+        RECENT("recent"),
+        MOST_VIEWED("views"),
+        MOST_COMMENTED("comments");
 
         public final String apiValue;
-        public final String humanReadableValue;
 
-        Sort(String apiValue, String humanReadableValue) {
+        Sort(String apiValue) {
             this.apiValue = apiValue;
-            this.humanReadableValue = humanReadableValue;
         }
     }
 

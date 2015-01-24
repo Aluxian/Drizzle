@@ -2,8 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".ShotsActivity">
+    tools:context=".activities.ShotActivity"
+    android:orientation="vertical">
 
     <com.aluxian.drizzle.ui.placeholders.StatusBarPlaceholder
         android:layout_width="match_parent"

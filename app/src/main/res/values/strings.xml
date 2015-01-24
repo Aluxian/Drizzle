@@ -50,6 +50,16 @@
     <string name="provider_following">Following</string>
     <string name="provider_featured">Featured</string>
 
+    <string-array name="filter_list_options">
+        <item>Any</item>
+        <item>Team Shots</item>
+        <item>Debuts</item>
+        <item>Playoffs</item>
+        <item>Rebounds</item>
+        <item>Animated GIFs</item>
+        <item>Shots with Attachments</item>
+    </string-array>
+
     <string-array name="filter_timeframe_options">
         <item>Now</item>
         <item>This Last Week</item>

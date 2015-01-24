@@ -3,29 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".AuthActivity">
-
-    <com.aluxian.drizzle.ui.placeholders.StatusBarPlaceholder
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="@dimen/toolbarElevation" />
+    tools:context=".activities.AuthActivity"
+    android:orientation="vertical">
 
     <com.aluxian.drizzle.ui.toolbar.EnhancedToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/primary"
+        android:background="?android:attr/colorPrimary"
         android:elevation="@dimen/toolbarElevation" />
 
     <WebView
         android:id="@+id/web_view"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
-
-    <com.aluxian.drizzle.ui.placeholders.NavigationBarPlaceholder
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent" />
 
 </LinearLayout>

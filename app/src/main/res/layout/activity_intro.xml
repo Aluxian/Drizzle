@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primary"
-    android:orientation="vertical"
-    tools:context=".IntroActivity">
+    tools:context=".activities.IntroActivity"
+    android:background="?android:attr/colorPrimary"
+    android:orientation="vertical">
 
     <!--<ImageView
         android:layout_width="match_parent"
@@ -49,8 +49,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:orientation="vertical"
-        android:theme="@style/Drizzle.Dark">
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -86,12 +85,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:text="@string/intro_sign_up"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            android:textColor="@android:color/white" />
 
     </LinearLayout>
-
-    <com.aluxian.drizzle.ui.placeholders.NavigationBarPlaceholder
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
 </LinearLayout>
