@@ -27,6 +27,7 @@ public class ShotsFragment extends Fragment implements ShotsAdapter.Callbacks {
 
     private ShotsAdapter mShotsAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private RecyclerView mRecyclerView;
     private View mErrorView;
 
     /**
@@ -84,12 +85,12 @@ public class ShotsFragment extends Fragment implements ShotsAdapter.Callbacks {
         animator.setSupportsChangeAnimations(true);
         animator.setAddDuration(300);
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.grid);
-        recyclerView.setHasFixedSize(true);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.grid);
+        mRecyclerView.setHasFixedSize(true);
 
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-        recyclerView.setItemAnimator(animator);
-        recyclerView.setAdapter(mShotsAdapter);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        mRecyclerView.setItemAnimator(animator);
+        mRecyclerView.setAdapter(mShotsAdapter);
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.accent);
@@ -140,6 +141,7 @@ public class ShotsFragment extends Fragment implements ShotsAdapter.Callbacks {
         shotsProvider.sortParam = sortParam;
 
         mSwipeRefreshLayout.setRefreshing(true);
+        mRecyclerView.smoothScrollToPosition(0);
         mShotsAdapter.onRefresh();
     }
 

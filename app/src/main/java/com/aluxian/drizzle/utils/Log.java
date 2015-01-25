@@ -12,7 +12,7 @@ import com.google.gson.Gson;
 public class Log {
 
     /** Delimiter for printing several values on the same line. */
-    private static final String DELIMITER = ", ";
+    private static final String DELIMITER = " ";
 
     /** String to add to the beginning of the tag. Used to differentiate dev's messages from the system's. */
     private static final String TAG_INIT = "/ ";

@@ -1,19 +1,18 @@
 package com.aluxian.drizzle.ui.toolbar;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.RelativeLayout;
 
 import com.aluxian.drizzle.R;
+import com.aluxian.drizzle.utils.Log;
 
 public class EnhancedToolbar extends RelativeLayout {
 
     /** Android's toolbar view. */
     private NativeToolbar mNativeToolbar;
-
-    /** An indeterminate-determinate progress bar view. */
-    private ProgressBarWidget mProgressBar;
 
     /** A view that display an EditText for searching. */
     private SearchWidget mSearchWidget;
@@ -35,14 +34,7 @@ public class EnhancedToolbar extends RelativeLayout {
 
     private void init(Context context) {
         mNativeToolbar = (NativeToolbar) LayoutInflater.from(context).inflate(R.layout.inflate_native_toolbar, this, false);
-        mProgressBar = (ProgressBarWidget) LayoutInflater.from(context).inflate(R.layout.inflate_progress_bar, this, false);
         mSearchWidget = (SearchWidget) LayoutInflater.from(context).inflate(R.layout.inflate_search_widget, this, false);
-
-        // Place the progress bar below the toolbar
-        LayoutParams progressBarParams = (LayoutParams) mProgressBar.getLayoutParams();
-        progressBarParams.addRule(RelativeLayout.BELOW, R.id.native_toolbar);
-        //progressBarParams.addRule(RelativeLayout.ALIGN_BOTTOM, R.id.native_toolbar);
-        mProgressBar.setLayoutParams(progressBarParams);
 
         // Make the search widget have the same height as the toolbar
         LayoutParams searchViewParams = (LayoutParams) mSearchWidget.getLayoutParams();
@@ -51,16 +43,11 @@ public class EnhancedToolbar extends RelativeLayout {
         mSearchWidget.setLayoutParams(searchViewParams);
 
         addView(mNativeToolbar);
-        addView(mProgressBar);
         addView(mSearchWidget);
     }
 
     public NativeToolbar getNativeToolbar() {
         return mNativeToolbar;
-    }
-
-    public ProgressBarWidget getProgressBar() {
-        return mProgressBar;
     }
 
     public SearchWidget getSearchView() {
@@ -77,13 +64,12 @@ public class EnhancedToolbar extends RelativeLayout {
     }
 
     /**
-     * Hides the toolbar and its widgets.
+     * Hides the toolbar.
      *
      * @param animate Whether the changes should be animated.
      */
     public void hide(boolean animate) {
         mNativeToolbar.hide(animate);
-        mProgressBar.hide(animate);
     }
 
 }

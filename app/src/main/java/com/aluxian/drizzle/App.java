@@ -5,12 +5,7 @@ import android.os.StrictMode;
 
 import com.aluxian.drizzle.activities.MainActivity;
 import com.aluxian.drizzle.api.ApiRequest;
-import com.aluxian.drizzle.utils.Config;
-import com.aluxian.drizzle.utils.Log;
 import com.aluxian.drizzle.utils.UserManager;
-import com.iainconnor.objectcache.DiskCache;
-
-import java.io.IOException;
 
 public class App extends Application {
 
@@ -27,11 +22,7 @@ public class App extends Application {
         }
 
         // Set the cache that ApiRequest objects can use
-        try {
-            ApiRequest.diskCache(new DiskCache(getCacheDir(), BuildConfig.VERSION_CODE, Config.CACHE_SIZE));
-        } catch (IOException e) {
-            Log.e(e);
-        }
+        ApiRequest.initCache(this);
     }
 
 }

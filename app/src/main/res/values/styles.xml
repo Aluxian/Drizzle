@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Drizzle" parent="android:Theme.Material.Light.NoActionBar">
+    <style name="Drizzle" />
+
+    <style name="Drizzle.Theme" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:textColor">@android:color/white</item>
-        <item name="android:colorAccent">@color/primary</item>
+        <item name="android:colorAccent">@color/accent</item>
         <item name="android:colorPrimary">@color/primary</item>
         <item name="android:colorPrimaryDark">@color/primaryDark</item>
         <item name="android:colorControlHighlight">@color/ripple_material_lightly</item>
@@ -11,47 +13,48 @@
         <item name="android:windowBackground">@color/background</item>
     </style>
 
-    <style name="Drizzle.Dark" parent="android:Theme.Material.NoActionBar">
+    <style name="Drizzle.Theme.Dark" parent="android:Theme.Material.NoActionBar">
         <item name="android:textColor">@android:color/white</item>
-        <item name="android:colorAccent">@android:color/white</item>
+        <item name="android:colorAccent">@color/accent</item>
         <item name="android:colorPrimary">@color/primary</item>
         <item name="android:colorPrimaryDark">@color/primaryDark</item>
         <item name="android:navigationBarColor">@color/charcoal</item>
     </style>
 
-    <style name="Drizzle.Activity.Main" parent="Drizzle">
-        <item name="android:windowTranslucentStatus">true</item>
+    <style name="Drizzle.Activity.Auth" parent="Drizzle.Theme.Dark">
+
     </style>
 
-    <style name="Drizzle.Activity.Auth" parent="Drizzle.Dark">
-        <item name="android:colorAccent">@color/primary</item>
-        <item name="android:colorControlActivated">@color/primary</item>
-    </style>
-
-    <style name="Drizzle.Activity.Intro" parent="Drizzle.Dark">
-        <item name="android:colorAccent">@color/primary</item>
+    <style name="Drizzle.Activity.Intro" parent="Drizzle.Theme.Dark">
         <item name="android:colorButtonNormal">@color/primaryDark</item>
     </style>
 
-    <style name="Drizzle.Dialog" parent="android:Theme.Material.Light.Dialog.Alert">
+    <style name="Drizzle.Activity.Main" parent="Drizzle.Theme">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
+
+    <style name="Drizzle.Widget" />
+
+    <style name="Drizzle.Widget.Dialog" parent="android:Theme.Material.Light.Dialog.Alert">
         <item name="android:textColor">@color/charcoal</item>
-        <item name="android:colorAccent">@color/primary</item>
+        <item name="android:colorAccent">@color/accent</item>
         <item name="android:colorControlHighlight">@color/ripple_material_lightly</item>
     </style>
 
-    <style name="Drizzle.Divider">
+    <style name="Drizzle.Widget.Divider">
         <item name="android:background">?android:attr/listDivider</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>
     </style>
 
-    <style name="Drizzle.Spinner">
+    <style name="Drizzle.Widget.Spinner">
         <item name="android:textColor">@color/charcoal</item>
-        <item name="android:spinnerDropDownItemStyle">@style/Drizzle.Spinner.DropdownItem</item>
         <item name="android:spinnerItemStyle">@android:style/Widget.Material.Light.TextView.SpinnerItem</item>
+        <item name="android:spinnerDropDownItemStyle">@style/Drizzle.Widget.SpinnerDropDownItemStyle</item>
     </style>
 
-    <style name="Drizzle.Spinner.DropdownItem" parent="android:Widget.Material.Light.DropDownItem">
+    <style name="Drizzle.Widget.SpinnerDropDownItemStyle" parent="android:Widget.Material.Light.DropDownItem">
         <item name="android:gravity">center_vertical</item>
         <item name="android:paddingStart">12dp</item>
     </style>

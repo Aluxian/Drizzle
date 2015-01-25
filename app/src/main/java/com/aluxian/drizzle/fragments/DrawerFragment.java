@@ -22,9 +22,9 @@ import com.aluxian.drizzle.api.ApiRequest;
 import com.aluxian.drizzle.api.Dribbble;
 import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.utils.Config;
-import com.aluxian.drizzle.utils.Dp;
 import com.aluxian.drizzle.utils.Log;
 import com.aluxian.drizzle.utils.UserManager;
+import com.aluxian.drizzle.utils.Utils;
 import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
 
@@ -125,7 +125,7 @@ public class DrawerFragment extends Fragment implements UserManager.AuthStateCha
 
         // Add a margin at the top and at the bottom of the list
         View spacingView = new View(getActivity());
-        spacingView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, new Dp(8).toPx(getActivity())));
+        spacingView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.dpToPx(3, getActivity())));
 
         mListView.addHeaderView(spacingView, null, false);
         mListView.addFooterView(spacingView, null, false);

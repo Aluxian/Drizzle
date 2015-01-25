@@ -5,4 +5,4 @@
     android:layout_height="wrap_content"
     android:background="?android:attr/colorPrimary"
     android:contentInsetStart="72dp"
-    android:theme="@style/Drizzle.Dark" />
+    android:theme="@style/Drizzle.Theme.Dark" />

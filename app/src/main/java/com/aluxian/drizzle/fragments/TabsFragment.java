@@ -24,6 +24,7 @@ import java.util.Arrays;
 
 public class TabsFragment extends Fragment {
 
+    /** The ViewPager that displays the fragments for the tabs. */
     private ViewPager mViewPager;
 
     public static TabsFragment newInstance(Type type) {
@@ -55,7 +56,6 @@ public class TabsFragment extends Fragment {
 
         // Bind the tabs strip to the ViewPager
         PagerSlidingTabStrip tabStrip = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
-        tabStrip.setShouldExpand(true);
         tabStrip.setViewPager(mViewPager);
 
         return view;
@@ -102,7 +102,7 @@ public class TabsFragment extends Fragment {
                 timeframeSpinner.setSelection(Arrays.asList(Params.Timeframe.values()).indexOf(fragment.getTimeframeParam()));
                 sortSpinner.setSelection(Arrays.asList(Params.Sort.values()).indexOf(fragment.getSortParam()));
 
-                new AlertDialog.Builder(getActivity(), R.style.Drizzle_Dialog)
+                new AlertDialog.Builder(getActivity(), R.style.Drizzle_Widget_Dialog)
                         .setView(view)
                         .setPositiveButton(R.string.dialog_apply, (dialog, which) -> fragment.updateParameters(
                                 Params.Timeframe.values()[timeframeSpinner.getSelectedItemPosition()],

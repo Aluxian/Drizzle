@@ -1,5 +1,6 @@
 package com.aluxian.drizzle.api;
 
+import android.content.Context;
 import android.net.Uri;
 
 import com.aluxian.drizzle.api.exceptions.BadCredentialsException;
@@ -11,12 +12,8 @@ import com.aluxian.drizzle.utils.UserManager;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
 import com.google.gson.internal.bind.DateTypeAdapter;
 import com.google.gson.reflect.TypeToken;
-import com.iainconnor.objectcache.CacheManager;
-import com.iainconnor.objectcache.DiskCache;
-import com.iainconnor.objectcache.PutCallback;
 import com.squareup.okhttp.CacheControl;
 import com.squareup.okhttp.Headers;
 import com.squareup.okhttp.OkHttpClient;
@@ -25,13 +22,11 @@ import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static com.iainconnor.objectcache.CacheManager.ExpiryTimes;
 
 /**
  * Request builder for Dribbble API requests. Can be used for any other URL too.
@@ -42,23 +37,28 @@ public class ApiRequest<T> extends Request.Builder {
 
     private static final Pattern LINK_NEXT_URL_PATTERN = Pattern.compile("<([^>]*)>; rel=\"next\"");
 
-    private static CacheManager mCacheManager;
+    private static ApiCache mApiCache;
     private static OkHttpClient mHttpClient = new OkHttpClient();
-    private static Gson mGson = new GsonBuilder()
+
+    public static Gson gson = new GsonBuilder()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
             .registerTypeAdapter(Date.class, new DateTypeAdapter())
             .create();
 
     private boolean mUseCache;
-    private Type mResponseType;
+    private TypeToken<T> mResponseType;
     private String mUrl = Config.API_ENDPOINT;
 
     /**
-     * @param diskCache A DiskCache instance to use for cache storage.
+     * Creates a new ApiCache instance to be used for caching future requests.
+     *
+     * @param context A context used to retrieve the cache directory.
      */
-    public static void diskCache(DiskCache diskCache) {
-        if (diskCache != null) {
-            mCacheManager = CacheManager.getInstance(diskCache);
+    public static void initCache(Context context) {
+        try {
+            mApiCache = new ApiCache(context);
+        } catch (IOException e) {
+            Log.e(e);
         }
     }
 
@@ -93,7 +93,7 @@ public class ApiRequest<T> extends Request.Builder {
      * @return This instance.
      */
     public ApiRequest<T> responseType(TypeToken<T> responseType) {
-        mResponseType = responseType.getType();
+        mResponseType = responseType;
         return this;
     }
 
@@ -215,8 +215,7 @@ public class ApiRequest<T> extends Request.Builder {
      * @return Whether the request can be fulfilled immediately (from cache).
      */
     public boolean canLoadImmediately() {
-        Type responseType = new TypeToken<Dribbble.Response>() {}.getType();
-        return mCacheManager != null && mCacheManager.get(build().urlString(), Dribbble.Response.class, responseType) != null;
+        return mApiCache != null && mApiCache.containsNotExpired(build().urlString());
     }
 
     /**
@@ -279,14 +278,8 @@ public class ApiRequest<T> extends Request.Builder {
      */
     @SuppressWarnings("unchecked")
     private Dribbble.Response<T> getFromCache(String key) {
-        if (mCacheManager != null) {
-            Dribbble.Response<JsonElement> cached = (Dribbble.Response<JsonElement>)
-                    mCacheManager.get(key, Dribbble.Response.class, new TypeToken<Dribbble.Response<JsonElement>>() {}.getType());
-
-            if (cached != null) {
-                Log.d("Loaded " + key + " from cache");
-                return new Dribbble.Response<>((T) mGson.fromJson(cached.data, mResponseType), cached.nextPageUrl);
-            }
+        if (mApiCache != null) {
+            return mApiCache.get(key, mResponseType);
         }
 
         return null;
@@ -324,23 +317,14 @@ public class ApiRequest<T> extends Request.Builder {
         }
 
         // Parse the response
-        T data = mGson.fromJson(body, mResponseType);
+        T data = gson.fromJson(body, mResponseType.getType());
         String nextPageUrl = extractNextPageUrl(httpResponse.headers().get("Link"));
         Dribbble.Response<T> dribbbleResponse = new Dribbble.Response<>(data, nextPageUrl);
 
         // Cache the response
-        if (mCacheManager != null && request.method().equalsIgnoreCase("GET")) {
-            mCacheManager.putAsync(requestHash, dribbbleResponse, ExpiryTimes.ONE_HOUR.asSeconds(), false, new PutCallback() {
-                @Override
-                public void onSuccess() {
-                    Log.d("Cached " + requestHash);
-                }
-
-                @Override
-                public void onFailure(Exception e) {
-                    Log.e(e);
-                }
-            });
+        if (mApiCache != null && request.method().equalsIgnoreCase("GET")) {
+            mApiCache.put(requestHash, dribbbleResponse, TimeUnit.HOURS.toMillis(1));
+            Log.d("Cached " + requestHash);
         }
 
         return dribbbleResponse;

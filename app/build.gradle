@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.github.ben-manes.versions'
 apply plugin: 'me.tatarka.retrolambda'
 
 repositories {
@@ -43,7 +44,6 @@ android {
 // TODO: git versioning
 // TODO: signing configs (w/ public for ease)
 // TODO: gradle.properties or git encrypted keys
-// plugin for deps update
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -55,6 +55,6 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.4.0'
     compile 'com.squareup.okhttp:okhttp:2.1.0'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.1.0'
-    compile 'com.iainconnor:objectcache:0.0.18-SNAPSHOT'
     compile 'com.google.code.gson:gson:2.3'
+    compile 'com.jakewharton:disklrucache:2.0.2'
 }

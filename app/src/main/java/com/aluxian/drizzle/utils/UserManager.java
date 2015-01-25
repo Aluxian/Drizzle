@@ -55,7 +55,7 @@ public class UserManager {
      * @param accessToken The access token to store.
      */
     public void putAccessToken(String accessToken) {
-        Log.d("Putting access token");
+        Log.d("Storing access token");
         mSharedPrefs.edit().putString(MainActivity.PREF_API_AUTH_TOKEN, accessToken).apply();
         stateChanged(true);
     }

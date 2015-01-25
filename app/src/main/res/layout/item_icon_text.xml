@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="48dp"
-    android:theme="@style/Drizzle.Dark"
+    android:theme="@style/Drizzle.Theme.Dark"
     android:background="?android:attr/selectableItemBackground">
 
     <ImageView

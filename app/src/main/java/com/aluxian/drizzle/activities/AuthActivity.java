@@ -2,15 +2,18 @@ package com.aluxian.drizzle.activities;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ProgressDialog;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.webkit.CookieManager;
-import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.aluxian.drizzle.R;
 import com.aluxian.drizzle.api.Dribbble;
@@ -18,8 +21,6 @@ import com.aluxian.drizzle.api.exceptions.AuthorizationException;
 import com.aluxian.drizzle.api.exceptions.BadRequestException;
 import com.aluxian.drizzle.api.exceptions.TooManyRequestsException;
 import com.aluxian.drizzle.api.models.Credentials;
-import com.aluxian.drizzle.ui.toolbar.EnhancedToolbar;
-import com.aluxian.drizzle.ui.toolbar.ProgressBarWidget;
 import com.aluxian.drizzle.utils.Config;
 import com.aluxian.drizzle.utils.Log;
 import com.aluxian.drizzle.utils.UserManager;
@@ -36,11 +37,7 @@ public class AuthActivity extends Activity {
     /** A random string to prevent request forgery attacks. */
     private String mState = UUID.randomUUID().toString();
 
-    /** The progress bar shown in the toolbar. */
-    private ProgressBarWidget mProgressBar;
-
-    /** ProgressDialog shown while the token exchange happens. */
-    private ProgressDialog mDialog;
+    MenuItem loadingItem;
 
     @SuppressWarnings("ConstantConditions")
     @SuppressLint("SetJavaScriptEnabled")
@@ -50,12 +47,7 @@ public class AuthActivity extends Activity {
         setContentView(R.layout.activity_auth);
 
         // Load the toolbar
-        EnhancedToolbar toolbar = (EnhancedToolbar) findViewById(R.id.toolbar);
-        toolbar.getNativeToolbar().setTitle(R.string.auth_title);
-        toolbar.getProgressBar().show(false);
-        mProgressBar = toolbar.getProgressBar();
-
-        setActionBar(toolbar.getNativeToolbar());
+        setActionBar((Toolbar) findViewById(R.id.toolbar));
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Clean previous session data
@@ -63,7 +55,6 @@ public class AuthActivity extends Activity {
 
         // Initialise the WebView
         WebView webView = (WebView) findViewById(R.id.web_view);
-        webView.setWebChromeClient(new AuthWebChromeClient());
         webView.setWebViewClient(new AuthWebViewClient());
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setSaveFormData(false);
@@ -73,34 +64,15 @@ public class AuthActivity extends Activity {
         Log.d("Loading authorization url: " + AUTHORIZE_URL + mState);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mDialog != null && mDialog.isShowing()) {
-            mDialog.dismiss();
-        }
-    }
-
-    /**
-     * WebChromeClient that intercepts url query progress.
-     */
-    private class AuthWebChromeClient extends WebChromeClient {
-
-        @Override
-        public void onProgressChanged(WebView view, int newProgress) {
-            mProgressBar.setProgress(newProgress);
-
-            if (newProgress == 100) {
-                mProgressBar.hide(true);
-            }
-        }
-
-    }
-
     /**
      * WebViewClient that intercepts the callback url and parses it.
      */
     private class AuthWebViewClient extends WebViewClient {
+
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            loadingItem.setVisible(false);
+        }
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -125,28 +97,18 @@ public class AuthActivity extends Activity {
                 }
 
                 return true;
-            } else {
-                mProgressBar.setProgress(0);
-                mProgressBar.show(true);
             }
 
+            loadingItem.setVisible(true);
             return false;
         }
 
     }
 
     /**
-     * Background task that exchanges the OAuth authorization code for an access token while showing a progress dialog for the user.
+     * Background task that exchanges the OAuth authorization code for an access token.
      */
     private class ExchangeTokenAsyncTask extends AsyncTask<String, Void, Dribbble.Response<Credentials>> {
-
-        @Override
-        protected void onPreExecute() {
-            mDialog = new ProgressDialog(AuthActivity.this, R.style.Drizzle_Dialog);
-            mDialog.setMessage(getString(R.string.auth_connecting));
-            mDialog.setCancelable(false);
-            mDialog.show();
-        }
 
         @Override
         protected Dribbble.Response<Credentials> doInBackground(String... params) {
@@ -182,13 +144,23 @@ public class AuthActivity extends Activity {
                 Toast.makeText(AuthActivity.this, getString(R.string.auth_unexpected_error), Toast.LENGTH_LONG).show();
             }
 
-            if (mDialog.isShowing()) {
-                mDialog.dismiss();
-            }
-
             finish();
         }
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.auth, menu);
+        loadingItem = menu.findItem(R.id.loading);
+        loadingItem.setActionView(R.layout.inflate_indeterminate_progress);
+        ((ProgressBar) loadingItem.getActionView().findViewById(R.id.progress_bar)).getIndeterminateDrawable().setTint(Color.WHITE);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
     }
 
 }

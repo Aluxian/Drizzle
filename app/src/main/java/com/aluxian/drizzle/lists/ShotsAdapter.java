@@ -49,7 +49,7 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.ViewHolder> 
         mCallbacks = callbacks;
         mShotsProvider = shotsProvider;
 
-        // Load first items
+        // Load the first items
         new LoadItemsIfRequiredTask(0).execute();
     }
 

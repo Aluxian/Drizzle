@@ -167,7 +167,7 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
                 } catch (ActivityNotFoundException e) {
                     Log.d(e);
 
-                    new AlertDialog.Builder(this, R.style.Drizzle_Dialog)
+                    new AlertDialog.Builder(this, R.style.Drizzle_Widget_Dialog)
                             .setMessage(getString(R.string.send_feedback_error, Config.FEEDBACK_EMAIL))
                             .setPositiveButton(R.string.dialog_ok, null)
                             .show();
