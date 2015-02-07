@@ -1,13 +1,10 @@
-package com.aluxian.drizzle.ui.toolbar;
+package com.aluxian.drizzle.views.toolbar;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
-import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.Transformation;
 import android.widget.ActionMenuView;
 import android.widget.TextView;
 import android.widget.Toolbar;

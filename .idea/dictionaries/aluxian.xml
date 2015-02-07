@@ -4,6 +4,7 @@
       <w>aluxian</w>
       <w>apikey</w>
       <w>crashlytics</w>
+      <w>desaturate</w>
       <w>deserialization</w>
       <w>dribbble</w>
       <w>dribbbled</w>
@@ -17,8 +18,10 @@
       <w>navbar</w>
       <w>ncrafted</w>
       <w>nlike</w>
+      <w>offscreen</w>
       <w>preload</w>
       <w>recycler</w>
+      <w>stackoverflow</w>
       <w>statusbar</w>
       <w>subheader</w>
       <w>tabbar</w>
@@ -29,6 +32,7 @@
       <w>unprocessable</w>
       <w>versioning</w>
       <w>webview</w>
+      <w>yyyy</w>
     </words>
   </dictionary>
 </component>

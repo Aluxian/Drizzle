@@ -34,7 +34,7 @@ public class FeedPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return ShotsFragment.newInstance(new ArrayList<>(PROVIDERS.values()).get(position), null);
+        return ShotsFragment.newInstance(new ArrayList<>(PROVIDERS.values()).get(position), null, position * 100);
     }
 
     @Override

@@ -5,7 +5,7 @@ import com.aluxian.drizzle.api.Params;
 import com.aluxian.drizzle.api.exceptions.BadRequestException;
 import com.aluxian.drizzle.api.exceptions.TooManyRequestsException;
 import com.aluxian.drizzle.api.models.Shot;
-import com.aluxian.drizzle.utils.Config;
+import com.aluxian.drizzle.utils.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,12 +30,14 @@ public class FilteredShotsProvider extends ShotsProvider {
             mLastResponse = Dribbble.listShots(listParam, timeframeParam, sortParam).execute();
 
             if (mLastResponse != null) {
+                Log.d(mLastResponse.nextPageUrl);
                 return mLastResponse.data;
             }
         } else if (mLastResponse.nextPageUrl != null) {
             mLastResponse = Dribbble.listNextPage(mLastResponse.nextPageUrl).execute();
 
             if (mLastResponse != null) {
+                Log.d(mLastResponse.nextPageUrl);
                 return mLastResponse.data;
             }
         }

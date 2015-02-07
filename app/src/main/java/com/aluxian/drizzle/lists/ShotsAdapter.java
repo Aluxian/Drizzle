@@ -1,7 +1,10 @@
 package com.aluxian.drizzle.lists;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -15,12 +18,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aluxian.drizzle.R;
+import com.aluxian.drizzle.activities.ShotActivity;
 import com.aluxian.drizzle.api.exceptions.BadRequestException;
 import com.aluxian.drizzle.api.exceptions.TooManyRequestsException;
 import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.api.providers.ShotsProvider;
+import com.aluxian.drizzle.utils.AlphaSatColorMatrixEvaluator;
 import com.aluxian.drizzle.utils.Config;
 import com.aluxian.drizzle.utils.Log;
+import com.google.gson.Gson;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -62,38 +69,51 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.ViewHolder> 
     public void onBindViewHolder(ViewHolder holder, int position) {
         Shot shot = mShotsList.get(position);
 
-        Resources resources = mContext.getResources();
-        int iconColor = resources.getColor(R.color.card_actions);
-
-        //holder.viewsIcon.setColorFilter(iconColor, PorterDuff.Mode.MULTIPLY);
-        holder.commentsIcon.setColorFilter(iconColor, PorterDuff.Mode.MULTIPLY);
-        holder.likesIcon.setColorFilter(iconColor, PorterDuff.Mode.MULTIPLY);
-
         //holder.viewsCount.setText(String.valueOf(shot.viewsCount));
         holder.commentsCount.setText(String.valueOf(shot.viewsCount));
         holder.likesCount.setText(String.valueOf(shot.likesCount));
 
-        /*holder.image.setOnClickListener(new View.OnClickListener() {
+        holder.image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(activity, ShotActivity.class);
+                /*Intent intent = new Intent(activity, ShotActivity.class);
                 ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(activity, holder.image, "robot");
-                activity.startActivity(intent, options.toBundle());
+                activity.startActivity(intent, options.toBundle());*/
+
+                Intent intent = new Intent(mContext, ShotActivity.class);
+                intent.putExtra(ShotActivity.EXTRA_SHOT_DATA, new Gson().toJson(shot));
+                mContext.startActivity(intent);
             }
-        });*/
+        });
 
         if (!shot.images.normal.equals(holder.image.getTag())) {
             holder.image.setTag(shot.images.normal);
             Picasso.with(holder.image.getContext())
                     .load(shot.images.normal)
-                    .placeholder(R.drawable.bg_placeholder)
-                    .into(holder.image);
+                    //.placeholder(R.drawable.bg_placeholder)
+                    .noFade()
+                    .into(holder.image, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            AlphaSatColorMatrixEvaluator evaluator = new AlphaSatColorMatrixEvaluator();
+                            ColorMatrixColorFilter filter = new ColorMatrixColorFilter(evaluator.getColorMatrix());
+                            holder.image.getDrawable().setColorFilter(filter);
+
+                            ObjectAnimator animator = ObjectAnimator.ofObject(filter, "colorMatrix", evaluator, evaluator.getColorMatrix());
+                            animator.addUpdateListener(animation -> holder.image.getDrawable().setColorFilter(filter));
+                            animator.setDuration(1000);
+                            animator.start();
+                        }
+
+                        @Override
+                        public void onError() {
+
+                        }
+                    });
         }
 
         // If position is near the end of the list, load more items from the API
         new LoadItemsIfRequiredTask(position).execute();
-
-        preloadImages(position + 1);
     }
 
     @Override
@@ -125,7 +145,7 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.ViewHolder> 
                 mIsLoadingItems = true;
             } else {
                 cancel(true);
-                preloadImages(mPosition + 1);
+                //preloadImages(mPosition + 1);
             }
         }
 
@@ -150,7 +170,7 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.ViewHolder> 
 
             mIsLoadingItems = false;
             new Handler().postDelayed(() -> mCallbacks.onAdapterLoadingFinished(response != null), 500);
-            preloadImages(mPosition + 1);
+            //preloadImages(mPosition + 1);
         }
 
     }
@@ -226,7 +246,7 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.ViewHolder> 
             super(itemView);
 
             card = (CardView) itemView;
-            image = (ImageView) itemView.findViewById(R.id.image);
+            image = (ImageView) itemView.findViewById(R.id.shared_cover_image);
 
             //viewsIcon = (ImageView) v.findViewById(R.id.views_icon);
             commentsIcon = (ImageView) itemView.findViewById(R.id.comments_icon);

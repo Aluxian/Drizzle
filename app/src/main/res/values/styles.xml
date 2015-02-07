@@ -4,7 +4,6 @@
     <style name="Drizzle" />
 
     <style name="Drizzle.Theme" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:textColor">@android:color/white</item>
         <item name="android:colorAccent">@color/accent</item>
         <item name="android:colorPrimary">@color/primary</item>
         <item name="android:colorPrimaryDark">@color/primaryDark</item>
@@ -14,11 +13,14 @@
     </style>
 
     <style name="Drizzle.Theme.Dark" parent="android:Theme.Material.NoActionBar">
-        <item name="android:textColor">@android:color/white</item>
         <item name="android:colorAccent">@color/accent</item>
         <item name="android:colorPrimary">@color/primary</item>
         <item name="android:colorPrimaryDark">@color/primaryDark</item>
         <item name="android:navigationBarColor">@color/charcoal</item>
+    </style>
+
+    <style name="Drizzle.Theme.SearchWidget" parent="Drizzle.Theme.Dark">
+        <item name="android:colorAccent">@android:color/white</item>
     </style>
 
     <style name="Drizzle.Activity.Auth" parent="Drizzle.Theme.Dark">
@@ -30,6 +32,11 @@
     </style>
 
     <style name="Drizzle.Activity.Main" parent="Drizzle.Theme">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
+
+    <style name="Drizzle.Activity.Shot" parent="Drizzle.Theme">
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
     </style>
@@ -58,11 +65,5 @@
         <item name="android:gravity">center_vertical</item>
         <item name="android:paddingStart">12dp</item>
     </style>
-
-    <!--<item name="android:windowContentTransitions">true</item>
-    <item name="android:windowEnterTransition">@android:transition/fade</item>
-    <item name="android:windowExitTransition">@android:transition/fade</item>
-    <item name="android:windowSharedElementEnterTransition">@transition/change_image_transform</item>
-    <item name="android:windowSharedElementExitTransition">@transition/change_image_transform</item>-->
 
 </resources>

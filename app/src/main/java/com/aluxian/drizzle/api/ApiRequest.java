@@ -2,6 +2,7 @@ package com.aluxian.drizzle.api;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 
 import com.aluxian.drizzle.api.exceptions.BadCredentialsException;
 import com.aluxian.drizzle.api.exceptions.BadRequestException;
@@ -261,13 +262,32 @@ public class ApiRequest<T> extends Request.Builder {
      * @param callback A callback instance to be called when execution is complete.
      */
     public void execute(Callback<T> callback) {
-        new Thread(() -> {
-            try {
-                callback.onSuccess(execute());
-            } catch (IOException | BadRequestException | TooManyRequestsException e) {
-                callback.onError(e);
+        ApiRequest<T> self = this;
+        new AsyncTask<Void, Void, Dribbble.Response<T>>() {
+
+            private Exception mException;
+
+            @Override
+            protected Dribbble.Response<T> doInBackground(Void... params) {
+                try {
+                    return self.execute();
+                } catch (IOException | BadRequestException | TooManyRequestsException e) {
+                    mException = e;
+                }
+
+                return null;
             }
-        }).start();
+
+            @Override
+            protected void onPostExecute(Dribbble.Response<T> result) {
+                if (result != null) {
+                    callback.onSuccess(result);
+                } else {
+                    callback.onError(mException);
+                }
+            }
+
+        }.execute();
     }
 
     /**

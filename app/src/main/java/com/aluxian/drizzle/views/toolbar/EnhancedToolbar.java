@@ -1,13 +1,11 @@
-package com.aluxian.drizzle.ui.toolbar;
+package com.aluxian.drizzle.views.toolbar;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.RelativeLayout;
 
 import com.aluxian.drizzle.R;
-import com.aluxian.drizzle.utils.Log;
 
 public class EnhancedToolbar extends RelativeLayout {
 

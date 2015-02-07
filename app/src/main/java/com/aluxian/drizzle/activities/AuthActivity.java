@@ -37,7 +37,8 @@ public class AuthActivity extends Activity {
     /** A random string to prevent request forgery attacks. */
     private String mState = UUID.randomUUID().toString();
 
-    MenuItem loadingItem;
+    /** A menu item in the toolbar that displays an indeterminate progress indicator. */
+    private MenuItem mLoadingIndicatorItem;
 
     @SuppressWarnings("ConstantConditions")
     @SuppressLint("SetJavaScriptEnabled")
@@ -49,6 +50,7 @@ public class AuthActivity extends Activity {
         // Load the toolbar
         setActionBar((Toolbar) findViewById(R.id.toolbar));
         getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_left);
 
         // Clean previous session data
         CookieManager.getInstance().removeAllCookies(null);
@@ -71,7 +73,8 @@ public class AuthActivity extends Activity {
 
         @Override
         public void onPageFinished(WebView view, String url) {
-            loadingItem.setVisible(false);
+            // TODO: Show a Refresh icon when inactive
+            mLoadingIndicatorItem.getActionView().animate().alpha(0).setDuration(100);
         }
 
         @Override
@@ -99,7 +102,7 @@ public class AuthActivity extends Activity {
                 return true;
             }
 
-            loadingItem.setVisible(true);
+            mLoadingIndicatorItem.getActionView().animate().alpha(1).setDuration(100);
             return false;
         }
 
@@ -152,9 +155,10 @@ public class AuthActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.auth, menu);
-        loadingItem = menu.findItem(R.id.loading);
-        loadingItem.setActionView(R.layout.inflate_indeterminate_progress);
-        ((ProgressBar) loadingItem.getActionView().findViewById(R.id.progress_bar)).getIndeterminateDrawable().setTint(Color.WHITE);
+        mLoadingIndicatorItem = menu.findItem(R.id.loading);
+        mLoadingIndicatorItem.setActionView(R.layout.inflate_indeterminate_progress);
+        ((ProgressBar) mLoadingIndicatorItem.getActionView().findViewById(R.id.progress_bar))
+                .getIndeterminateDrawable().setTint(Color.WHITE);
         return true;
     }
 

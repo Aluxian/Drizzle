@@ -1,4 +1,4 @@
-<com.aluxian.drizzle.ui.ScrimInsetsFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.aluxian.drizzle.views.ScrimInsetsFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -13,7 +13,7 @@
         android:clickable="true"
         android:orientation="vertical">
 
-        <com.aluxian.drizzle.ui.FixedAspectRatioRelativeLayout
+        <com.aluxian.drizzle.views.FixedAspectRatioRelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:aspectRatioHeight="10"
@@ -30,7 +30,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/drawer_cover_overlay" />
+                android:background="@drawable/overlay_drawer_cover" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -80,7 +80,7 @@
                 android:background="@color/slate"
                 android:contentDescription="@null"/>-->
 
-        </com.aluxian.drizzle.ui.FixedAspectRatioRelativeLayout>
+        </com.aluxian.drizzle.views.FixedAspectRatioRelativeLayout>
 
         <ListView
             android:id="@+id/list"
@@ -93,4 +93,4 @@
 
     </LinearLayout>
 
-</com.aluxian.drizzle.ui.ScrimInsetsFrameLayout>
+</com.aluxian.drizzle.views.ScrimInsetsFrameLayout>

@@ -20,19 +20,12 @@ public final class Shot {
     public final Date createdAt;
     public final Date updatedAt;
     public final String htmlUrl;
-    public final String attachmentsUrl;
-    public final String bucketsUrl;
-    public final String commentsUrl;
-    public final String likesUrl;
-    public final String projectsUrl;
-    public final String reboundsUrl;
     public final List<String> tags;
     public final User user;
     public final Team team;
 
     public Shot(int id, String title, String description, int width, int height, Images images, int viewsCount, int likesCount, int
             commentsCount, int attachmentsCount, int reboundsCount, int bucketsCount, Date createdAt, Date updatedAt, String htmlUrl,
-                String attachmentsUrl, String bucketsUrl, String commentsUrl, String likesUrl, String projectsUrl, String reboundsUrl,
                 List<String> tags, User user, Team team) {
         this.id = id;
         this.title = title;
@@ -49,12 +42,6 @@ public final class Shot {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.htmlUrl = htmlUrl;
-        this.attachmentsUrl = attachmentsUrl;
-        this.bucketsUrl = bucketsUrl;
-        this.commentsUrl = commentsUrl;
-        this.likesUrl = likesUrl;
-        this.projectsUrl = projectsUrl;
-        this.reboundsUrl = reboundsUrl;
         this.tags = tags;
         this.user = user;
         this.team = team;
@@ -72,7 +59,7 @@ public final class Shot {
             this.teaser = teaser;
         }
 
-        public String getLargest() {
+        public String largest() {
             if (hidpi != null) {
                 return hidpi;
             }

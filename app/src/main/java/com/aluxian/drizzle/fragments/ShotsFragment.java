@@ -24,6 +24,7 @@ public class ShotsFragment extends Fragment implements ShotsAdapter.Callbacks {
 
     private static final String ARG_PROVIDER_CLASS = "provider_class";
     private static final String ARG_LIST_API_VALUE = "list_api_value";
+    private static final String ARG_LOAD_DELAY = "load_delay";
 
     private ShotsAdapter mShotsAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -35,11 +36,13 @@ public class ShotsFragment extends Fragment implements ShotsAdapter.Callbacks {
      *
      * @param clazz        The class of the ShotsProvider to use for this fragments adapter.
      * @param listApiValue The Params.List argument for FilteredShotsProvider.
+     * @param loadDelay    How much time to wait before loading the items.
      * @return An instance of the fragment.
      */
-    public static ShotsFragment newInstance(Class<? extends ShotsProvider> clazz, Params.List listApiValue) {
+    public static ShotsFragment newInstance(Class<? extends ShotsProvider> clazz, Params.List listApiValue, int loadDelay) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(ARG_PROVIDER_CLASS, clazz);
+        bundle.putInt(ARG_LOAD_DELAY, loadDelay);
 
         if (listApiValue != null) {
             bundle.putString(ARG_LIST_API_VALUE, listApiValue.name());
@@ -91,6 +94,7 @@ public class ShotsFragment extends Fragment implements ShotsAdapter.Callbacks {
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         mRecyclerView.setItemAnimator(animator);
         mRecyclerView.setAdapter(mShotsAdapter);
+        //mRecyclerView.postDelayed(() -> mRecyclerView.setAdapter(mShotsAdapter), getArguments().getInt(ARG_LOAD_DELAY));
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.accent);

@@ -1,4 +1,4 @@
-package com.aluxian.drizzle.ui;
+package com.aluxian.drizzle.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;

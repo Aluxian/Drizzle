@@ -42,7 +42,7 @@ public class TabsFragment extends Fragment {
 
         // Initialize the ViewPager and set the adapter
         mViewPager = (ViewPager) view.findViewById(R.id.view_pager);
-        mViewPager.setOffscreenPageLimit(Params.List.values().length);
+        //mViewPager.setOffscreenPageLimit(Params.List.values().length);
 
         switch (type) {
             case FEED:

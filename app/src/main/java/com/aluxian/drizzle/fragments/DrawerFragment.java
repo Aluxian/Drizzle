@@ -22,9 +22,9 @@ import com.aluxian.drizzle.api.ApiRequest;
 import com.aluxian.drizzle.api.Dribbble;
 import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.utils.Config;
+import com.aluxian.drizzle.utils.Dp;
 import com.aluxian.drizzle.utils.Log;
 import com.aluxian.drizzle.utils.UserManager;
-import com.aluxian.drizzle.utils.Utils;
 import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
 
@@ -85,11 +85,9 @@ public class DrawerFragment extends Fragment implements UserManager.AuthStateCha
             @SuppressWarnings("CodeBlock2Expr")
             @Override
             public void onSuccess(Dribbble.Response<List<Shot>> response) {
-                getActivity().runOnUiThread(() -> {
-                    Picasso.with(getActivity())
-                            .load(response.data.get(0).images.getLargest())
-                            .into((ImageView) view.findViewById(R.id.cover));
-                });
+                Picasso.with(getActivity())
+                        .load(response.data.get(0).images.largest())
+                        .into((ImageView) view.findViewById(R.id.cover));
             }
 
             @Override
@@ -105,10 +103,8 @@ public class DrawerFragment extends Fragment implements UserManager.AuthStateCha
                 String pixels = response.data.getAsJsonObject("results").getAsJsonArray("data")
                         .get(0).getAsJsonObject().get("pixelCount").getAsString();
 
-                getActivity().runOnUiThread(() -> {
-                    ((TextView) view.findViewById(R.id.pixels_count)).setText(pixels);
-                    view.findViewById(R.id.pixels_description).setVisibility(View.VISIBLE);
-                });
+                ((TextView) view.findViewById(R.id.pixels_count)).setText(pixels);
+                view.findViewById(R.id.pixels_description).setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -125,7 +121,7 @@ public class DrawerFragment extends Fragment implements UserManager.AuthStateCha
 
         // Add a margin at the top and at the bottom of the list
         View spacingView = new View(getActivity());
-        spacingView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.dpToPx(3, getActivity())));
+        spacingView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Dp.toPx(3)));
 
         mListView.addHeaderView(spacingView, null, false);
         mListView.addFooterView(spacingView, null, false);
@@ -161,22 +157,13 @@ public class DrawerFragment extends Fragment implements UserManager.AuthStateCha
 
     /**
      * Change the drawer icon.
+     *  @param state   The state to which the drawer icon should be changed.
      *
-     * @param state   The state to which the drawer icon should be changed.
-     * @param animate Whether to animate the change.
      */
-    public void toggleDrawerIcon(DrawerIconState state, boolean animate) {
-        if (animate) {
-            ValueAnimator iconAnimator = ValueAnimator.ofFloat(state.from, state.to);
-            iconAnimator.addUpdateListener(animator -> mDrawerToggle.onDrawerSlide(null, (Float) animator.getAnimatedValue()));
-            iconAnimator.start();
-        } else {
-            if (state == DrawerIconState.BURGER) {
-                mDrawerToggle.onDrawerClosed(null);
-            } else {
-                mDrawerToggle.onDrawerOpened(null);
-            }
-        }
+    public void toggleDrawerIcon(DrawerIconState state) {
+        ValueAnimator iconAnimator = ValueAnimator.ofFloat(state.from, state.to);
+        iconAnimator.addUpdateListener(animator -> mDrawerToggle.onDrawerSlide(null, (Float) animator.getAnimatedValue()));
+        iconAnimator.start();
     }
 
     /**

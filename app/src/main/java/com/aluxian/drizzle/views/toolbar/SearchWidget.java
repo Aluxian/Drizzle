@@ -1,4 +1,4 @@
-package com.aluxian.drizzle.ui.toolbar;
+package com.aluxian.drizzle.views.toolbar;
 
 import android.app.Service;
 import android.content.Context;

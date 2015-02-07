@@ -12,10 +12,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.aluxian.drizzle.ui.toolbar.EnhancedToolbar
+        <com.aluxian.drizzle.views.toolbar.EnhancedToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?android:attr/colorPrimary"
             android:elevation="@dimen/toolbarElevation" />
 
         <include layout="@layout/include_search_results" />

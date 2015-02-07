@@ -1,7 +1,6 @@
 package com.aluxian.drizzle.lists;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -21,7 +20,7 @@ public class ShotsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return ShotsFragment.newInstance(FilteredShotsProvider.class, Params.List.values()[position]);
+        return ShotsFragment.newInstance(FilteredShotsProvider.class, Params.List.values()[position], position * 100);
     }
 
     @Override

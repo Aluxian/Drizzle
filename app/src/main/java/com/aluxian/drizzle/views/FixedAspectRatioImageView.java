@@ -1,4 +1,4 @@
-package com.aluxian.drizzle.ui;
+package com.aluxian.drizzle.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -38,10 +38,19 @@ public class FixedAspectRatioImageView extends ImageView {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int originalWidth = MeasureSpec.getSize(widthMeasureSpec);
-        int calculatedHeight = originalWidth * mAspectRatioHeight / mAspectRatioWidth;
+        int originalHeight = MeasureSpec.getSize(heightMeasureSpec);
+        int calculatedWidth, calculatedHeight;
+
+        if (originalHeight == 0) {
+            calculatedWidth = originalWidth;
+            calculatedHeight = originalWidth * mAspectRatioHeight / mAspectRatioWidth;
+        } else {
+            calculatedWidth = originalHeight * mAspectRatioWidth / mAspectRatioHeight;
+            calculatedHeight = originalHeight;
+        }
 
         super.onMeasure(
-                MeasureSpec.makeMeasureSpec(originalWidth, MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(calculatedWidth, MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(calculatedHeight, MeasureSpec.EXACTLY));
     }
 

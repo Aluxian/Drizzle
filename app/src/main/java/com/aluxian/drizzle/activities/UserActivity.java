@@ -17,6 +17,7 @@ import android.widget.Toolbar;
 
 import com.aluxian.drizzle.R;
 import com.aluxian.drizzle.api.models.Shot;
+import com.aluxian.drizzle.api.models.User;
 import com.aluxian.drizzle.utils.AlphaSatColorMatrixEvaluator;
 import com.aluxian.drizzle.utils.PaletteTransformation;
 import com.aluxian.drizzle.views.CustomEdgeScrollView;
@@ -29,12 +30,9 @@ import com.google.gson.Gson;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
-import java.text.SimpleDateFormat;
+public class UserActivity extends Activity {
 
-public class ShotActivity extends Activity {
-
-    public static final String EXTRA_SHOT_DATA = "shot_data";
-    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MMM d, yyyy");
+    public static final String EXTRA_USER_DATA = "user_data";
 
     @SuppressWarnings("ConstantConditions")
     @Override
@@ -42,7 +40,7 @@ public class ShotActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shot);
 
-        Shot shot = new Gson().fromJson(getIntent().getStringExtra(EXTRA_SHOT_DATA), Shot.class);
+        User user = new Gson().fromJson(getIntent().getStringExtra(EXTRA_USER_DATA), User.class);
 
         // Load the toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -51,25 +49,22 @@ public class ShotActivity extends Activity {
         getActionBar().setDisplayShowTitleEnabled(false);
         getActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_left);
 
-        ShotSummary shotSummary = (ShotSummary) findViewById(R.id.shot_summary);
-        shotSummary.load(shot);
-
-        ImageView shotPreview = (ImageView) findViewById(R.id.shot_preview);
-        new Picasso.Builder(this)
+        ImageView avatarBackground = (ImageView) findViewById(R.id.shot_preview);
+        /*new Picasso.Builder(this)
                 .indicatorsEnabled(true)
                 .build()
                 .load(shot.images.largest())
                 .transform(PaletteTransformation.instance())
                 .noFade()
-                .into(shotPreview, new Callback() {
+                .into(avatarBackground, new Callback() {
                     @Override
                     public void onSuccess() {
                         AlphaSatColorMatrixEvaluator evaluator = new AlphaSatColorMatrixEvaluator();
                         ColorMatrixColorFilter filter = new ColorMatrixColorFilter(evaluator.getColorMatrix());
-                        shotPreview.getDrawable().setColorFilter(filter);
+                        avatarBackground.getDrawable().setColorFilter(filter);
 
                         ObjectAnimator animator = ObjectAnimator.ofObject(filter, "colorMatrix", evaluator, evaluator.getColorMatrix());
-                        animator.addUpdateListener(animation -> shotPreview.getDrawable().setColorFilter(filter));
+                        animator.addUpdateListener(animation -> avatarBackground.getDrawable().setColorFilter(filter));
                         animator.setDuration(1000);
                         animator.start();
                     }
@@ -80,8 +75,8 @@ public class ShotActivity extends Activity {
                     }
                 });
 
-        shotPreview.postDelayed(() -> {
-            Palette palette = PaletteTransformation.getPalette(shotPreview);
+        avatarBackground.postDelayed(() -> {
+            Palette palette = PaletteTransformation.getPalette(avatarBackground);
             Palette.Swatch swatch = palette.getMutedSwatch();
 
             if (swatch == null) swatch = palette.getVibrantSwatch();
@@ -104,7 +99,7 @@ public class ShotActivity extends Activity {
                 statusBarBackground.setBackgroundColor(swatch.getRgb());
                 statusBarBackground.setAlpha(0);
 
-                float full = shotPreview.getHeight() - statusBarBackground.getHeight();
+                float full = avatarBackground.getHeight() - statusBarBackground.getHeight();
 
                 scrollView.setOnScrollChangedListener(() -> {
                     float alpha = scrollView.getScrollY() / full;
@@ -112,37 +107,7 @@ public class ShotActivity extends Activity {
                     statusBarBackground.setAlpha(alpha);
                 });
             }
-        }, 2000);
-
-        TextView shotLikes = (TextView) findViewById(R.id.shot_likes);
-        shotLikes.setText(shot.likesCount + " likes");
-
-        TextView shotBuckets = (TextView) findViewById(R.id.shot_buckets);
-        shotBuckets.setText(shot.bucketsCount + " buckets");
-
-        TextView shotViews = (TextView) findViewById(R.id.shot_views);
-        shotViews.setText(shot.viewsCount + " views");
-
-        TextView shotTags = (TextView) findViewById(R.id.shot_tags);
-        shotTags.setText(shot.tags.size() + " tags");
-
-        if (shot.description != null) {
-            TextView shotDescription = (TextView) findViewById(R.id.shot_description);
-            shotDescription.setMovementMethod(LinkMovementMethod.getInstance());
-            shotDescription.setText(Html.fromHtml(shot.description));
-        }
-
-        ShotReboundOf shotReboundOf = (ShotReboundOf) findViewById(R.id.shot_rebound_of);
-        shotReboundOf.load(shot);
-
-        ShotRebounds shotRebounds = (ShotRebounds) findViewById(R.id.shot_rebounds);
-        shotRebounds.load(shot);
-
-        ShotAttachments shotAttachments = (ShotAttachments) findViewById(R.id.shot_attachments);
-        shotAttachments.load(shot);
-
-        ShotComments shotComments = (ShotComments) findViewById(R.id.shot_comments);
-        shotComments.load(shot);
+        }, 2000);*/
     }
 
     @Override

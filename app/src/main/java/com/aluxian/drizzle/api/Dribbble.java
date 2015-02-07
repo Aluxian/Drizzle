@@ -1,5 +1,7 @@
 package com.aluxian.drizzle.api;
 
+import com.aluxian.drizzle.api.models.Attachment;
+import com.aluxian.drizzle.api.models.Comment;
 import com.aluxian.drizzle.api.models.Credentials;
 import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.utils.Config;
@@ -38,6 +40,42 @@ public class Dribbble {
                 .useCache(true)
                 .queryParam("per_page", String.valueOf(Config.RESULTS_PER_PAGE))
                 .path("buckets/" + id + "/shots");
+    }
+
+    /**
+     * @param id The ID of the shot whose attachments to get.
+     * @return The list of attachments for the given shot id.
+     */
+    public static ApiRequest<List<Attachment>> listAttachments(int id) {
+        return new ApiRequest<List<Attachment>>()
+                .responseType(new TypeToken<List<Attachment>>() {})
+                .accessToken(UserManager.getInstance().getAccessToken())
+                .useCache(true)
+                .path("shots/" + id + "/attachments");
+    }
+
+    /**
+     * @param id The ID of the shot whose rebounds to get.
+     * @return The list of rebounds for the given shot id.
+     */
+    public static ApiRequest<List<Shot>> listRebounds(int id) {
+        return new ApiRequest<List<Shot>>()
+                .responseType(new TypeToken<List<Shot>>() {})
+                .accessToken(UserManager.getInstance().getAccessToken())
+                .useCache(true)
+                .path("shots/" + id + "/rebounds");
+    }
+
+    /**
+     * @param id The ID of the shot whose comments to get.
+     * @return The list of comments for the given shot id.
+     */
+    public static ApiRequest<List<Comment>> listComments(int id) {
+        return new ApiRequest<List<Comment>>()
+                .responseType(new TypeToken<List<Comment>>() {})
+                .accessToken(UserManager.getInstance().getAccessToken())
+                .useCache(true)
+                .path("shots/" + id + "/comments");
     }
 
         /*

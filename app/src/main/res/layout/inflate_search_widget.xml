@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.aluxian.drizzle.ui.toolbar.SearchWidget xmlns:android="http://schemas.android.com/apk/res/android"
+<com.aluxian.drizzle.views.toolbar.SearchWidget xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:theme="@style/Drizzle.Theme.Dark"
+    android:background="@android:color/transparent"
+    android:theme="@style/Drizzle.Theme.SearchWidget"
     android:visibility="gone">
 
     <ImageButton
@@ -28,4 +29,4 @@
         android:imeActionLabel="@string/action_search"
         android:singleLine="true" />
 
-</com.aluxian.drizzle.ui.toolbar.SearchWidget>
+</com.aluxian.drizzle.views.toolbar.SearchWidget>

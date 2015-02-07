@@ -5,7 +5,6 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ResolveInfo;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -19,10 +18,10 @@ import android.view.View;
 import com.aluxian.drizzle.R;
 import com.aluxian.drizzle.fragments.DrawerFragment;
 import com.aluxian.drizzle.fragments.TabsFragment;
-import com.aluxian.drizzle.ui.toolbar.EnhancedToolbar;
 import com.aluxian.drizzle.utils.Config;
 import com.aluxian.drizzle.utils.Log;
 import com.aluxian.drizzle.utils.UserManager;
+import com.aluxian.drizzle.views.toolbar.EnhancedToolbar;
 
 import java.util.List;
 
@@ -81,7 +80,7 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
             mFragmentContainer.animate().alpha(0);
 
             mDrawerFragment.setDrawerLocked(true);
-            mDrawerFragment.toggleDrawerIcon(DrawerIconState.ARROW, true);
+            mDrawerFragment.toggleDrawerIcon(DrawerIconState.ARROW);
         } else {
             mToolbar.getSearchView().hide();
             //mSearchContainer.setVisibility(View.GONE);
@@ -90,7 +89,7 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
             mFragmentContainer.animate().alpha(1).withEndAction(() -> mSearchContainer.setVisibility(View.GONE));
 
             mDrawerFragment.setDrawerLocked(false);
-            mDrawerFragment.toggleDrawerIcon(DrawerIconState.BURGER, true);
+            mDrawerFragment.toggleDrawerIcon(DrawerIconState.BURGER);
         }
     }
 
@@ -204,6 +203,8 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
     public void onBackPressed() {
         if (mDrawerFragment.isDrawerOpen()) {
             mDrawerFragment.closeDrawer();
+        } else if (mToolbar.getSearchView().isShownInToolbar()) {
+            searchMode(false);
         } else {
             super.onBackPressed();
         }

@@ -4,6 +4,7 @@
     <string name="app_name">Drizzle</string>
 
     <string name="action_search">Search</string>
+    <string name="action_share">Share</string>
     <string name="action_sort">Sort</string>
 
     <string name="drawer_main_feed">Feed</string>
