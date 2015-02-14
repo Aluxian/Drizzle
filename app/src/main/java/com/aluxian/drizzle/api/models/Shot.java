@@ -1,5 +1,16 @@
 package com.aluxian.drizzle.api.models;
 
+import android.content.Context;
+import android.content.Intent;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ClickableSpan;
+import android.view.View;
+
+import com.aluxian.drizzle.activities.TeamActivity;
+import com.aluxian.drizzle.activities.UserActivity;
+import com.google.gson.Gson;
+
 import java.util.Date;
 import java.util.List;
 
@@ -8,8 +19,6 @@ public final class Shot {
     public final int id;
     public final String title;
     public final String description;
-    public final int width;
-    public final int height;
     public final Images images;
     public final int viewsCount;
     public final int likesCount;
@@ -21,17 +30,15 @@ public final class Shot {
     public final Date updatedAt;
     public final String htmlUrl;
     public final List<String> tags;
-    public final User user;
+    public User user;
     public final Team team;
 
-    public Shot(int id, String title, String description, int width, int height, Images images, int viewsCount, int likesCount, int
-            commentsCount, int attachmentsCount, int reboundsCount, int bucketsCount, Date createdAt, Date updatedAt, String htmlUrl,
+    public Shot(int id, String title, String description, Images images, int viewsCount, int likesCount, int commentsCount,
+                int attachmentsCount, int reboundsCount, int bucketsCount, Date createdAt, Date updatedAt, String htmlUrl,
                 List<String> tags, User user, Team team) {
         this.id = id;
         this.title = title;
         this.description = description;
-        this.width = width;
-        this.height = height;
         this.images = images;
         this.viewsCount = viewsCount;
         this.likesCount = likesCount;
@@ -45,6 +52,39 @@ public final class Shot {
         this.tags = tags;
         this.user = user;
         this.team = team;
+    }
+
+    public SpannableString generateAuthorDescription(Context context) {
+        String wordBy = "by ";
+        String wordFor = " for ";
+
+        ClickableSpan userClickable = new ClickableSpan() {
+            @Override
+            public void onClick(View textView) {
+                Intent intent = new Intent(context, UserActivity.class);
+                intent.putExtra(UserActivity.EXTRA_USER_DATA, new Gson().toJson(user));
+                context.startActivity(intent);
+            }
+        };
+
+        SpannableString spannable = new SpannableString(wordBy + user.name + (team != null ? wordFor + team.name : ""));
+        spannable.setSpan(userClickable, wordBy.length(), wordBy.length() + user.name.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        if (team != null) {
+            ClickableSpan teamClickable = new ClickableSpan() {
+                @Override
+                public void onClick(View textView) {
+                    Intent intent = new Intent(context, TeamActivity.class);
+                    intent.putExtra(TeamActivity.EXTRA_TEAM_DATA, new Gson().toJson(team));
+                    context.startActivity(intent);
+                }
+            };
+
+            int start = wordBy.length() + user.name.length() + wordFor.length();
+            spannable.setSpan(teamClickable, start, start + team.name.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+
+        return spannable;
     }
 
     public static final class Images {
@@ -65,6 +105,18 @@ public final class Shot {
             }
 
             return normal;
+        }
+
+    }
+
+    public static final class Extra {
+
+        public final List<String> colours;
+        public final Integer reboundOf;
+
+        public Extra(List<String> colours, Integer reboundOf) {
+            this.colours = colours;
+            this.reboundOf = reboundOf;
         }
 
     }

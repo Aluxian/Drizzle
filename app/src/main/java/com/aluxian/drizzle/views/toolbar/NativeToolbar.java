@@ -45,7 +45,7 @@ public class NativeToolbar extends Toolbar {
     /**
      * @return The mTitleTextView object accessed through reflection from super.
      */
-    private TextView getTitleTextView() {
+    public TextView getTitleTextView() {
         if (mTitleTextView == null) {
             try {
                 Field field = Toolbar.class.getDeclaredField("mTitleTextView");
@@ -62,7 +62,7 @@ public class NativeToolbar extends Toolbar {
     /**
      * @return The mMenuView object accessed through reflection from super.
      */
-    private ActionMenuView getMenuView() {
+    public ActionMenuView getMenuView() {
         if (mMenuView == null) {
             try {
                 Field field = Toolbar.class.getDeclaredField("mMenuView");

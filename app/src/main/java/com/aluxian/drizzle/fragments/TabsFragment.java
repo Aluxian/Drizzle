@@ -89,7 +89,7 @@ public class TabsFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.action_sort:
                 @SuppressLint("InflateParams")
-                View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_sort, null, false);
+                View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_sort, null);
 
                 // Parameter spinners
                 Spinner timeframeSpinner = (Spinner) view.findViewById(R.id.timeframe_spinner);

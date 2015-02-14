@@ -12,15 +12,16 @@ import android.widget.Toast;
 
 import com.aluxian.drizzle.R;
 import com.aluxian.drizzle.api.Params;
+import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.api.providers.FilteredShotsProvider;
-import com.aluxian.drizzle.api.providers.ShotsProvider;
+import com.aluxian.drizzle.api.providers.ItemsProvider;
 import com.aluxian.drizzle.lists.ShotAnimator;
 import com.aluxian.drizzle.lists.ShotsAdapter;
 import com.aluxian.drizzle.utils.Log;
 
 import java.lang.reflect.InvocationTargetException;
 
-public class ShotsFragment extends Fragment implements ShotsAdapter.Callbacks {
+public class ShotsFragment extends Fragment implements ShotsAdapter.AdapterListener {
 
     private static final String ARG_PROVIDER_CLASS = "provider_class";
     private static final String ARG_LIST_API_VALUE = "list_api_value";
@@ -39,7 +40,7 @@ public class ShotsFragment extends Fragment implements ShotsAdapter.Callbacks {
      * @param loadDelay    How much time to wait before loading the items.
      * @return An instance of the fragment.
      */
-    public static ShotsFragment newInstance(Class<? extends ShotsProvider> clazz, Params.List listApiValue, int loadDelay) {
+    public static ShotsFragment newInstance(Class<? extends ItemsProvider> clazz, Params.List listApiValue, int loadDelay) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(ARG_PROVIDER_CLASS, clazz);
         bundle.putInt(ARG_LOAD_DELAY, loadDelay);
@@ -60,8 +61,8 @@ public class ShotsFragment extends Fragment implements ShotsAdapter.Callbacks {
      * @return A ShotsProvider instance.
      */
     @SuppressWarnings("unchecked")
-    private ShotsProvider getShotsProvider(Bundle args) {
-        Class<? extends ShotsProvider> clazz = (Class<? extends ShotsProvider>) args.getSerializable(ARG_PROVIDER_CLASS);
+    private ItemsProvider<Shot> getShotsProvider(Bundle args) {
+        Class<? extends ItemsProvider> clazz = (Class<? extends ItemsProvider>) args.getSerializable(ARG_PROVIDER_CLASS);
 
         try {
             if (clazz.equals(FilteredShotsProvider.class)) {
@@ -79,7 +80,7 @@ public class ShotsFragment extends Fragment implements ShotsAdapter.Callbacks {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mShotsAdapter = new ShotsAdapter(getActivity(), this, getShotsProvider(getArguments()));
+        mShotsAdapter = new ShotsAdapter(this, getShotsProvider(getArguments()));
 
         View view = inflater.inflate(R.layout.fragment_shots, container, false);
         mErrorView = view.findViewById(R.id.error_view);
@@ -88,11 +89,11 @@ public class ShotsFragment extends Fragment implements ShotsAdapter.Callbacks {
         animator.setSupportsChangeAnimations(true);
         animator.setAddDuration(300);
 
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.grid);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);
 
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-        mRecyclerView.setItemAnimator(animator);
+        //mRecyclerView.setItemAnimator(animator);
         mRecyclerView.setAdapter(mShotsAdapter);
         //mRecyclerView.postDelayed(() -> mRecyclerView.setAdapter(mShotsAdapter), getArguments().getInt(ARG_LOAD_DELAY));
 

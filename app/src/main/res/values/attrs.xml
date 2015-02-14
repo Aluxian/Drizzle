@@ -9,6 +9,13 @@
 
     <declare-styleable name="ScrimInsetsView">
         <attr name="insetForeground" format="reference|color" />
+        <attr name="insetApplyPadding" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="LinearLayoutOverlay">
+        <attr name="overlay" format="reference" />
+        <attr name="overlayInsidePadding" format="boolean" />
+        <attr name="overlayGravity" format="integer" />
     </declare-styleable>
 
 </resources>

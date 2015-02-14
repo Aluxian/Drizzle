@@ -41,7 +41,7 @@ public class CircularBorderedTransformation implements Transformation {
 
     @Override
     public String key() {
-        return String.format("circular bordered size=%s color=%s", mBorderSize, mBorderColor);
+        return String.format("circularBordered(size=%s, color=%s)", mBorderSize, mBorderColor);
     }
 
 }

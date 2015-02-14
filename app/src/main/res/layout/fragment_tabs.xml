@@ -8,7 +8,7 @@
     <com.astuetz.PagerSlidingTabStrip
         android:id="@+id/tabs"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/tabsBarHeight"
+        android:layout_height="48dp"
         android:background="?android:attr/colorPrimary"
         android:elevation="@dimen/toolbarElevation"
         android:theme="@style/Drizzle.Theme.Dark"

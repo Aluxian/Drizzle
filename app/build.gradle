@@ -1,11 +1,8 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.github.ben-manes.versions'
 apply plugin: 'me.tatarka.retrolambda'
-
-repositories {
-    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
-    maven { url 'https://raw.github.com/iainconnor/ObjectCache/master/maven/' }
-}
+apply plugin: 'aar-link-sources'
+apply plugin: 'com.noveogroup.android.check'
 
 android {
     compileSdkVersion 21
@@ -39,23 +36,40 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    dexOptions {
+        incremental true
+    }
 }
 
 // TODO: git versioning
-// TODO: signing configs (w/ public for ease)
 // TODO: gradle.properties or git encrypted keys
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.android.support:recyclerview-v7:21.0.3'
-    compile "com.android.support:palette-v7:21.0.3"
+    compile 'com.android.support:palette-v7:21.0.3'
     compile 'com.android.support:cardview-v7:21.0.3'
-    compile 'com.github.navasmdc:MaterialDesign:1.3'
-    compile 'com.jpardogo.materialtabstrip:library:1.0.6'
-    compile 'com.squareup.picasso:picasso:2.4.0'
-    compile 'com.squareup.okhttp:okhttp:2.1.0'
-    compile 'com.squareup.okhttp:okhttp-urlconnection:2.1.0'
-    compile 'com.google.code.gson:gson:2.3'
+    compile 'com.github.navasmdc:MaterialDesign:1.4'
+    compile 'com.jpardogo.materialtabstrip:library:1.0.8'
+    compile 'com.squareup.picasso:picasso:2.5.0'
+    compile 'com.squareup.okhttp:okhttp:2.2.0'
+    compile 'com.squareup.okhttp:okhttp-urlconnection:2.2.0'
+    compile 'com.google.code.gson:gson:2.3.1'
     compile 'com.jakewharton:disklrucache:2.0.2'
+    compile 'com.jakewharton:butterknife:6.1.0'
+    compile 'com.github.ksoichiro:android-observablescrollview:1.5.0'
+    aarLinkSources 'com.android.support:recyclerview-v7:21.0.3:sources@jar'
+    aarLinkSources 'com.android.support:palette-v7:21.0.3:sources@jar'
+    aarLinkSources 'com.android.support:cardview-v7:21.0.3:sources@jar'
+    aarLinkSources 'com.github.navasmdc:MaterialDesign:1.4:sources@jar'
+    aarLinkSources 'com.jpardogo.materialtabstrip:library:1.0.8:sources@jar'
+    aarLinkSources 'com.squareup.picasso:picasso:2.5.0:sources@jar'
+    aarLinkSources 'com.squareup.okhttp:okhttp:2.2.0:sources@jar'
+    aarLinkSources 'com.squareup.okhttp:okhttp-urlconnection:2.2.0:sources@jar'
+    aarLinkSources 'com.google.code.gson:gson:2.3.1:sources@jar'
+    aarLinkSources 'com.jakewharton:disklrucache:2.0.2:sources@jar'
+    aarLinkSources 'com.jakewharton:butterknife:6.1.0:sources@jar'
+    aarLinkSources 'com.github.ksoichiro:android-observablescrollview:1.5.0:sources@jar'
 }

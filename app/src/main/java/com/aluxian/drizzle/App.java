@@ -15,13 +15,10 @@ public class App extends Application {
         // Set the strict mode policy
         if (BuildConfig.STRICT_MODE) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectAll().penaltyLog().build());
-            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
-                    .setClassInstanceLimit(MainActivity.class, 100)
-                    .detectAll().penaltyLog().build());
+            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll().penaltyLog().build());
         }
 
-        Dp.init(this);
-        //ApiRequest.initCache(this);
+        ApiRequest.initCache(this);
         UserManager.init(this);
     }
 

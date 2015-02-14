@@ -1,19 +1,19 @@
 package com.aluxian.drizzle.utils;
 
-import android.content.Context;
-import android.util.DisplayMetrics;
+import android.content.res.Resources;
 import android.util.TypedValue;
 
 public class Dp {
 
-    private static DisplayMetrics mDisplayMetrics;
-
-    public static void init(Context context) {
-        mDisplayMetrics = context.getResources().getDisplayMetrics();
-    }
+    public static final int PX_4 = toPx(4);
+    public static final int PX_8 = toPx(8);
+    public static final int PX_16 = toPx(16);
+    public static final int PX_48 = toPx(48);
+    public static final int PX_56 = toPx(56);
+    public static final int PX_72 = toPx(72);
 
     public static int toPx(float units) {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, units, mDisplayMetrics);
+        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, units, Resources.getSystem().getDisplayMetrics()));
     }
 
 }

@@ -1,7 +1,5 @@
 package com.aluxian.drizzle.api.models;
 
-import java.util.Date;
-
 public final class User {
 
     public final int id;
@@ -27,13 +25,11 @@ public final class User {
     public final String likesUrl;
     public final String shotsUrl;
     public final String teamsUrl;
-    public final Date createdAt;
-    public final Date updatedAt;
 
     public User(int id, String name, String username, String htmlUrl, String avatarUrl, String bio, String location,
                 Links links, int bucketsCount, int followersCount, int followingsCount, int likesCount, int projectsCount,
                 int shotsCount, int teamsCount, String type, boolean pro, String bucketsUrl, String followersUrl, String followingUrl,
-                String likesUrl, String shotsUrl, String teamsUrl, Date createdAt, Date updatedAt) {
+                String likesUrl, String shotsUrl, String teamsUrl) {
         this.id = id;
         this.name = name;
         this.username = username;
@@ -57,8 +53,6 @@ public final class User {
         this.likesUrl = likesUrl;
         this.shotsUrl = shotsUrl;
         this.teamsUrl = teamsUrl;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
     }
 
 }

@@ -1,11 +1,7 @@
 package com.aluxian.drizzle.lists;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.ColorMatrixColorFilter;
-import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -22,9 +18,9 @@ import com.aluxian.drizzle.activities.ShotActivity;
 import com.aluxian.drizzle.api.exceptions.BadRequestException;
 import com.aluxian.drizzle.api.exceptions.TooManyRequestsException;
 import com.aluxian.drizzle.api.models.Shot;
-import com.aluxian.drizzle.api.providers.ShotsProvider;
-import com.aluxian.drizzle.utils.AlphaSatColorMatrixEvaluator;
+import com.aluxian.drizzle.api.providers.ItemsProvider;
 import com.aluxian.drizzle.utils.Config;
+import com.aluxian.drizzle.utils.Dp;
 import com.aluxian.drizzle.utils.Log;
 import com.google.gson.Gson;
 import com.squareup.picasso.Callback;
@@ -34,86 +30,87 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.ViewHolder> implements SwipeRefreshLayout.OnRefreshListener {
+public class ShotsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements SwipeRefreshLayout.OnRefreshListener {
 
     /** A list with all the displayed items. */
-    private List<Shot> mShotsList = new ArrayList<>();
+    protected List<Shot> mShotsList = new ArrayList<>();
 
     /** Whether the adapter is currently loading items. */
-    private boolean mIsLoadingItems;
+    protected boolean mIsLoadingItems;
 
     /** A ShotsProvider instance used to load the appropriate shots for this adapter's fragment. */
-    private ShotsProvider mShotsProvider;
+    protected ItemsProvider<Shot> mItemsProvider;
 
     /** A callbacks instance (the adapter's fragment). */
-    private Callbacks mCallbacks;
+    protected AdapterListener mAdapterListener;
 
-    /** A Context, required by some tasks. */
-    private Context mContext;
-
-    public ShotsAdapter(Context context, Callbacks callbacks, ShotsProvider shotsProvider) {
-        mContext = context;
-        mCallbacks = callbacks;
-        mShotsProvider = shotsProvider;
+    public ShotsAdapter(AdapterListener adapterListener, ItemsProvider<Shot> itemsProvider) {
+        mAdapterListener = adapterListener;
+        mItemsProvider = itemsProvider;
 
         // Load the first items
         new LoadItemsIfRequiredTask(0).execute();
     }
 
     @Override
-    public ShotsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_shot, parent, false));
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new ItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_shot, parent, false));
+    }
+
+    protected int positionOffset() {
+        return 0;
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        Shot shot = mShotsList.get(position);
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+        if (viewHolder instanceof ItemViewHolder) {
+            Shot shot = mShotsList.get(position + positionOffset());
+            ItemViewHolder holder = (ItemViewHolder) viewHolder;
 
-        //holder.viewsCount.setText(String.valueOf(shot.viewsCount));
-        holder.commentsCount.setText(String.valueOf(shot.viewsCount));
-        holder.likesCount.setText(String.valueOf(shot.likesCount));
+            //holder.viewsCount.setText(String.valueOf(shot.viewsCount));
+            holder.commentsCount.setText(String.valueOf(shot.viewsCount));
+            holder.likesCount.setText(String.valueOf(shot.likesCount));
 
-        holder.image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                /*Intent intent = new Intent(activity, ShotActivity.class);
-                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(activity, holder.image, "robot");
-                activity.startActivity(intent, options.toBundle());*/
+            holder.image.setOnClickListener(view -> onShotClick(holder.image.getContext(), shot));
 
-                Intent intent = new Intent(mContext, ShotActivity.class);
-                intent.putExtra(ShotActivity.EXTRA_SHOT_DATA, new Gson().toJson(shot));
-                mContext.startActivity(intent);
+            if (!shot.images.normal.equals(holder.image.getTag())) {
+                holder.image.setTag(shot.images.normal);
+                Picasso.with(holder.image.getContext())
+                        .load(shot.images.normal)
+                                //.noFade()
+                        .into(holder.image, new Callback() {
+                            @Override
+                            public void onSuccess() {
+                                //ImageLoadingTransition.apply(holder.image);
+                            }
+
+                            @Override
+                            public void onError() {
+
+                            }
+                        });
             }
-        });
 
-        if (!shot.images.normal.equals(holder.image.getTag())) {
-            holder.image.setTag(shot.images.normal);
-            Picasso.with(holder.image.getContext())
-                    .load(shot.images.normal)
-                    //.placeholder(R.drawable.bg_placeholder)
-                    .noFade()
-                    .into(holder.image, new Callback() {
-                        @Override
-                        public void onSuccess() {
-                            AlphaSatColorMatrixEvaluator evaluator = new AlphaSatColorMatrixEvaluator();
-                            ColorMatrixColorFilter filter = new ColorMatrixColorFilter(evaluator.getColorMatrix());
-                            holder.image.getDrawable().setColorFilter(filter);
+            // Increase margin size
+            RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) holder.itemView.getLayoutParams();
+            if (position % 2 == positionOffset() + 1) {
+                params.setMarginStart(Dp.toPx(4));
+                params.setMarginEnd(Dp.toPx(8));
+            } else {
+                params.setMarginStart(Dp.toPx(8));
+                params.setMarginEnd(Dp.toPx(4));
+            }
+            holder.itemView.requestLayout();
 
-                            ObjectAnimator animator = ObjectAnimator.ofObject(filter, "colorMatrix", evaluator, evaluator.getColorMatrix());
-                            animator.addUpdateListener(animation -> holder.image.getDrawable().setColorFilter(filter));
-                            animator.setDuration(1000);
-                            animator.start();
-                        }
-
-                        @Override
-                        public void onError() {
-
-                        }
-                    });
+            // If position is near the end of the list, load more items from the API
+            new LoadItemsIfRequiredTask(position).execute();
         }
+    }
 
-        // If position is near the end of the list, load more items from the API
-        new LoadItemsIfRequiredTask(position).execute();
+    protected void onShotClick(Context context, Shot shot) {
+        Intent intent = new Intent(context, ShotActivity.class);
+        intent.putExtra(ShotActivity.EXTRA_SHOT_DATA, new Gson().toJson(shot));
+        context.startActivity(intent);
     }
 
     @Override
@@ -126,16 +123,16 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.ViewHolder> 
         new RefreshItemsTask().execute();
     }
 
-    public ShotsProvider getShotsProvider() {
-        return mShotsProvider;
+    public ItemsProvider<Shot> getShotsProvider() {
+        return mItemsProvider;
     }
 
-    private class LoadItemsIfRequiredTask extends AsyncTask<Void, Void, List<Shot>> {
+    protected class LoadItemsIfRequiredTask extends AsyncTask<Void, Void, List<Shot>> {
 
         /** The position of the item that executed the task. */
         private final int mPosition;
 
-        private LoadItemsIfRequiredTask(int position) {
+        protected LoadItemsIfRequiredTask(int position) {
             mPosition = position;
         }
 
@@ -152,7 +149,7 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.ViewHolder> 
         @Override
         protected List<Shot> doInBackground(Void... params) {
             try {
-                return mShotsProvider.load();
+                return mItemsProvider.load();
             } catch (IOException | BadRequestException | TooManyRequestsException e) {
                 Log.d(e);
                 return null;
@@ -165,11 +162,11 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.ViewHolder> 
                 mShotsList.addAll(response);
                 notifyItemRangeInserted(mShotsList.size() - response.size(), response.size());
             } else {
-                mCallbacks.onAdapterLoadingError(mShotsList.size() > 0);
+                mAdapterListener.onAdapterLoadingError(mShotsList.size() > 0);
             }
 
             mIsLoadingItems = false;
-            new Handler().postDelayed(() -> mCallbacks.onAdapterLoadingFinished(response != null), 500);
+            new Handler().postDelayed(() -> mAdapterListener.onAdapterLoadingFinished(response != null), 500);
             //preloadImages(mPosition + 1);
         }
 
@@ -182,7 +179,7 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.ViewHolder> 
      */
     private void preloadImages(int startPosition) {
         for (int position = startPosition; position < startPosition + 6 && position < mShotsList.size(); position++) {
-            Picasso.with(mContext).load(mShotsList.get(position).images.normal).fetch();
+            //Picasso.with(mContext).load(mShotsList.get(position).images.normal).fetch();
         }
     }
 
@@ -195,14 +192,14 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.ViewHolder> 
                 mIsLoadingItems = true;
             } else {
                 cancel(false);
-                mCallbacks.onAdapterLoadingFinished(false);
+                mAdapterListener.onAdapterLoadingFinished(false);
             }
         }
 
         @Override
         protected List<Shot> doInBackground(Void... params) {
             try {
-                return mShotsProvider.refresh();
+                return mItemsProvider.refresh();
             } catch (IOException | BadRequestException | TooManyRequestsException e) {
                 Log.d(e);
             }
@@ -217,11 +214,11 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.ViewHolder> 
                 mShotsList.addAll(response);
                 notifyDataSetChanged();
             } else {
-                mCallbacks.onAdapterLoadingError(mShotsList.size() > 0);
+                mAdapterListener.onAdapterLoadingError(mShotsList.size() > 0);
             }
 
             mIsLoadingItems = false;
-            new Handler().postDelayed(() -> mCallbacks.onAdapterLoadingFinished(response != null), 500);
+            new Handler().postDelayed(() -> mAdapterListener.onAdapterLoadingFinished(response != null), 500);
         }
 
     }
@@ -229,7 +226,7 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.ViewHolder> 
     /**
      * A ViewHolder used by the items of this adapter.
      */
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ItemViewHolder extends RecyclerView.ViewHolder {
 
         public final CardView card;
         public final ImageView image;
@@ -242,7 +239,7 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.ViewHolder> 
         public final TextView commentsCount;
         public final TextView likesCount;
 
-        public ViewHolder(View itemView) {
+        public ItemViewHolder(View itemView) {
             super(itemView);
 
             card = (CardView) itemView;
@@ -262,21 +259,21 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.ViewHolder> 
     /**
      * Callbacks interface that users of this adapter must implement.
      */
-    public static interface Callbacks {
+    public static interface AdapterListener {
 
         /**
          * Called when the adapter finishes refreshing or loading items.
          *
          * @param successful Whether the adapter was successful and items were added to the list.
          */
-        void onAdapterLoadingFinished(boolean successful);
+        public void onAdapterLoadingFinished(boolean successful);
 
         /**
          * Called when there's an error while loading results.
          *
          * @param hasItems Whether the adapter has at least 1 item.
          */
-        void onAdapterLoadingError(boolean hasItems);
+        public void onAdapterLoadingError(boolean hasItems);
 
     }
 

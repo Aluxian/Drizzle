@@ -1,8 +1,10 @@
 package com.aluxian.drizzle.views.widgets;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.graphics.Palette;
+import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.ImageView;
@@ -10,10 +12,13 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.aluxian.drizzle.activities.UserActivity;
 import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.utils.CircularBorderedTransformation;
 import com.aluxian.drizzle.utils.CircularTransformation;
 import com.aluxian.drizzle.utils.Dp;
+import com.google.gson.Gson;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
@@ -45,7 +50,7 @@ public class ShotSummary extends LinearLayout {
     private void init(Context context) {
         setGravity(Gravity.CENTER_VERTICAL);
 
-        int userAvatarSize = Dp.toPx(56);
+        int userAvatarSize = Dp.PX_56;
         int teamAvatarSize = Dp.toPx(20);
 
         // Avatar container
@@ -69,7 +74,7 @@ public class ShotSummary extends LinearLayout {
         // Layout for shot info
         LinearLayout infoLayout = new LinearLayout(context);
         LinearLayout.LayoutParams infoParams = new LayoutParams(MATCH_PARENT, WRAP_CONTENT);
-        infoParams.setMarginStart(Dp.toPx(16));
+        infoParams.setMarginStart(Dp.PX_16);
         infoLayout.setLayoutParams(infoParams);
         infoLayout.setOrientation(VERTICAL);
         addView(infoLayout);
@@ -85,25 +90,36 @@ public class ShotSummary extends LinearLayout {
         mAuthorDescription.setLayoutParams(new LayoutParams(MATCH_PARENT, WRAP_CONTENT));
         mAuthorDescription.setTextAppearance(context, android.R.style.TextAppearance_Material_Subhead);
         infoLayout.addView(mAuthorDescription);
-
-        // Load placeholder data for edit mode
-        if (isInEditMode()) {
-            mUserAvatar.setBackgroundColor(Color.GRAY);
-            mShotTitle.setText("Philanthropy: CGI");
-            mAuthorDescription.setText("by Nick Slater");
-        }
     }
 
     private Shot mShot;
 
     public void load(Shot shot) {
         mShotTitle.setText(shot.title);
-        mAuthorDescription.setText("by " + shot.user.name + (shot.team != null ? " for " + shot.team.name : ""));
+
+        mAuthorDescription.setText(shot.generateAuthorDescription(getContext()));
+        mAuthorDescription.setMovementMethod(LinkMovementMethod.getInstance());
+
+        mUserAvatar.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), UserActivity.class);
+            intent.putExtra(UserActivity.EXTRA_USER_DATA, new Gson().toJson(shot.user));
+            getContext().startActivity(intent);
+        });
 
         Picasso.with(getContext())
                 .load(shot.user.avatarUrl)
                 .transform(new CircularTransformation())
-                .into(mUserAvatar);
+                .into(mUserAvatar, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        //ImageLoadingTransition.apply(mUserAvatar);
+                    }
+
+                    @Override
+                    public void onError() {
+
+                    }
+                });
 
         mShot = shot;
     }
@@ -113,11 +129,23 @@ public class ShotSummary extends LinearLayout {
         mShotTitle.setTextColor(swatch.getTitleTextColor());
         mAuthorDescription.setTextColor(swatch.getBodyTextColor());
 
+        mAuthorDescription.setLinkTextColor(swatch.getTitleTextColor());
+
         if (mShot.team != null) {
             Picasso.with(getContext())
                     .load(mShot.team.avatarUrl)
                     .transform(new CircularBorderedTransformation(Dp.toPx(6), swatch.getRgb()))
-                    .into(mTeamAvatar);
+                    .into(mTeamAvatar, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            //ImageLoadingTransition.apply(mTeamAvatar);
+                        }
+
+                        @Override
+                        public void onError() {
+
+                        }
+                    });
         }
     }
 

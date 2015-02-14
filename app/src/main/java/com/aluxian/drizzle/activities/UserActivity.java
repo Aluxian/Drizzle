@@ -1,118 +1,85 @@
 package com.aluxian.drizzle.activities;
 
-import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.ColorMatrixColorFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.graphics.Palette;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toolbar;
 
 import com.aluxian.drizzle.R;
-import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.api.models.User;
-import com.aluxian.drizzle.utils.AlphaSatColorMatrixEvaluator;
-import com.aluxian.drizzle.utils.PaletteTransformation;
-import com.aluxian.drizzle.views.CustomEdgeScrollView;
-import com.aluxian.drizzle.views.widgets.ShotAttachments;
-import com.aluxian.drizzle.views.widgets.ShotComments;
-import com.aluxian.drizzle.views.widgets.ShotReboundOf;
-import com.aluxian.drizzle.views.widgets.ShotRebounds;
-import com.aluxian.drizzle.views.widgets.ShotSummary;
+import com.aluxian.drizzle.api.providers.UserShotsProvider;
+import com.aluxian.drizzle.lists.UserShotsAdapter;
+import com.aluxian.drizzle.utils.Dp;
+import com.aluxian.drizzle.utils.Log;
+import com.aluxian.drizzle.views.CustomEdgeRecyclerView;
+import com.aluxian.drizzle.views.toolbar.NativeToolbar;
+import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
+import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.google.gson.Gson;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
-public class UserActivity extends Activity {
+public class UserActivity extends Activity implements UserShotsAdapter.UserAdapterListener {
 
     public static final String EXTRA_USER_DATA = "user_data";
+
+    private User mUser;
+    private CustomEdgeRecyclerView mRecyclerView;
+    private NativeToolbar mToolbar;
 
     @SuppressWarnings("ConstantConditions")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_shot);
+        setContentView(R.layout.activity_user);
 
-        User user = new Gson().fromJson(getIntent().getStringExtra(EXTRA_USER_DATA), User.class);
+        mUser = new Gson().fromJson(getIntent().getStringExtra(EXTRA_USER_DATA), User.class);
 
         // Load the toolbar
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setActionBar(toolbar);
+        mToolbar = (NativeToolbar) findViewById(R.id.toolbar);
+        setActionBar(mToolbar);
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setDisplayShowTitleEnabled(false);
         getActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_left);
 
-        ImageView avatarBackground = (ImageView) findViewById(R.id.shot_preview);
-        /*new Picasso.Builder(this)
-                .indicatorsEnabled(true)
-                .build()
-                .load(shot.images.largest())
-                .transform(PaletteTransformation.instance())
-                .noFade()
-                .into(avatarBackground, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        AlphaSatColorMatrixEvaluator evaluator = new AlphaSatColorMatrixEvaluator();
-                        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(evaluator.getColorMatrix());
-                        avatarBackground.getDrawable().setColorFilter(filter);
+        mToolbar.setTitle(mUser.name);
+        mToolbar.getTitleTextView().setAlpha(0);
 
-                        ObjectAnimator animator = ObjectAnimator.ofObject(filter, "colorMatrix", evaluator, evaluator.getColorMatrix());
-                        animator.addUpdateListener(animation -> avatarBackground.getDrawable().setColorFilter(filter));
-                        animator.setDuration(1000);
-                        animator.start();
-                    }
+        mRecyclerView = (CustomEdgeRecyclerView) findViewById(R.id.recycler_view);
+        mRecyclerView.setHasFixedSize(true);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                // Header
+                if (position == 0) {
+                    return 2;
+                } // else if is last item in list, span = 1 to show loader
 
-                    @Override
-                    public void onError() {
-
-                    }
-                });
-
-        avatarBackground.postDelayed(() -> {
-            Palette palette = PaletteTransformation.getPalette(avatarBackground);
-            Palette.Swatch swatch = palette.getMutedSwatch();
-
-            if (swatch == null) swatch = palette.getVibrantSwatch();
-            if (swatch == null) swatch = palette.getDarkMutedSwatch();
-            if (swatch == null) swatch = palette.getDarkVibrantSwatch();
-            if (swatch == null) swatch = palette.getLightMutedSwatch();
-            if (swatch == null) swatch = palette.getLightVibrantSwatch();
-
-            if (swatch != null) {
-                shotSummary.color(swatch);
-
-                CustomEdgeScrollView scrollView = (CustomEdgeScrollView) findViewById(R.id.scroll_view);
-                scrollView.setEdgeColor(swatch.getRgb());
-
-                View toolbarBackground = findViewById(R.id.toolbar_background);
-                toolbarBackground.setBackgroundColor(swatch.getRgb());
-                toolbarBackground.setAlpha(0);
-
-                View statusBarBackground = findViewById(R.id.status_bar_background);
-                statusBarBackground.setBackgroundColor(swatch.getRgb());
-                statusBarBackground.setAlpha(0);
-
-                float full = avatarBackground.getHeight() - statusBarBackground.getHeight();
-
-                scrollView.setOnScrollChangedListener(() -> {
-                    float alpha = scrollView.getScrollY() / full;
-                    toolbarBackground.setAlpha(alpha);
-                    statusBarBackground.setAlpha(alpha);
-                });
+                return 1;
             }
-        }, 2000);*/
+        });
+        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setAdapter(new UserShotsAdapter(mUser, this, new UserShotsProvider(mUser.id)));
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.shot, menu);
+        getMenuInflater().inflate(R.menu.user, menu);
+
+        if (mUser.links.web == null) {
+            menu.removeItem(R.id.action_link_website);
+        }
+
+        if (mUser.links.twitter == null) {
+            menu.removeItem(R.id.action_link_twitter);
+        }
+
         return true;
     }
 
@@ -128,9 +95,75 @@ public class UserActivity extends Activity {
 
                 return true;
 
+            case R.id.action_link_website:
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(mUser.links.web)));
+                return true;
+
+            case R.id.action_link_twitter:
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(mUser.links.twitter)));
+                return true;
+
+            case R.id.action_share:
+                Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                sharingIntent.putExtra(Intent.EXTRA_TITLE, mUser.name);
+                sharingIntent.putExtra(Intent.EXTRA_SUBJECT, mUser.name);
+                sharingIntent.putExtra(Intent.EXTRA_TEXT, mUser.htmlUrl);
+                startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_shot, mUser.name)));
+
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onAdapterLoadingFinished(boolean successful) {
+
+    }
+
+    @Override
+    public void onAdapterLoadingError(boolean hasItems) {
+
+    }
+
+    @Override
+    public void onHeaderLoaded(Palette.Swatch swatch, int height) {
+        mRecyclerView.post(() -> {
+            mRecyclerView.setTopEdgeColor(swatch.getTitleTextColor());
+            mRecyclerView.setBottomEdgeColor(swatch.getRgb());
+        });
+
+        View toolbarBackground = findViewById(R.id.toolbar_background);
+        toolbarBackground.setBackgroundColor(swatch.getRgb());
+        toolbarBackground.getBackground().setAlpha(0);
+        toolbarBackground.setElevation(0);
+
+        float full = height - mToolbar.getHeight();
+
+        mRecyclerView.setScrollViewCallbacks(new ObservableScrollViewCallbacks() {
+            @Override
+            public void onScrollChanged(int scrollY, boolean firstScroll, boolean dragging) {
+                float fraction = scrollY / full;
+
+                if (fraction > 1.0) {
+                    fraction = 1.0f;
+                } else if (fraction < 0) {
+                    fraction = 0;
+                }
+
+                toolbarBackground.getBackground().setAlpha((int) (fraction * 255));
+                toolbarBackground.setElevation(fraction * Dp.PX_4);
+                mToolbar.getTitleTextView().setAlpha(fraction);
+            }
+
+            @Override
+            public void onDownMotionEvent() {}
+
+            @Override
+            public void onUpOrCancelMotionEvent(ScrollState scrollState) {}
+        });
     }
 
 }

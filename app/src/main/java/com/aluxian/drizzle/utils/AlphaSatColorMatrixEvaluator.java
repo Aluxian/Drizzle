@@ -2,6 +2,7 @@ package com.aluxian.drizzle.utils;
 
 import android.animation.TypeEvaluator;
 import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 
 /**
  * @source http://stackoverflow.com/a/27286385/1133344
@@ -22,7 +23,7 @@ public class AlphaSatColorMatrixEvaluator implements TypeEvaluator {
 
         // Compute the alpha change over period [0, 2]
         float alpha = Math.min(phase, 2f) / 2f;
-        elements[19] = (float) Math.round(alpha * 255);
+        elements[19] = alpha * 255;
 
         // We subtract to make the picture look darker, it will automatically clamp
         // This is spread over period [0, 2.5]

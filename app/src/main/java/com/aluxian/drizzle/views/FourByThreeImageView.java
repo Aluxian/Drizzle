@@ -2,19 +2,20 @@ package com.aluxian.drizzle.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ImageView;
 
-public class ShotImageView extends ImageView {
+public class FourByThreeImageView extends ImageView {
 
-    public ShotImageView(Context context) {
+    public FourByThreeImageView(Context context) {
         super(context);
     }
 
-    public ShotImageView(Context context, AttributeSet attrs) {
+    public FourByThreeImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public ShotImageView(Context context, AttributeSet attrs, int defStyle) {
+    public FourByThreeImageView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
@@ -25,7 +26,7 @@ public class ShotImageView extends ImageView {
 
         super.onMeasure(
                 MeasureSpec.makeMeasureSpec(originalWidth, MeasureSpec.EXACTLY),
-                MeasureSpec.makeMeasureSpec(calculatedHeight, MeasureSpec.EXACTLY));
+                MeasureSpec.makeMeasureSpec(calculatedHeight, View.MeasureSpec.EXACTLY));
     }
 
 }

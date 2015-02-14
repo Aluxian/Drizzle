@@ -97,12 +97,10 @@ public class DrawerFragment extends Fragment implements UserManager.AuthStateCha
         });
 
         // Load the dribbbled pixels count
-        Dribbble.pixelsDribbbledCount().execute(new ApiRequest.Callback<JsonObject>() {
+        Dribbble.pixelsDribbbledCount().execute(new ApiRequest.Callback<String>() {
             @Override
-            public void onSuccess(Dribbble.Response<JsonObject> response) {
-                String pixels = response.data.getAsJsonObject("results").getAsJsonArray("data")
-                        .get(0).getAsJsonObject().get("pixelCount").getAsString();
-
+            public void onSuccess(Dribbble.Response<String> response) {
+                String pixels = response.data;
                 ((TextView) view.findViewById(R.id.pixels_count)).setText(pixels);
                 view.findViewById(R.id.pixels_description).setVisibility(View.VISIBLE);
             }
@@ -121,7 +119,7 @@ public class DrawerFragment extends Fragment implements UserManager.AuthStateCha
 
         // Add a margin at the top and at the bottom of the list
         View spacingView = new View(getActivity());
-        spacingView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Dp.toPx(3)));
+        spacingView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Dp.PX_8));
 
         mListView.addHeaderView(spacingView, null, false);
         mListView.addFooterView(spacingView, null, false);

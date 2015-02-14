@@ -9,7 +9,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import com.aluxian.drizzle.R;
 import com.aluxian.drizzle.api.providers.FeaturedShotsProvider;
 import com.aluxian.drizzle.api.providers.FollowingShotsProvider;
-import com.aluxian.drizzle.api.providers.ShotsProvider;
+import com.aluxian.drizzle.api.providers.ItemsProvider;
 import com.aluxian.drizzle.fragments.ShotsFragment;
 
 import java.util.ArrayList;
@@ -18,11 +18,11 @@ import java.util.Map;
 
 public class FeedPagerAdapter extends FragmentPagerAdapter {
 
-    private static final Map<Integer, Class<? extends ShotsProvider>> PROVIDERS = new HashMap<>();
+    private static final Map<Integer, Class<? extends ItemsProvider>> PROVIDERS = new HashMap<>();
 
     static {
-        PROVIDERS.put(R.string.provider_following, FollowingShotsProvider.class);
-        PROVIDERS.put(R.string.provider_featured, FeaturedShotsProvider.class);
+        PROVIDERS.put(R.string.tab_following, FollowingShotsProvider.class);
+        PROVIDERS.put(R.string.tab_featured, FeaturedShotsProvider.class);
     }
 
     private Resources mResources;

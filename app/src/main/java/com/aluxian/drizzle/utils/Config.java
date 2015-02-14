@@ -29,9 +29,6 @@ public class Config {
     /** The url the user is redirected to during authorization. */
     public static final String API_CALLBACK_URL = "drizzle://oauth";
 
-    /** A URL to the Kimono API used to retrieve the 'pixels dribbbled' count. */
-    public static final String KIMONO_API_URL = "https://www.kimonolabs.com/api/cfxxcg4u?apikey=hQMs8xI09wAzLH5qYKtTnR5o4Na3qnWI";
-
     /** The email address users will send feedback to. */
     public static final String FEEDBACK_EMAIL = "hello@getdrizzle.co";
 

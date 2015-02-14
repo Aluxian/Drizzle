@@ -1,7 +1,9 @@
 package com.aluxian.drizzle.views.widgets;
 
 import android.content.Context;
-import android.graphics.Color;
+import android.content.Intent;
+import android.support.v7.graphics.Palette;
+import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.ImageView;
@@ -9,11 +11,18 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.aluxian.drizzle.R;
+import com.aluxian.drizzle.activities.ShotActivity;
+import com.aluxian.drizzle.activities.UserActivity;
+import com.aluxian.drizzle.api.ApiRequest;
+import com.aluxian.drizzle.api.Dribbble;
 import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.utils.Dp;
 import com.aluxian.drizzle.utils.Log;
 import com.aluxian.drizzle.utils.PaletteTransformation;
+import com.aluxian.drizzle.utils.Utils;
 import com.aluxian.drizzle.views.FixedAspectRatioImageView;
+import com.google.gson.Gson;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
@@ -46,9 +55,9 @@ public class ShotReboundOf extends LinearLayout {
 
         // 'Rebound of' header
         TextView reboundOfText = new TextView(context);
-        reboundOfText.setLayoutParams(new LayoutParams(MATCH_PARENT, Dp.toPx(48)));
+        reboundOfText.setLayoutParams(new LayoutParams(MATCH_PARENT, Dp.PX_48));
         reboundOfText.setGravity(Gravity.CENTER_VERTICAL);
-        reboundOfText.setText("Rebound of");
+        reboundOfText.setText(R.string.section_rebound_of);
         reboundOfText.setTextAppearance(context, android.R.style.TextAppearance_Material_Body2);
         addView(reboundOfText);
 
@@ -60,7 +69,7 @@ public class ShotReboundOf extends LinearLayout {
 
         // Add the shot preview
         mShotPreview = new FixedAspectRatioImageView(context);
-        LayoutParams previewImageParams = new LayoutParams(WRAP_CONTENT, Dp.toPx(72));
+        LayoutParams previewImageParams = new LayoutParams(WRAP_CONTENT, Dp.PX_72);
         previewImageParams.setMarginEnd(Dp.toPx(12));
         mShotPreview.setLayoutParams(previewImageParams);
         mContentLayout.addView(mShotPreview);
@@ -82,41 +91,74 @@ public class ShotReboundOf extends LinearLayout {
         mUserDescription.setLayoutParams(new LayoutParams(MATCH_PARENT, WRAP_CONTENT));
         mUserDescription.setTextColor(getResources().getColor(R.color.text_light));
         infoLayout.addView(mUserDescription);
+    }
 
-        // Load placeholder data for edit mode
-        if (isInEditMode()) {
-            mShotPreview.setBackgroundColor(Color.GRAY);
-            mShotTitle.setText("Philanthropy: CGI");
-            mUserDescription.setText("by Nick Slater");
-        }
+    public void load(int shotId) {
+        Dribbble.getShot(shotId).execute(new ApiRequest.Callback<Shot>() {
+            @Override
+            public void onSuccess(Dribbble.Response<Shot> response) {
+                load(response.data);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Log.e(e);
+            }
+        });
+    }
+
+    public void color() {
+        mShotPreview.postDelayed(() -> {
+            Palette palette = PaletteTransformation.getPalette(mShotPreview);
+            Palette.Swatch swatch = Utils.getSwatch(palette);
+
+            if (swatch != null) {
+                mContentLayout.setBackgroundColor(swatch.getRgb());
+                mShotTitle.setTextColor(swatch.getTitleTextColor());
+                mUserDescription.setTextColor(swatch.getBodyTextColor());
+                mUserDescription.setLinkTextColor(swatch.getTitleTextColor());
+            }
+        }, 100);
     }
 
     public void load(Shot shot) {
         mShotTitle.setText(shot.title);
-        mUserDescription.setText("by " + shot.user.name + (shot.team != null ? " for " + shot.team.name : ""));
+
+        mUserDescription.setText(shot.generateAuthorDescription(getContext()));
+        mUserDescription.setMovementMethod(LinkMovementMethod.getInstance());
+
+        OnClickListener listener = v -> {
+            Intent intent = new Intent(getContext(), ShotActivity.class);
+            intent.putExtra(ShotActivity.EXTRA_SHOT_DATA, new Gson().toJson(shot));
+            getContext().startActivity(intent);
+        };
+
+        mShotPreview.setOnClickListener(listener);
+        mContentLayout.setOnClickListener(listener);
+        mShotTitle.setOnClickListener(listener);
+
+        mUserDescription.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), UserActivity.class);
+            intent.putExtra(UserActivity.EXTRA_USER_DATA, new Gson().toJson(shot.user));
+            getContext().startActivity(intent);
+        });
 
         Picasso.with(getContext())
                 .load(shot.images.normal)
                 .placeholder(R.color.slate)
                 .transform(PaletteTransformation.instance())
-                .into(mShotPreview);
+                .into(mShotPreview, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        color();
+                        //ImageLoadingTransition.apply(mShotPreview);
+                    }
 
-//        mShotPreview.postDelayed(() -> {
-//            Palette palette = PaletteTransformation.getPalette(mShotPreview);
-//            Palette.Swatch swatch = palette.getDarkMutedSwatch();
-//
-//            if (swatch == null) swatch = palette.getDarkVibrantSwatch();
-//            if (swatch == null) swatch = palette.getMutedSwatch();
-//            if (swatch == null) swatch = palette.getVibrantSwatch();
-//            if (swatch == null) swatch = palette.getLightMutedSwatch();
-//            if (swatch == null) swatch = palette.getLightVibrantSwatch();
-//
-//            if (swatch != null) {
-//                mContentLayout.setBackgroundColor(swatch.getRgb());
-//                mShotTitle.setTextColor(swatch.getTitleTextColor());
-//                mUserDescription.setTextColor(swatch.getBodyTextColor());
-//            }
-//        }, 2000);
+                    @Override
+                    public void onError() {
+
+                    }
+                });
     }
 
 }

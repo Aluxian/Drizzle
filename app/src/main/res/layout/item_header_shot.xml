@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.aluxian.drizzle.views.FixedAspectRatioRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.aluxian.drizzle.views.LinearLayoutOverlay
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:overlay="?android:attr/selectableItemBackground">
+
+            <com.aluxian.drizzle.views.FourByThreeImageView
+                android:id="@+id/shot_preview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:contentDescription="@null"
+                android:scaleType="centerCrop"
+                tools:src="@drawable/drawer_cover" />
+
+        </com.aluxian.drizzle.views.LinearLayoutOverlay>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/overlay_shot_shadow" />
+
+    </com.aluxian.drizzle.views.FixedAspectRatioRelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:orientation="vertical">
+
+        <com.aluxian.drizzle.views.widgets.ShotSummary
+            android:id="@+id/shot_summary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp" />
+
+        <com.aluxian.drizzle.views.widgets.ShotReboundOf
+            android:id="@+id/shot_rebound_of"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp" />
+
+        <com.aluxian.drizzle.views.widgets.ShotRebounds
+            android:id="@+id/shot_rebounds"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <com.aluxian.drizzle.views.widgets.ShotAttachments
+            android:id="@+id/shot_attachments"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:columnCount="2">
+
+            <TextView
+                android:id="@+id/shot_likes"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_columnWeight="1"
+                android:layout_gravity="fill_horizontal"
+                android:drawablePadding="8dp"
+                android:drawableStart="@drawable/ic_heart"
+                android:gravity="center_vertical"
+                tools:text="95 likes" />
+
+            <TextView
+                android:id="@+id/shot_buckets"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_columnWeight="1"
+                android:layout_gravity="fill_horizontal"
+                android:drawablePadding="8dp"
+                android:drawableStart="@drawable/ic_bucket"
+                android:gravity="center_vertical"
+                tools:text="3 buckets" />
+
+            <TextView
+                android:id="@+id/shot_views"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_columnWeight="1"
+                android:layout_gravity="fill_horizontal"
+                android:drawablePadding="8dp"
+                android:drawableStart="@drawable/ic_views"
+                android:gravity="center_vertical"
+                tools:text="30,185 views" />
+
+            <TextView
+                android:id="@+id/shot_tags"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_columnWeight="1"
+                android:layout_gravity="fill_horizontal"
+                android:drawablePadding="8dp"
+                android:drawableStart="@drawable/ic_tag"
+                android:gravity="center_vertical"
+                tools:text="16 tags" />
+
+        </GridLayout>
+
+        <com.aluxian.drizzle.views.widgets.ShotPalette
+            android:id="@+id/shot_palette"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:padding="16dp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/shot_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:textColor="@color/charcoal" />
+
+        <TextView
+            android:id="@+id/subheader_comments"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:gravity="center_vertical"
+            android:textAppearance="@android:style/TextAppearance.Material.Body2" />
+
+    </LinearLayout>
+
+</LinearLayout>

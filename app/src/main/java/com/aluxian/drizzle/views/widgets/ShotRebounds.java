@@ -1,6 +1,7 @@
 package com.aluxian.drizzle.views.widgets;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.HorizontalScrollView;
@@ -9,12 +10,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.aluxian.drizzle.R;
+import com.aluxian.drizzle.activities.ShotActivity;
 import com.aluxian.drizzle.api.ApiRequest;
 import com.aluxian.drizzle.api.Dribbble;
 import com.aluxian.drizzle.api.models.Shot;
+import com.aluxian.drizzle.utils.CountableInterpolator;
 import com.aluxian.drizzle.utils.Dp;
 import com.aluxian.drizzle.utils.Log;
 import com.aluxian.drizzle.views.FixedAspectRatioImageView;
+import com.google.gson.Gson;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -48,16 +53,16 @@ public class ShotRebounds extends LinearLayout {
         // Add the title
         mTitleView = new TextView(context);
         mTitleView.setTextAppearance(context, android.R.style.TextAppearance_Material_Body2);
-        LayoutParams titleParams = new LayoutParams(MATCH_PARENT, Dp.toPx(48));
-        titleParams.setMarginStart(Dp.toPx(16));
-        titleParams.setMarginEnd(Dp.toPx(16));
+        LayoutParams titleParams = new LayoutParams(MATCH_PARENT, Dp.PX_48);
+        titleParams.setMarginStart(Dp.PX_16);
+        titleParams.setMarginEnd(Dp.PX_16);
         mTitleView.setLayoutParams(titleParams);
         mTitleView.setGravity(Gravity.CENTER_VERTICAL);
         addView(mTitleView);
 
         // Add the ScrollView
         HorizontalScrollView scrollView = new HorizontalScrollView(context);
-        scrollView.setLayoutParams(new LayoutParams(MATCH_PARENT, MATCH_PARENT));
+        scrollView.setLayoutParams(new LayoutParams(MATCH_PARENT, Dp.PX_72));
         scrollView.setHorizontalScrollBarEnabled(false);
         addView(scrollView);
 
@@ -65,11 +70,6 @@ public class ShotRebounds extends LinearLayout {
         mScrollViewContainer = new LinearLayout(context);
         mScrollViewContainer.setLayoutParams(new HorizontalScrollView.LayoutParams(WRAP_CONTENT, MATCH_PARENT));
         scrollView.addView(mScrollViewContainer);
-
-        // Load placeholder data for edit mode
-        if (isInEditMode()) {
-            mTitleView.setText("2 rebounds");
-        }
     }
 
     public void load(Shot shot) {
@@ -78,27 +78,56 @@ public class ShotRebounds extends LinearLayout {
             return;
         }
 
-        mTitleView.setText(shot.reboundsCount + (shot.reboundsCount == 1 ? " rebound" : " rebounds"));
+        CountableInterpolator countableInterpolator = new CountableInterpolator(getContext());
+        String title = countableInterpolator.apply(shot.reboundsCount, R.string.section_rebounds, R.string.section_rebound);
+
+        mTitleView.setText(title);
+
         Dribbble.listRebounds(shot.id).execute(new ApiRequest.Callback<List<Shot>>() {
             @Override
             public void onSuccess(Dribbble.Response<List<Shot>> response) {
-                int height = Dp.toPx(72);
+                int height = Dp.PX_72;
 
                 for (int i = 0; i < response.data.size(); i++) {
                     ImageView imageView = new FixedAspectRatioImageView(getContext());
                     LayoutParams params = new LayoutParams(WRAP_CONTENT, height);
 
-                    if (i > 0) {
-                        params.setMarginStart(Dp.toPx(8));
+                    if (i == 0) {
+                        params.setMarginStart(Dp.PX_16);
+                    } else {
+                        params.setMarginStart(Dp.PX_8);
+                    }
+
+                    if (i == response.data.size() - 1) {
+                        params.setMarginEnd(Dp.PX_16);
                     }
 
                     imageView.setLayoutParams(params);
                     mScrollViewContainer.addView(imageView);
 
+                    Shot reboundShot = response.data.get(i);
+
+                    imageView.setOnClickListener(v -> {
+                        Intent intent = new Intent(getContext(), ShotActivity.class);
+                        intent.putExtra(ShotActivity.EXTRA_SHOT_DATA, new Gson().toJson(reboundShot));
+                        intent.putExtra(ShotActivity.EXTRA_REBOUND_OF, new Gson().toJson(shot));
+                        getContext().startActivity(intent);
+                    });
+
                     Picasso.with(getContext())
-                            .load(response.data.get(i).images.largest())
+                            .load(reboundShot.images.largest())
                             .placeholder(R.color.slate)
-                            .into(imageView);
+                            .into(imageView, new Callback() {
+                                @Override
+                                public void onSuccess() {
+                                    //ImageLoadingTransition.apply(imageView);
+                                }
+
+                                @Override
+                                public void onError() {
+
+                                }
+                            });
                 }
             }
 

@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
@@ -12,15 +13,15 @@ import android.widget.FrameLayout;
 import com.aluxian.drizzle.R;
 
 /**
- * A layout that draws something in the insets passed to {@link #fitSystemWindows(Rect)}, i.e. the area above UI chrome
- * (status and navigation bars, overlay action bars).
+ * A layout that draws something in the insets passed to {@link #fitSystemWindows(Rect)}, i.e. the area above UI chrome (status and
+ * navigation bars, overlay action bars).
  */
 public class ScrimInsetsFrameLayout extends FrameLayout {
-    private Drawable mInsetForeground;
 
+    private Drawable mInsetForeground;
+    private boolean mApplyInsets;
     private Rect mInsets;
     private Rect mTempRect = new Rect();
-    private OnInsetsCallback mOnInsetsCallback;
 
     public ScrimInsetsFrameLayout(Context context) {
         super(context);
@@ -38,34 +39,33 @@ public class ScrimInsetsFrameLayout extends FrameLayout {
     }
 
     private void init(Context context, AttributeSet attrs, int defStyle) {
-        final TypedArray a = context.obtainStyledAttributes(attrs,
-                R.styleable.ScrimInsetsView, defStyle, 0);
-        if (a == null) {
-            return;
-        }
+        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ScrimInsetsView, defStyle, 0);
         mInsetForeground = a.getDrawable(R.styleable.ScrimInsetsView_insetForeground);
+        mApplyInsets = a.getBoolean(R.styleable.ScrimInsetsView_insetApplyPadding, false);
         a.recycle();
 
         setWillNotDraw(true);
     }
 
     @Override
-    protected boolean fitSystemWindows(Rect insets) {
+    protected boolean fitSystemWindows(@NonNull Rect insets) {
+        if (mApplyInsets) {
+            setPadding(insets.left, insets.top, insets.right, insets.bottom);
+        }
+
         mInsets = new Rect(insets);
         setWillNotDraw(mInsetForeground == null);
         ViewCompat.postInvalidateOnAnimation(this);
-        if (mOnInsetsCallback != null) {
-            mOnInsetsCallback.onInsetsChanged(insets);
-        }
         return true; // consume insets
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(@NonNull Canvas canvas) {
         super.draw(canvas);
 
         int width = getWidth();
         int height = getHeight();
+
         if (mInsets != null && mInsetForeground != null) {
             int sc = canvas.save();
             canvas.translate(getScrollX(), getScrollY());
@@ -110,17 +110,4 @@ public class ScrimInsetsFrameLayout extends FrameLayout {
         }
     }
 
-    /**
-     * Allows the calling container to specify a callback for custom processing when insets change (i.e. when
-     * {@link #fitSystemWindows(Rect)} is called. This is useful for setting padding on UI elements based on
-     * UI chrome insets (e.g. a Google Map or a ListView). When using with ListView or GridView, remember to set
-     * clipToPadding to false.
-     */
-    public void setOnInsetsCallback(OnInsetsCallback onInsetsCallback) {
-        mOnInsetsCallback = onInsetsCallback;
-    }
-
-    public static interface OnInsetsCallback {
-        public void onInsetsChanged(Rect insets);
-    }
 }

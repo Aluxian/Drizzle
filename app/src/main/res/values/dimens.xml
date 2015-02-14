@@ -1,11 +1,6 @@
 <resources>
 
     <dimen name="drawerWidth">304dp</dimen>
-
-    <!--<dimen name="toolbarHeight">56dp</dimen>-->
-    <dimen name="tabsBarHeight">48dp</dimen>
-
-    <dimen name="toolbarElevation">8dp</dimen>
-    <dimen name="gridSpacing">8dp</dimen>
+    <dimen name="toolbarElevation">4dp</dimen>
 
 </resources>

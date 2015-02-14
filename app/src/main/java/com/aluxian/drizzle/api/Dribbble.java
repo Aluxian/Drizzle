@@ -2,11 +2,11 @@ package com.aluxian.drizzle.api;
 
 import com.aluxian.drizzle.api.models.Attachment;
 import com.aluxian.drizzle.api.models.Comment;
+import com.aluxian.drizzle.api.models.Like;
 import com.aluxian.drizzle.api.models.Credentials;
 import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.utils.Config;
 import com.aluxian.drizzle.utils.UserManager;
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.List;
@@ -33,49 +33,73 @@ public class Dribbble {
                 .path("shots/" + id);
     }
 
-    public static ApiRequest<List<Shot>> listBucketShots(int id) {
+    public static ApiRequest<List<Shot>> listBucketShots(int bucketId) {
         return new ApiRequest<List<Shot>>()
                 .responseType(new TypeToken<List<Shot>>() {})
                 .accessToken(UserManager.getInstance().getAccessToken())
                 .useCache(true)
                 .queryParam("per_page", String.valueOf(Config.RESULTS_PER_PAGE))
-                .path("buckets/" + id + "/shots");
+                .path("buckets/" + bucketId + "/shots");
     }
 
     /**
-     * @param id The ID of the shot whose attachments to get.
+     * @param shotId The ID of the shot whose attachments to get.
      * @return The list of attachments for the given shot id.
      */
-    public static ApiRequest<List<Attachment>> listAttachments(int id) {
+    public static ApiRequest<List<Attachment>> listAttachments(int shotId) {
         return new ApiRequest<List<Attachment>>()
                 .responseType(new TypeToken<List<Attachment>>() {})
                 .accessToken(UserManager.getInstance().getAccessToken())
                 .useCache(true)
-                .path("shots/" + id + "/attachments");
+                .path("shots/" + shotId + "/attachments");
     }
 
     /**
-     * @param id The ID of the shot whose rebounds to get.
+     * @param shotId The ID of the shot whose rebounds to get.
      * @return The list of rebounds for the given shot id.
      */
-    public static ApiRequest<List<Shot>> listRebounds(int id) {
+    public static ApiRequest<List<Shot>> listRebounds(int shotId) {
         return new ApiRequest<List<Shot>>()
                 .responseType(new TypeToken<List<Shot>>() {})
                 .accessToken(UserManager.getInstance().getAccessToken())
                 .useCache(true)
-                .path("shots/" + id + "/rebounds");
+                .path("shots/" + shotId + "/rebounds");
     }
 
     /**
-     * @param id The ID of the shot whose comments to get.
+     * @param shotId The ID of the shot whose comments to get.
      * @return The list of comments for the given shot id.
      */
-    public static ApiRequest<List<Comment>> listComments(int id) {
+    public static ApiRequest<List<Comment>> listComments(int shotId) {
         return new ApiRequest<List<Comment>>()
                 .responseType(new TypeToken<List<Comment>>() {})
                 .accessToken(UserManager.getInstance().getAccessToken())
                 .useCache(true)
-                .path("shots/" + id + "/comments");
+                .path("shots/" + shotId + "/comments");
+    }
+
+    /**
+     * @param shotId The ID of the shot whose likes to get.
+     * @return The list of likes for the given shot id.
+     */
+    public static ApiRequest<List<Like>> listLikes(int shotId) {
+        return new ApiRequest<List<Like>>()
+                .responseType(new TypeToken<List<Like>>() {})
+                .accessToken(UserManager.getInstance().getAccessToken())
+                .useCache(true)
+                .path("shots/" + shotId + "/likes");
+    }
+
+    /**
+     * @param userId The ID of the user whose shots to get.
+     * @return The list of shots for the given user id.
+     */
+    public static ApiRequest<List<Shot>> listUserShots(int userId) {
+        return new ApiRequest<List<Shot>>()
+                .responseType(new TypeToken<List<Shot>>() {})
+                .accessToken(UserManager.getInstance().getAccessToken())
+                .useCache(true)
+                .path("users/" + userId + "/shots");
     }
 
         /*
@@ -105,14 +129,26 @@ public class Dribbble {
                 .post(null);
     }
 
-    public static ApiRequest<JsonObject> pixelsDribbbledCount() {
-        return new ApiRequest<JsonObject>()
-                .responseType(new TypeToken<JsonObject>() {})
+    public static ApiRequest<String> pixelsDribbbledCount() {
+        return new ApiRequest<String>()
+                .responseType(new TypeToken<String>() {})
                 .useCache(true)
-                .url(Config.KIMONO_API_URL);
+                .url("https://www.kimonolabs.com/api/cfxxcg4u")
+                .queryParam("apikey", "hQMs8xI09wAzLH5qYKtTnR5o4Na3qnWI")
+                .queryParam("kimmodify", "1");
     }
 
-    public static ApiRequest<List<Shot>> listFollowing() {
+    public static ApiRequest<Shot.Extra> getShotExtra(int id) {
+        return new ApiRequest<Shot.Extra>()
+                .responseType(new TypeToken<Shot.Extra>() {})
+                .useCache(true)// TODO: set long cache period
+                .url("https://www.kimonolabs.com/api/9db6053s")
+                .queryParam("apikey", "hQMs8xI09wAzLH5qYKtTnR5o4Na3qnWI")
+                .queryParam("kimmodify", "1")
+                .queryParam("kimpath2", String.valueOf(id));
+    }
+
+    public static ApiRequest<List<Shot>> listShotsFromFollowing() {
         return new ApiRequest<List<Shot>>()
                 .responseType(new TypeToken<List<Shot>>() {})
                 .accessToken(UserManager.getInstance().getAccessToken())
@@ -121,9 +157,9 @@ public class Dribbble {
                 .path("user/following/shots");
     }
 
-    public static ApiRequest<List<Shot>> listNextPage(String nextPageUrl) {
-        return new ApiRequest<List<Shot>>()
-                .responseType(new TypeToken<List<Shot>>() {})
+    public static <T> ApiRequest<List<T>> listNextPage(String nextPageUrl, TypeToken<List<T>> typeToken) {
+        return new ApiRequest<List<T>>()
+                .responseType(typeToken)
                 .accessToken(UserManager.getInstance().getAccessToken())
                 .useCache(true)
                 .url(nextPageUrl);

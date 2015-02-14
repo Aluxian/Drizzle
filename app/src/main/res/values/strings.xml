@@ -4,12 +4,16 @@
     <string name="app_name">Drizzle</string>
 
     <string name="action_search">Search</string>
-    <string name="action_share">Share</string>
     <string name="action_sort">Sort</string>
+
+    <string name="action_share">Share</string>
+    <string name="action_link_website">Website</string>
+    <string name="action_link_twitter">Twitter</string>
 
     <string name="drawer_main_feed">Feed</string>
     <string name="drawer_main_shots">Shots</string>
 
+    <string name="drawer_personal">Personal</string>
     <string name="drawer_personal_buckets">Buckets</string>
     <string name="drawer_personal_go_pro">Go PRO</string>
     <string name="drawer_personal_account_settings">Account Settings</string>
@@ -22,7 +26,11 @@
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="drawer_pixels_dribbbled">pixels dribbbled</string>
-    <string name="drawer_personal">Personal</string>
+
+    <string name="send_feedback_with">Send feedback with</string>
+    <string name="send_feedback_subject">I\'ve got feedback!</string>
+    <string name="send_feedback_body">Hello,\n\n</string>
+    <string name="send_feedback_error">You don\'t have any email apps installed. Please send an email to %s</string>
 
     <string name="filter_timeframe">Timeframe</string>
     <string name="filter_sort_by">Sort by</string>
@@ -31,10 +39,7 @@
     <string name="dialog_apply">Apply</string>
     <string name="dialog_cancel">Cancel</string>
 
-    <string name="send_feedback_with">Send feedback with</string>
-    <string name="send_feedback_subject">I\'ve got feedback!</string>
-    <string name="send_feedback_body">Hello,\n\n</string>
-    <string name="send_feedback_error">You don\'t have any email apps installed. Please send an email to %s</string>
+    <string name="dialog_fans_title">Fans</string>
 
     <string name="intro_title">Hi there!</string>
     <string name="intro_description">Drizzle is a beautiful app for Dribbble,\ncrafted with care and attention to details.\n\nBrowse,
@@ -48,8 +53,42 @@
     <string name="auth_unexpected_error">Something went wrong. Please email the developer or try again.</string>
     <string name="auth_connecting">Connecting to Dribbble…</string>
 
-    <string name="provider_following">Following</string>
-    <string name="provider_featured">Featured</string>
+    <string name="tab_following">Following</string>
+    <string name="tab_featured">Featured</string>
+
+    <string name="word_by">by</string>
+    <string name="word_for">for</string>
+
+    <string name="share_shot">Share %s</string>
+
+    <string name="stats_likes">%d likes</string>
+    <string name="stats_buckets">%d buckets</string>
+    <string name="stats_views">%d views</string>
+    <string name="stats_tags">%d tags</string>
+
+    <string name="stats_shots">%d shots</string>
+    <string name="stats_projects">%d projects</string>
+    <string name="stats_followers">%d followers</string>
+
+    <string name="stats_like">1 like</string>
+    <string name="stats_bucket">1 bucket</string>
+    <string name="stats_view">1 view</string>
+    <string name="stats_tag">1 tag</string>
+
+    <string name="stats_shot">1 shot</string>
+    <string name="stats_project">1 project</string>
+    <string name="stats_follower">1 follower</string>
+
+    <string name="section_attachments">%d attachments</string>
+    <string name="section_responses">%d responses</string>
+    <string name="section_rebounds">%d rebounds</string>
+
+    <string name="section_attachment">1 attachment</string>
+    <string name="section_response">1 response</string>
+    <string name="section_rebound">1 rebound</string>
+
+    <string name="section_rebound_of">Rebound of</string>
+    <string name="loading">Loading…</string>
 
     <string-array name="filter_list_options">
         <item>Any</item>

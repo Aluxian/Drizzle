@@ -27,7 +27,7 @@ public class CircularTransformation implements Transformation {
 
     @Override
     public String key() {
-        return "circular";
+        return "circular()";
     }
 
 }

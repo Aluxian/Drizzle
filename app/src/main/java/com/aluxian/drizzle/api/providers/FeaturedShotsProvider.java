@@ -1,48 +1,26 @@
 package com.aluxian.drizzle.api.providers;
 
+import com.aluxian.drizzle.api.ApiRequest;
 import com.aluxian.drizzle.api.Dribbble;
-import com.aluxian.drizzle.api.exceptions.BadRequestException;
-import com.aluxian.drizzle.api.exceptions.TooManyRequestsException;
 import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.utils.Config;
+import com.google.gson.reflect.TypeToken;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Provides shots featured by the app.
  */
-public class FeaturedShotsProvider extends ShotsProvider {
+public class FeaturedShotsProvider extends ItemsProvider<Shot> {
 
     @Override
-    public List<Shot> load() throws IOException, BadRequestException, TooManyRequestsException {
-        if (mLastResponse == null) {
-            mLastResponse = Dribbble.listBucketShots(Config.FEATURED_BUCKET_ID).execute();
-
-            if (mLastResponse != null) {
-                return mLastResponse.data;
-            }
-        } else if (mLastResponse.nextPageUrl != null) {
-            mLastResponse = Dribbble.listNextPage(mLastResponse.nextPageUrl).execute();
-
-            if (mLastResponse != null) {
-                return mLastResponse.data;
-            }
-        }
-
-        return new ArrayList<>();
+    protected ApiRequest<List<Shot>> getListRequest() {
+        return Dribbble.listBucketShots(Config.FEATURED_BUCKET_ID);
     }
 
     @Override
-    public List<Shot> refresh() throws IOException, BadRequestException, TooManyRequestsException {
-        mLastResponse = Dribbble.listBucketShots(Config.FEATURED_BUCKET_ID).useCache(false).execute();
-        return mLastResponse.data;
-    }
-
-    @Override
-    public boolean hasItemsAvailable() {
-        return Dribbble.listBucketShots(Config.FEATURED_BUCKET_ID).canLoadImmediately();
+    protected ApiRequest<List<Shot>> getNextPageRequest() {
+        return Dribbble.listNextPage(mLastResponse.nextPageUrl, new TypeToken<List<Shot>>() {});
     }
 
 }
