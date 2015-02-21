@@ -14,7 +14,7 @@ import com.aluxian.drizzle.R;
 /**
  * @source https://gist.github.com/chrisbanes/9091754
  */
-public class LinearLayoutOverlay extends LinearLayout {
+public class OverlayLinearLayout extends LinearLayout {
 
     private Drawable mForeground;
 
@@ -27,30 +27,30 @@ public class LinearLayoutOverlay extends LinearLayout {
 
     boolean mForegroundBoundsChanged = false;
 
-    public LinearLayoutOverlay(Context context) {
+    public OverlayLinearLayout(Context context) {
         super(context);
     }
 
-    public LinearLayoutOverlay(Context context, AttributeSet attrs) {
+    public OverlayLinearLayout(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public LinearLayoutOverlay(Context context, AttributeSet attrs, int defStyle) {
+    public OverlayLinearLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.LinearLayoutOverlay,
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.OverlayLinearLayout,
                 defStyle, 0);
 
         mForegroundGravity = a.getInt(
-                R.styleable.LinearLayoutOverlay_overlayGravity, mForegroundGravity);
+                R.styleable.OverlayLinearLayout_overlayGravity, mForegroundGravity);
 
-        final Drawable d = a.getDrawable(R.styleable.LinearLayoutOverlay_overlay);
+        final Drawable d = a.getDrawable(R.styleable.OverlayLinearLayout_overlay);
         if (d != null) {
             setForeground(d);
         }
 
         mForegroundInPadding = a.getBoolean(
-                R.styleable.LinearLayoutOverlay_overlayInsidePadding, true);
+                R.styleable.OverlayLinearLayout_overlayInsidePadding, true);
 
         a.recycle();
     }

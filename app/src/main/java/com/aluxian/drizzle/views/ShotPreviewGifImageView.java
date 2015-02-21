@@ -5,17 +5,19 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 
-public class FourByThreeImageView extends ImageView {
+import pl.droidsonroids.gif.GifImageView;
 
-    public FourByThreeImageView(Context context) {
+public class ShotPreviewGifImageView extends GifImageView {
+
+    public ShotPreviewGifImageView(Context context) {
         super(context);
     }
 
-    public FourByThreeImageView(Context context, AttributeSet attrs) {
+    public ShotPreviewGifImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public FourByThreeImageView(Context context, AttributeSet attrs, int defStyle) {
+    public ShotPreviewGifImageView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 

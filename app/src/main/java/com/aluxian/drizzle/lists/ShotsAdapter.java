@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,12 +22,14 @@ import com.aluxian.drizzle.utils.Config;
 import com.aluxian.drizzle.utils.Dp;
 import com.aluxian.drizzle.utils.Log;
 import com.google.gson.Gson;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 public class ShotsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements SwipeRefreshLayout.OnRefreshListener {
 
@@ -73,23 +74,9 @@ public class ShotsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
             holder.image.setOnClickListener(view -> onShotClick(holder.image.getContext(), shot));
 
-            if (!shot.images.normal.equals(holder.image.getTag())) {
-                holder.image.setTag(shot.images.normal);
-                Picasso.with(holder.image.getContext())
-                        .load(shot.images.normal)
-                                //.noFade()
-                        .into(holder.image, new Callback() {
-                            @Override
-                            public void onSuccess() {
-                                //ImageLoadingTransition.apply(holder.image);
-                            }
-
-                            @Override
-                            public void onError() {
-
-                            }
-                        });
-            }
+            Picasso.with(holder.image.getContext())
+                    .load(shot.images.normal)
+                    .into(holder.image);
 
             // Increase margin size
             RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) holder.itemView.getLayoutParams();
@@ -101,6 +88,8 @@ public class ShotsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 params.setMarginEnd(Dp.toPx(4));
             }
             holder.itemView.requestLayout();
+
+            holder.gifBadge.setVisibility(shot.images.normal.endsWith(".gif") ? View.VISIBLE : View.INVISIBLE);
 
             // If position is near the end of the list, load more items from the API
             new LoadItemsIfRequiredTask(position).execute();
@@ -228,30 +217,18 @@ public class ShotsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
      */
     public static class ItemViewHolder extends RecyclerView.ViewHolder {
 
-        public final CardView card;
-        public final ImageView image;
+        @InjectView(R.id.cover_image) ImageView image;
+        @InjectView(R.id.gif_badge) ImageView gifBadge;
 
-        //public final ImageView viewsIcon;
-        public final ImageView commentsIcon;
-        public final ImageView likesIcon;
+        @InjectView(R.id.comments_icon) ImageView commentsIcon;
+        @InjectView(R.id.likes_icon) ImageView likesIcon;
 
-        //public final TextView viewsCount;
-        public final TextView commentsCount;
-        public final TextView likesCount;
+        @InjectView(R.id.comments_count) TextView commentsCount;
+        @InjectView(R.id.likes_count) TextView likesCount;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
-
-            card = (CardView) itemView;
-            image = (ImageView) itemView.findViewById(R.id.shared_cover_image);
-
-            //viewsIcon = (ImageView) v.findViewById(R.id.views_icon);
-            commentsIcon = (ImageView) itemView.findViewById(R.id.comments_icon);
-            likesIcon = (ImageView) itemView.findViewById(R.id.likes_icon);
-
-            //viewsCount = (TextView) v.findViewById(R.id.views_count);
-            commentsCount = (TextView) itemView.findViewById(R.id.comments_count);
-            likesCount = (TextView) itemView.findViewById(R.id.likes_count);
+            ButterKnife.inject(this, itemView);
         }
 
     }

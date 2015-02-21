@@ -10,12 +10,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.aluxian.drizzle.views.LinearLayoutOverlay
+        <com.aluxian.drizzle.views.OverlayLinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:overlay="?android:attr/selectableItemBackground">
 
-            <com.aluxian.drizzle.views.FourByThreeImageView
+            <com.aluxian.drizzle.views.ShotPreviewGifImageView
                 android:id="@+id/shot_preview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -24,12 +24,23 @@
                 android:scaleType="centerCrop"
                 tools:src="@drawable/drawer_cover" />
 
-        </com.aluxian.drizzle.views.LinearLayoutOverlay>
+        </com.aluxian.drizzle.views.OverlayLinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/overlay_shot_shadow" />
+
+        <ProgressBar
+            android:id="@+id/gif_loader"
+            style="@android:style/Widget.Material.Light.ProgressBar.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
+            android:visibility="gone" />
 
     </com.aluxian.drizzle.views.FixedAspectRatioRelativeLayout>
 

@@ -119,17 +119,7 @@ public class ShotAttachments extends LinearLayout {
                     Picasso.with(getContext())
                             .load(attachment.thumbnailUrl)
                             .placeholder(R.color.slate)
-                            .into(imageView, new Callback() {
-                                @Override
-                                public void onSuccess() {
-                                    //ImageLoadingTransition.apply(imageView);
-                                }
-
-                                @Override
-                                public void onError() {
-
-                                }
-                            });
+                            .into(imageView);
                 }
             }
 

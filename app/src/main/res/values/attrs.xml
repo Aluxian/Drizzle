@@ -12,7 +12,7 @@
         <attr name="insetApplyPadding" format="boolean" />
     </declare-styleable>
 
-    <declare-styleable name="LinearLayoutOverlay">
+    <declare-styleable name="OverlayLinearLayout">
         <attr name="overlay" format="reference" />
         <attr name="overlayInsidePadding" format="boolean" />
         <attr name="overlayGravity" format="integer" />

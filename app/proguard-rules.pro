@@ -25,3 +25,7 @@
 -keep class **$$ViewInjector { *; }
 -keepclasseswithmembernames class * { @butterknife.* <fields>; }
 -keepclasseswithmembernames class * { @butterknife.* <methods>; }
+
+# android-gif_badge-drawable
+-keep public class pl.droidsonroids.gif.GifIOException{<init>(int);}
+-keep class pl.droidsonroids.gif.GifInfoHandle{<init>(long,int,int,int);}

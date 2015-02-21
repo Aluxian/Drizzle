@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.aluxian.drizzle.R;
@@ -33,11 +34,15 @@ import com.aluxian.drizzle.utils.Utils;
 import com.aluxian.drizzle.utils.transformations.CircularTransformation;
 import com.aluxian.drizzle.utils.transformations.PaletteTransformation;
 import com.aluxian.drizzle.views.CustomEdgeRecyclerView;
+import com.aluxian.drizzle.views.ShotPreviewGifImageView;
 import com.aluxian.drizzle.views.widgets.ShotAttachments;
 import com.aluxian.drizzle.views.widgets.ShotReboundOf;
 import com.aluxian.drizzle.views.widgets.ShotRebounds;
 import com.aluxian.drizzle.views.widgets.ShotSummary;
 import com.google.gson.Gson;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -47,6 +52,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import pl.droidsonroids.gif.GifDrawable;
 
 public class ShotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -160,6 +166,33 @@ public class ShotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             //ImageLoadingTransition.apply(preview);
 
                             holder.preview.postDelayed(() -> {
+                                if (mShot.images.largest().endsWith(".gif")) {
+                                    holder.gifLoader.setVisibility(View.VISIBLE);
+
+                                    new AsyncTask<Void, Void, GifDrawable>() {
+                                        @Override
+                                        protected GifDrawable doInBackground(Void... params) {
+                                            try {
+                                                Request request = new Request.Builder().url(mShot.images.largest()).build();
+                                                Response response = new OkHttpClient().newCall(request).execute();
+                                                return new GifDrawable(response.body().bytes());
+                                            } catch (IOException e) {
+                                                Log.e(e);
+                                            }
+
+                                            return null;
+                                        }
+
+                                        @Override
+                                        protected void onPostExecute(GifDrawable gif) {
+                                            if (gif != null) {
+                                                holder.preview.setImageDrawable(gif);
+                                                holder.gifLoader.setVisibility(View.INVISIBLE);
+                                            }
+                                        }
+                                    }.execute();
+                                }
+
                                 Palette palette = PaletteTransformation.getPalette(holder.preview);
                                 mSwatch = Utils.getSwatch(palette);
 
@@ -318,7 +351,8 @@ public class ShotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     static class HeaderViewHolder extends RecyclerView.ViewHolder {
 
-        @InjectView(R.id.shot_preview) ImageView preview;
+        @InjectView(R.id.shot_preview) ShotPreviewGifImageView preview;
+        @InjectView(R.id.gif_loader) ProgressBar gifLoader;
         @InjectView(R.id.shot_summary) ShotSummary summary;
         @InjectView(R.id.shot_rebound_of) ShotReboundOf reboundOf;
         @InjectView(R.id.shot_rebounds) ShotRebounds rebounds;

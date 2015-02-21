@@ -56,6 +56,7 @@ dependencies {
     compile 'com.jakewharton:disklrucache:2.0.2'
     compile 'com.jakewharton:butterknife:6.1.0'
     compile 'com.github.ksoichiro:android-observablescrollview:1.5.0'
+    compile 'pl.droidsonroids.gif:android-gif-drawable:1.1.2'
     aarLinkSources 'com.android.support:recyclerview-v7:21.0.3:sources@jar'
     aarLinkSources 'com.android.support:palette-v7:21.0.3:sources@jar'
     aarLinkSources 'com.android.support:cardview-v7:21.0.3:sources@jar'
@@ -68,4 +69,5 @@ dependencies {
     aarLinkSources 'com.jakewharton:disklrucache:2.0.2:sources@jar'
     aarLinkSources 'com.jakewharton:butterknife:6.1.0:sources@jar'
     aarLinkSources 'com.github.ksoichiro:android-observablescrollview:1.5.0:sources@jar'
+    aarLinkSources 'pl.droidsonroids.gif:android-gif-drawable:1.1.2:sources@jar'
 }
