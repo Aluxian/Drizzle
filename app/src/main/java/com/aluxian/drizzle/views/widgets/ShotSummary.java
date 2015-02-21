@@ -31,6 +31,8 @@ public class ShotSummary extends LinearLayout {
     private TextView mShotTitle;
     private TextView mAuthorDescription;
 
+    private Shot mShot;
+
     public ShotSummary(Context context) {
         super(context);
         init(context);
@@ -90,8 +92,6 @@ public class ShotSummary extends LinearLayout {
         mAuthorDescription.setTextAppearance(context, android.R.style.TextAppearance_Material_Subhead);
         infoLayout.addView(mAuthorDescription);
     }
-
-    private Shot mShot;
 
     public void load(Shot shot) {
         mShotTitle.setText(shot.title);

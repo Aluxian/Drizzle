@@ -34,6 +34,7 @@ public class ShotReboundOf extends LinearLayout {
     private TextView mShotTitle;
     private TextView mUserDescription;
     private LinearLayout mContentLayout;
+    private boolean mLoaded;
 
     public ShotReboundOf(Context context) {
         super(context);
@@ -94,6 +95,11 @@ public class ShotReboundOf extends LinearLayout {
     }
 
     public void load(int shotId) {
+        if (mLoaded) {
+            return;
+        }
+        mLoaded = true;
+
         Dribbble.getShot(shotId).execute(new ApiRequest.Callback<Shot>() {
             @Override
             public void onSuccess(Dribbble.Response<Shot> response) {
@@ -108,6 +114,11 @@ public class ShotReboundOf extends LinearLayout {
     }
 
     public void color() {
+        if (mLoaded) {
+            return;
+        }
+        mLoaded = true;
+
         mShotPreview.postDelayed(() -> {
             Palette palette = PaletteTransformation.getPalette(mShotPreview);
             Palette.Swatch swatch = Utils.getSwatch(palette);

@@ -2,8 +2,10 @@ package com.aluxian.drizzle.views.widgets;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v7.graphics.Palette;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -17,6 +19,7 @@ import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.utils.CountableInterpolator;
 import com.aluxian.drizzle.utils.Dp;
 import com.aluxian.drizzle.utils.Log;
+import com.aluxian.drizzle.views.CustomEdgeHorizontalScrollView;
 import com.aluxian.drizzle.views.FixedAspectRatioImageView;
 import com.google.gson.Gson;
 import com.squareup.picasso.Callback;
@@ -31,6 +34,8 @@ public class ShotRebounds extends LinearLayout {
 
     private TextView mTitleView;
     private LinearLayout mScrollViewContainer;
+
+    private CustomEdgeHorizontalScrollView mScrollView;
 
     public ShotRebounds(Context context) {
         super(context);
@@ -61,15 +66,15 @@ public class ShotRebounds extends LinearLayout {
         addView(mTitleView);
 
         // Add the ScrollView
-        HorizontalScrollView scrollView = new HorizontalScrollView(context);
-        scrollView.setLayoutParams(new LayoutParams(MATCH_PARENT, Dp.PX_72));
-        scrollView.setHorizontalScrollBarEnabled(false);
-        addView(scrollView);
+        mScrollView = new CustomEdgeHorizontalScrollView(context);
+        mScrollView.setLayoutParams(new LayoutParams(MATCH_PARENT, Dp.PX_72));
+        mScrollView.setHorizontalScrollBarEnabled(false);
+        addView(mScrollView);
 
         // Add the scroll view images container
         mScrollViewContainer = new LinearLayout(context);
         mScrollViewContainer.setLayoutParams(new HorizontalScrollView.LayoutParams(WRAP_CONTENT, MATCH_PARENT));
-        scrollView.addView(mScrollViewContainer);
+        mScrollView.addView(mScrollViewContainer);
     }
 
     public void load(Shot shot) {
@@ -137,6 +142,10 @@ public class ShotRebounds extends LinearLayout {
                 Log.e(e);
             }
         });
+    }
+
+    public void color(Palette.Swatch swatch) {
+        mScrollView.setEdgeColor(swatch.getRgb());
     }
 
 }

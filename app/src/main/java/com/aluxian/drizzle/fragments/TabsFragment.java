@@ -18,6 +18,7 @@ import com.aluxian.drizzle.R;
 import com.aluxian.drizzle.api.Params;
 import com.aluxian.drizzle.lists.FeedPagerAdapter;
 import com.aluxian.drizzle.lists.ShotsPagerAdapter;
+import com.aluxian.drizzle.utils.Log;
 import com.astuetz.PagerSlidingTabStrip;
 
 import java.util.Arrays;
@@ -26,6 +27,8 @@ public class TabsFragment extends Fragment {
 
     /** The ViewPager that displays the fragments for the tabs. */
     private ViewPager mViewPager;
+
+    private PagerSlidingTabStrip mTabStrip;
 
     public static TabsFragment newInstance(Type type) {
         TabsFragment fragment = new TabsFragment();
@@ -55,8 +58,8 @@ public class TabsFragment extends Fragment {
         }
 
         // Bind the tabs strip to the ViewPager
-        PagerSlidingTabStrip tabStrip = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
-        tabStrip.setViewPager(mViewPager);
+        mTabStrip = (PagerSlidingTabStrip) view.findViewById(R.id.tabs);
+        mTabStrip.setViewPager(mViewPager);
 
         return view;
     }

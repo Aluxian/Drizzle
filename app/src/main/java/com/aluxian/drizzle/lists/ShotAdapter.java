@@ -97,6 +97,10 @@ public class ShotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         if (viewHolder instanceof HeaderViewHolder) {
+            if (mHeaderLoaded) {
+                return;
+            }
+
             HeaderViewHolder holder = (HeaderViewHolder) viewHolder;
 
             holder.rebounds.load(mShot);
@@ -160,16 +164,20 @@ public class ShotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                 mSwatch = Utils.getSwatch(palette);
 
                                 if (mSwatch != null) {
-                                    holder.summary.color(mSwatch);
+                                    if (mHeaderLoaded) {
+                                        return;
+                                    }
 
                                     holder.description.setLinkTextColor(mSwatch.getRgb());
                                     //.color(swatch.getRgb());
                                     holder.preview.setBackgroundColor(mSwatch.getRgb());
 
-                                    if (!mHeaderLoaded) {
-                                        mHeaderLoaded = true;
-                                        mHeaderListener.onHeaderLoaded(mSwatch, holder.preview.getHeight());
-                                    }
+                                    holder.rebounds.color(mSwatch);
+                                    holder.attachments.color(mSwatch);
+
+                                    mHeaderLoaded = true;
+                                    holder.summary.color(mSwatch);
+                                    mHeaderListener.onHeaderLoaded(mSwatch, holder.preview.getHeight());
 
                                     holder.likes.setOnClickListener(v -> {
                                         LinearLayout dialogLayout = (LinearLayout) LayoutInflater.from(holder.likes.getContext())
@@ -199,7 +207,6 @@ public class ShotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
                         }
                     });
-
         } else if (viewHolder instanceof CommentViewHolder) {
             CommentViewHolder holder = (CommentViewHolder) viewHolder;
             Comment comment = mCommentsList.get(position - 1);

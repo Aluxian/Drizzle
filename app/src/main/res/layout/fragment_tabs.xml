@@ -10,8 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:background="?android:attr/colorPrimary"
-        android:elevation="@dimen/toolbarElevation"
         android:theme="@style/Drizzle.Theme.Dark"
+        android:elevation="@dimen/toolbarElevation"
         app:pstsIndicatorColor="@android:color/white"
         app:pstsShouldExpand="true"
         app:pstsTabBackground="?android:attr/selectableItemBackground" />

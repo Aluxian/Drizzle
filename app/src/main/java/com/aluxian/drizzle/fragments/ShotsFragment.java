@@ -1,5 +1,6 @@
 package com.aluxian.drizzle.fragments;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -17,7 +18,11 @@ import com.aluxian.drizzle.api.providers.FilteredShotsProvider;
 import com.aluxian.drizzle.api.providers.ItemsProvider;
 import com.aluxian.drizzle.lists.ShotAnimator;
 import com.aluxian.drizzle.lists.ShotsAdapter;
+import com.aluxian.drizzle.utils.Dp;
 import com.aluxian.drizzle.utils.Log;
+import com.aluxian.drizzle.views.CustomEdgeRecyclerView;
+import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
+import com.github.ksoichiro.android.observablescrollview.ScrollState;
 
 import java.lang.reflect.InvocationTargetException;
 

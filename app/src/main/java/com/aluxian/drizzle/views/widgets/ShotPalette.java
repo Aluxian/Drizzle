@@ -15,6 +15,8 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 public class ShotPalette extends LinearLayout {
 
+    private boolean mLoaded;
+
     public ShotPalette(Context context) {
         super(context);
     }
@@ -28,6 +30,11 @@ public class ShotPalette extends LinearLayout {
     }
 
     public void load(List<String> colors) {
+        if (mLoaded) {
+            return;
+        }
+        mLoaded = true;
+
         setWeightSum(colors.size());
 
         for (String color : colors) {
