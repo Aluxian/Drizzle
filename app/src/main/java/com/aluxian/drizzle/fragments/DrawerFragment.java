@@ -3,6 +3,7 @@ package com.aluxian.drizzle.fragments;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.aluxian.drizzle.R;
+import com.aluxian.drizzle.activities.ShotActivity;
 import com.aluxian.drizzle.api.ApiRequest;
 import com.aluxian.drizzle.api.Dribbble;
 import com.aluxian.drizzle.api.models.Shot;
@@ -25,6 +27,7 @@ import com.aluxian.drizzle.utils.Config;
 import com.aluxian.drizzle.utils.Dp;
 import com.aluxian.drizzle.utils.Log;
 import com.aluxian.drizzle.utils.UserManager;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
 
@@ -85,9 +88,18 @@ public class DrawerFragment extends Fragment implements UserManager.AuthStateCha
             @SuppressWarnings("CodeBlock2Expr")
             @Override
             public void onSuccess(Dribbble.Response<List<Shot>> response) {
+                ImageView cover = (ImageView) view.findViewById(R.id.cover);
+                Shot shot = response.data.get(0);
+
                 Picasso.with(getActivity())
-                        .load(response.data.get(0).images.largest())
-                        .into((ImageView) view.findViewById(R.id.cover));
+                        .load(shot.images.largest())
+                        .into(cover);
+
+                cover.setOnClickListener(v -> {
+                    Intent intent = new Intent(getActivity(), ShotActivity.class);
+                    intent.putExtra(ShotActivity.EXTRA_SHOT_DATA, new Gson().toJson(shot));
+                    getActivity().startActivity(intent);
+                });
             }
 
             @Override
