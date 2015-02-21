@@ -1,6 +1,7 @@
 package com.aluxian.drizzle.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.os.Bundle;
@@ -71,13 +72,16 @@ public class TabsFragment extends Fragment {
         return getChildFragmentManager().findFragmentByTag("android:switcher:" + mViewPager.getId() + ":" + mViewPager.getCurrentItem());
     }
 
-    @SuppressWarnings("ConstantConditions")
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        Type type = Type.valueOf(getArguments().getString(Type.class.getName()));
-        activity.getActionBar().setTitle(type == Type.FEED ? R.string.drawer_main_feed : R.string.drawer_main_shots);
         setHasOptionsMenu(true);
+        ActionBar actionBar = activity.getActionBar();
+
+        if (actionBar != null) {
+            Type type = Type.valueOf(getArguments().getString(Type.class.getName()));
+            actionBar.setTitle(type == Type.FEED ? R.string.drawer_main_feed : R.string.drawer_main_shots);
+        }
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.aluxian.drizzle.api.ApiRequest;
 import com.aluxian.drizzle.api.Dribbble;
 import com.aluxian.drizzle.api.exceptions.BadRequestException;
 import com.aluxian.drizzle.api.exceptions.TooManyRequestsException;
+import com.aluxian.drizzle.utils.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;

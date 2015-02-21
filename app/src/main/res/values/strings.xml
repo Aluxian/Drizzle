@@ -7,6 +7,10 @@
     <string name="action_sort">Sort</string>
 
     <string name="action_share">Share</string>
+    <string name="action_share_shot">Shot</string>
+    <string name="action_share_link">Link</string>
+    <string name="action_share_image">Image</string>
+
     <string name="action_link_website">Website</string>
     <string name="action_link_twitter">Twitter</string>
 

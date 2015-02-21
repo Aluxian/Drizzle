@@ -159,7 +159,7 @@ public class ShotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             Picasso.with(holder.preview.getContext())
                     .load(mShot.images.largest())
                     .transform(PaletteTransformation.instance())
-                            //.noFade()
+                    .placeholder(R.color.slate)
                     .into(holder.preview, new Callback() {
                         @Override
                         public void onSuccess() {

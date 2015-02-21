@@ -69,16 +69,17 @@ public class ShotsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             ItemViewHolder holder = (ItemViewHolder) viewHolder;
 
             //holder.viewsCount.setText(String.valueOf(shot.viewsCount));
-            holder.commentsCount.setText(String.valueOf(shot.viewsCount));
+            holder.viewsCount.setText(String.valueOf(shot.viewsCount));
             holder.likesCount.setText(String.valueOf(shot.likesCount));
 
             holder.image.setOnClickListener(view -> onShotClick(holder.image.getContext(), shot));
 
             Picasso.with(holder.image.getContext())
                     .load(shot.images.normal)
+                    .placeholder(R.color.slate)
                     .into(holder.image);
 
-            // Increase margin size
+            // Adapt margin size
             RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) holder.itemView.getLayoutParams();
             if (position % 2 == positionOffset() + 1) {
                 params.setMarginStart(Dp.toPx(4));
@@ -220,10 +221,7 @@ public class ShotsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         @InjectView(R.id.cover_image) ImageView image;
         @InjectView(R.id.gif_badge) ImageView gifBadge;
 
-        @InjectView(R.id.comments_icon) ImageView commentsIcon;
-        @InjectView(R.id.likes_icon) ImageView likesIcon;
-
-        @InjectView(R.id.comments_count) TextView commentsCount;
+        @InjectView(R.id.views_count) TextView viewsCount;
         @InjectView(R.id.likes_count) TextView likesCount;
 
         public ItemViewHolder(View itemView) {

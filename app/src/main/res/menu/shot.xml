@@ -4,9 +4,23 @@
     tools:ignore="AppCompatResource">
 
     <item
-        android:id="@+id/action_share"
         android:icon="@drawable/ic_share"
         android:showAsAction="ifRoom"
-        android:title="@string/action_share" />
+        android:title="@string/action_share">
+        <menu>
+            <item
+                android:id="@+id/action_share_shot"
+                android:icon="@drawable/ic_shots"
+                android:title="@string/action_share_shot" />
+            <item
+                android:id="@+id/action_share_link"
+                android:icon="@drawable/ic_link"
+                android:title="@string/action_share_link" />
+            <item
+                android:id="@+id/action_share_image"
+                android:icon="@drawable/ic_image"
+                android:title="@string/action_share_image" />
+        </menu>
+    </item>
 
 </menu>

@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.aluxian.drizzle.R;
 import com.aluxian.drizzle.activities.UserActivity;
 import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.utils.transformations.CircularBorderedTransformation;
@@ -62,6 +63,7 @@ public class ShotSummary extends LinearLayout {
         // User avatar
         mUserAvatar = new ImageView(context);
         mUserAvatar.setLayoutParams(new RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
+        mUserAvatar.setBackgroundResource(R.drawable.round_placeholder);
         avatarContainer.addView(mUserAvatar);
 
         // Team avatar
@@ -134,17 +136,7 @@ public class ShotSummary extends LinearLayout {
             Picasso.with(getContext())
                     .load(mShot.team.avatarUrl)
                     .transform(new CircularBorderedTransformation(Dp.toPx(6), swatch.getRgb()))
-                    .into(mTeamAvatar, new Callback() {
-                        @Override
-                        public void onSuccess() {
-                            //ImageLoadingTransition.apply(mTeamAvatar);
-                        }
-
-                        @Override
-                        public void onError() {
-
-                        }
-                    });
+                    .into(mTeamAvatar);
         }
     }
 

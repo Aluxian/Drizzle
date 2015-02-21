@@ -2,6 +2,7 @@ package com.aluxian.drizzle.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
@@ -76,7 +77,7 @@ public class ShotActivity extends Activity implements ShotAdapter.HeaderListener
 
                 return true;
 
-            case R.id.action_share:
+            case R.id.action_share_shot:
                 String by = " " + getResources().getString(R.string.word_by) + " ";
                 String title = shot.title + by + shot.user.name;
 
@@ -86,6 +87,17 @@ public class ShotActivity extends Activity implements ShotAdapter.HeaderListener
                 sharingIntent.putExtra(Intent.EXTRA_SUBJECT, title);
                 sharingIntent.putExtra(Intent.EXTRA_TEXT, shot.htmlUrl);
                 startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_shot, shot.title)));
+
+                return true;
+
+            case R.id.action_share_link:
+                Intent linkSharingIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(shot.htmlUrl));
+                startActivity(Intent.createChooser(linkSharingIntent, getResources().getString(R.string.share_shot, shot.title)));
+
+                return true;
+
+            case R.id.action_share_image:
+
 
                 return true;
 
