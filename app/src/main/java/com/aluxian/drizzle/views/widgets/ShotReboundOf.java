@@ -18,7 +18,7 @@ import com.aluxian.drizzle.api.Dribbble;
 import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.utils.Dp;
 import com.aluxian.drizzle.utils.Log;
-import com.aluxian.drizzle.utils.PaletteTransformation;
+import com.aluxian.drizzle.utils.transformations.PaletteTransformation;
 import com.aluxian.drizzle.utils.Utils;
 import com.aluxian.drizzle.views.FixedAspectRatioImageView;
 import com.google.gson.Gson;

@@ -2,7 +2,6 @@ package com.aluxian.drizzle.views.widgets;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.v7.graphics.Palette;
 import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
@@ -14,8 +13,8 @@ import android.widget.TextView;
 
 import com.aluxian.drizzle.activities.UserActivity;
 import com.aluxian.drizzle.api.models.Shot;
-import com.aluxian.drizzle.utils.CircularBorderedTransformation;
-import com.aluxian.drizzle.utils.CircularTransformation;
+import com.aluxian.drizzle.utils.transformations.CircularBorderedTransformation;
+import com.aluxian.drizzle.utils.transformations.CircularTransformation;
 import com.aluxian.drizzle.utils.Dp;
 import com.google.gson.Gson;
 import com.squareup.picasso.Callback;

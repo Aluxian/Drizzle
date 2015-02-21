@@ -1,6 +1,7 @@
 package com.aluxian.drizzle.lists;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.graphics.Palette;
@@ -18,23 +19,25 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.aluxian.drizzle.R;
+import com.aluxian.drizzle.activities.UserActivity;
 import com.aluxian.drizzle.api.exceptions.BadRequestException;
 import com.aluxian.drizzle.api.exceptions.TooManyRequestsException;
 import com.aluxian.drizzle.api.models.Comment;
 import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.api.providers.LikesProvider;
 import com.aluxian.drizzle.api.providers.ShotCommentsProvider;
-import com.aluxian.drizzle.utils.CircularTransformation;
 import com.aluxian.drizzle.utils.Config;
 import com.aluxian.drizzle.utils.CountableInterpolator;
 import com.aluxian.drizzle.utils.Log;
-import com.aluxian.drizzle.utils.PaletteTransformation;
 import com.aluxian.drizzle.utils.Utils;
+import com.aluxian.drizzle.utils.transformations.CircularTransformation;
+import com.aluxian.drizzle.utils.transformations.PaletteTransformation;
 import com.aluxian.drizzle.views.CustomEdgeRecyclerView;
 import com.aluxian.drizzle.views.widgets.ShotAttachments;
 import com.aluxian.drizzle.views.widgets.ShotReboundOf;
 import com.aluxian.drizzle.views.widgets.ShotRebounds;
 import com.aluxian.drizzle.views.widgets.ShotSummary;
+import com.google.gson.Gson;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -56,19 +59,22 @@ public class ShotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     /** Whether the adapter is currently loading items. */
     private boolean mIsLoadingItems;
 
-    /** An ItemsProvider instance used to load the appropriate items for this adapter's fragment. */
+    /** An ItemsProvider used to load items for this adapter. */
     private ShotCommentsProvider mCommentsProvider;
 
     private Shot mShot;
-    private Shot mReboundShot;
+    private Shot mReboundOfShot;
 
-    private Listener mListener;
+    private HeaderListener mHeaderListener;
+    private Palette.Swatch mSwatch;
+    private boolean mHeaderLoaded;
 
-    public ShotAdapter(Shot shot, Shot reboundShot, ShotCommentsProvider commentsProvider, Listener listener) {
-        mCommentsProvider = commentsProvider;
+    public ShotAdapter(Shot shot, Shot reboundOfShot, ShotCommentsProvider commentsProvider, HeaderListener headerListener) {
         mShot = shot;
-        mReboundShot = reboundShot;
-        mListener = listener;
+        mReboundOfShot = reboundOfShot;
+
+        mCommentsProvider = commentsProvider;
+        mHeaderListener = headerListener;
 
         // Load the first items
         new LoadItemsIfRequiredTask(0).execute();
@@ -98,9 +104,9 @@ public class ShotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             holder.reboundOf.setVisibility(View.GONE);
 
-            if (mReboundShot != null) {
+            if (mReboundOfShot != null) {
                 holder.reboundOf.setVisibility(View.VISIBLE);
-                holder.reboundOf.load(mReboundShot);
+                holder.reboundOf.load(mReboundOfShot);
             }/* else {
                 Dribbble.getShotExtra(shot.id).execute(new ApiRequest.Callback<Shot.Extra>() {
                     @Override
@@ -140,9 +146,7 @@ public class ShotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             String title = countableInterpolator.apply(mShot.commentsCount, R.string.section_responses, R.string.section_response);
             holder.commentsSubheader.setText(title);
 
-            new Picasso.Builder(holder.preview.getContext())
-                    .indicatorsEnabled(true)
-                    .build()
+            Picasso.with(holder.preview.getContext())
                     .load(mShot.images.largest())
                     .transform(PaletteTransformation.instance())
                             //.noFade()
@@ -153,28 +157,31 @@ public class ShotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
                             holder.preview.postDelayed(() -> {
                                 Palette palette = PaletteTransformation.getPalette(holder.preview);
-                                Palette.Swatch swatch = Utils.getSwatch(palette);
+                                mSwatch = Utils.getSwatch(palette);
 
-                                if (swatch != null) {
-                                    holder.summary.color(swatch);
+                                if (mSwatch != null) {
+                                    holder.summary.color(mSwatch);
 
-                                    holder.description.setLinkTextColor(swatch.getRgb());
+                                    holder.description.setLinkTextColor(mSwatch.getRgb());
                                     //.color(swatch.getRgb());
-                                    holder.preview.setBackgroundColor(swatch.getRgb());
+                                    holder.preview.setBackgroundColor(mSwatch.getRgb());
 
-                                    mListener.onHeaderLoaded(swatch, holder.preview.getHeight());
+                                    if (!mHeaderLoaded) {
+                                        mHeaderLoaded = true;
+                                        mHeaderListener.onHeaderLoaded(mSwatch, holder.preview.getHeight());
+                                    }
 
                                     holder.likes.setOnClickListener(v -> {
                                         LinearLayout dialogLayout = (LinearLayout) LayoutInflater.from(holder.likes.getContext())
                                                 .inflate(R.layout.dialog_fans, null);
-                                        dialogLayout.setBackgroundColor(swatch.getRgb());
+                                        dialogLayout.setBackgroundColor(mSwatch.getRgb());
 
                                         TextView titleView = (TextView) dialogLayout.findViewById(R.id.title);
                                         titleView.setTextColor(Color.WHITE);
 
                                         CustomEdgeRecyclerView recyclerView = (CustomEdgeRecyclerView) dialogLayout.findViewById(R.id.list);
                                         recyclerView.setHasFixedSize(true);
-                                        recyclerView.postDelayed(() -> recyclerView.setEdgeColor(swatch.getRgb()), 500);
+                                        recyclerView.postDelayed(() -> recyclerView.setEdgeColor(mSwatch.getRgb()), 500);
 
                                         recyclerView.setLayoutManager(new LinearLayoutManager(holder.likes.getContext()));
                                         recyclerView.setAdapter(new LikesAdapter(holder.likes.getContext(), new LikesProvider(mShot.id)));
@@ -195,7 +202,6 @@ public class ShotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         } else if (viewHolder instanceof CommentViewHolder) {
             CommentViewHolder holder = (CommentViewHolder) viewHolder;
-
             Comment comment = mCommentsList.get(position - 1);
 
             if (position % 2 == 0) {
@@ -204,11 +210,14 @@ public class ShotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 holder.itemView.setBackgroundColor(Color.WHITE);
             }
 
-//        userAvatar.setOnClickListener((v) -> {
-//            Intent intent = new Intent(getContext(), UserActivity.class);
-//            intent.putExtra(UserActivity.EXTRA_USER_DATA, new Gson().toJson(shot.user));
-//            getContext().startActivity(intent);
-//        });
+            View.OnClickListener authorClickListener = (v) -> {
+                Intent intent = new Intent(holder.itemView.getContext(), UserActivity.class);
+                intent.putExtra(UserActivity.EXTRA_USER_DATA, new Gson().toJson(comment.user));
+                holder.itemView.getContext().startActivity(intent);
+            };
+
+            holder.avatar.setOnClickListener(authorClickListener);
+            holder.author.setOnClickListener(authorClickListener);
 
             Picasso.with(holder.avatar.getContext())
                     .load(comment.user.avatarUrl)
@@ -216,16 +225,14 @@ public class ShotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     .into(holder.avatar);
 
             holder.author.setText(comment.user.name);
-//        authorName.setOnClickListener((v) -> {
-//            Intent intent = new Intent(getContext(), UserActivity.class);
-//            intent.putExtra(UserActivity.EXTRA_USER_DATA, new Gson().toJson(shot.user));
-//            getContext().startActivity(intent);
-//        });
 
             holder.body.setText(Html.fromHtml(comment.body));
             holder.body.setMovementMethod(LinkMovementMethod.getInstance());
 
-            // Comment info
+            if (mSwatch != null) {
+                holder.body.setLinkTextColor(mSwatch.getRgb());
+            }
+
             CharSequence time = DateUtils.getRelativeTimeSpanString(comment.createdAt.getTime());
             String likes = "";
 
@@ -298,12 +305,11 @@ public class ShotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
 
             mIsLoadingItems = false;
-            //preloadImages(mPosition + 1);
         }
 
     }
 
-    public static class HeaderViewHolder extends RecyclerView.ViewHolder {
+    static class HeaderViewHolder extends RecyclerView.ViewHolder {
 
         @InjectView(R.id.shot_preview) ImageView preview;
         @InjectView(R.id.shot_summary) ShotSummary summary;
@@ -325,7 +331,7 @@ public class ShotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     }
 
-    public static class CommentViewHolder extends RecyclerView.ViewHolder {
+    static class CommentViewHolder extends RecyclerView.ViewHolder {
 
         @InjectView(R.id.comment_avatar) ImageView avatar;
         @InjectView(R.id.comment_author) TextView author;
@@ -339,8 +345,14 @@ public class ShotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     }
 
-    public static interface Listener {
+    public static interface HeaderListener {
 
+        /**
+         * Called after the header view is loaded for the first time.
+         *
+         * @param swatch The generated colour swatch for the shot preview.
+         * @param height The height of the entire header view.
+         */
         public void onHeaderLoaded(Palette.Swatch swatch, int height);
 
     }

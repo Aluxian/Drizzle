@@ -16,7 +16,7 @@ import com.aluxian.drizzle.api.exceptions.BadRequestException;
 import com.aluxian.drizzle.api.exceptions.TooManyRequestsException;
 import com.aluxian.drizzle.api.models.Like;
 import com.aluxian.drizzle.api.providers.LikesProvider;
-import com.aluxian.drizzle.utils.CircularTransformation;
+import com.aluxian.drizzle.utils.transformations.CircularTransformation;
 import com.aluxian.drizzle.utils.Config;
 import com.aluxian.drizzle.utils.CountableInterpolator;
 import com.aluxian.drizzle.utils.Log;

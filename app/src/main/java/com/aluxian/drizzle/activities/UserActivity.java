@@ -6,25 +6,22 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toolbar;
 
 import com.aluxian.drizzle.R;
 import com.aluxian.drizzle.api.models.User;
 import com.aluxian.drizzle.api.providers.UserShotsProvider;
-import com.aluxian.drizzle.lists.UserShotsAdapter;
+import com.aluxian.drizzle.lists.UserAdapter;
 import com.aluxian.drizzle.utils.Dp;
-import com.aluxian.drizzle.utils.Log;
 import com.aluxian.drizzle.views.CustomEdgeRecyclerView;
 import com.aluxian.drizzle.views.toolbar.NativeToolbar;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.google.gson.Gson;
 
-public class UserActivity extends Activity implements UserShotsAdapter.UserAdapterListener {
+public class UserActivity extends Activity implements UserAdapter.HeaderListener {
 
     public static final String EXTRA_USER_DATA = "user_data";
 
@@ -65,7 +62,7 @@ public class UserActivity extends Activity implements UserShotsAdapter.UserAdapt
             }
         });
         mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.setAdapter(new UserShotsAdapter(mUser, this, new UserShotsProvider(mUser.id)));
+        mRecyclerView.setAdapter(new UserAdapter(mUser, this, new UserShotsProvider(mUser.id)));
     }
 
     @Override

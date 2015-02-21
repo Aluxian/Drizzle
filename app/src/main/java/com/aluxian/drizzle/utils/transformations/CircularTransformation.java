@@ -1,4 +1,4 @@
-package com.aluxian.drizzle.utils;
+package com.aluxian.drizzle.utils.transformations;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;

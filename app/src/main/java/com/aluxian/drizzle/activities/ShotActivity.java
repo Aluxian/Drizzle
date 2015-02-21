@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,7 +20,7 @@ import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCal
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.google.gson.Gson;
 
-public class ShotActivity extends Activity implements ShotAdapter.Listener {
+public class ShotActivity extends Activity implements ShotAdapter.HeaderListener {
 
     public static final String EXTRA_SHOT_DATA = "shot_data";
     public static final String EXTRA_REBOUND_OF = "rebound_of";

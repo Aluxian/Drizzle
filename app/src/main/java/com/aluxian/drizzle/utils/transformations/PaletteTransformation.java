@@ -1,4 +1,4 @@
-package com.aluxian.drizzle.utils;
+package com.aluxian.drizzle.utils.transformations;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -33,7 +33,7 @@ public class PaletteTransformation implements Transformation {
 
     @Override
     public String key() {
-        return "palette";
+        return "";
     }
 
 }

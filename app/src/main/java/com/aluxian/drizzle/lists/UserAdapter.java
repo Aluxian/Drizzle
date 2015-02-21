@@ -1,8 +1,6 @@
 package com.aluxian.drizzle.lists;
 
 import android.content.Context;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.OvalShape;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -18,9 +16,9 @@ import com.aluxian.drizzle.R;
 import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.api.models.User;
 import com.aluxian.drizzle.api.providers.ItemsProvider;
-import com.aluxian.drizzle.utils.CircularTransformation;
+import com.aluxian.drizzle.utils.transformations.CircularTransformation;
 import com.aluxian.drizzle.utils.CountableInterpolator;
-import com.aluxian.drizzle.utils.PaletteTransformation;
+import com.aluxian.drizzle.utils.transformations.PaletteTransformation;
 import com.aluxian.drizzle.utils.Utils;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -28,17 +26,18 @@ import com.squareup.picasso.Picasso;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class UserShotsAdapter extends ShotsAdapter {
+public class UserAdapter extends ShotsAdapter {
 
     private static final int VIEW_TYPE_HEADER = 0;
     private static final int VIEW_TYPE_ITEM = 1;
 
-    private UserAdapterListener mUserAdapterListener;
+    private HeaderListener mHeaderListener;
+    private boolean mHeaderLoaded;
     private User mUser;
 
-    public UserShotsAdapter(User user, UserAdapterListener adapterListener, ItemsProvider<Shot> itemsProvider) {
+    public UserAdapter(User user, HeaderListener adapterListener, ItemsProvider<Shot> itemsProvider) {
         super(adapterListener, itemsProvider);
-        mUserAdapterListener = adapterListener;
+        mHeaderListener = adapterListener;
         mUser = user;
     }
 
@@ -92,7 +91,11 @@ public class UserShotsAdapter extends ShotsAdapter {
                                 Palette.Swatch swatch = Utils.getSwatch(palette);
 
                                 holder.header.setBackgroundColor(swatch.getRgb());
-                                mUserAdapterListener.onHeaderLoaded(swatch, holder.header.getHeight());
+
+                                if (!mHeaderLoaded) {
+                                    mHeaderLoaded = true;
+                                    mHeaderListener.onHeaderLoaded(swatch, holder.header.getHeight());
+                                }
 
                                 holder.userName.setTextColor(swatch.getTitleTextColor());
                                 holder.userLocation.setTextColor(swatch.getBodyTextColor());
@@ -144,7 +147,7 @@ public class UserShotsAdapter extends ShotsAdapter {
 
     }
 
-    public static interface UserAdapterListener extends AdapterListener {
+    public static interface HeaderListener extends AdapterListener {
 
         public void onHeaderLoaded(Palette.Swatch swatch, int height);
 
