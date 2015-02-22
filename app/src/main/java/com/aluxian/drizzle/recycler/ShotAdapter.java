@@ -1,4 +1,4 @@
-package com.aluxian.drizzle.lists;
+package com.aluxian.drizzle.recycler;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -27,6 +27,7 @@ import com.aluxian.drizzle.api.models.Comment;
 import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.api.providers.LikesProvider;
 import com.aluxian.drizzle.api.providers.ShotCommentsProvider;
+import com.aluxian.drizzle.recycler.adapters.LikesAdapter;
 import com.aluxian.drizzle.utils.Config;
 import com.aluxian.drizzle.utils.CountableInterpolator;
 import com.aluxian.drizzle.utils.Log;
@@ -214,7 +215,7 @@ public class ShotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
                                     holder.likes.setOnClickListener(v -> {
                                         LinearLayout dialogLayout = (LinearLayout) LayoutInflater.from(holder.likes.getContext())
-                                                .inflate(R.layout.dialog_fans, null);
+                                                .inflate(R.layout.dialog_likes, null);
                                         dialogLayout.setBackgroundColor(mSwatch.getRgb());
 
                                         TextView titleView = (TextView) dialogLayout.findViewById(R.id.title);
@@ -224,8 +225,12 @@ public class ShotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                         recyclerView.setHasFixedSize(true);
                                         recyclerView.postDelayed(() -> recyclerView.setEdgeColor(mSwatch.getRgb()), 500);
 
-                                        recyclerView.setLayoutManager(new LinearLayoutManager(holder.likes.getContext()));
-                                        recyclerView.setAdapter(new LikesAdapter(holder.likes.getContext(), new LikesProvider(mShot.id)));
+                                        recyclerView.setLayoutManager(new LinearLayoutManager(holder.likes.getContext(),
+                                                LinearLayoutManager.VERTICAL, false));
+
+                                        LikesAdapter likesAdapter = new LikesAdapter(new LikesProvider(mShot.id));
+                                        likesAdapter.setColors(mSwatch);
+                                        recyclerView.setAdapter(likesAdapter);
 
                                         new AlertDialog.Builder(holder.likes.getContext(), R.style.Drizzle_Widget_Dialog)
                                                 .setView(dialogLayout)

@@ -1,4 +1,4 @@
-package com.aluxian.drizzle.lists;
+package com.aluxian.drizzle.recycler;
 
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;

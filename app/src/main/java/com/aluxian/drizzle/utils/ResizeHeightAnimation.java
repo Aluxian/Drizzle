@@ -4,27 +4,26 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 
+/**
+ * An animation for resizing a view vertically.
+ */
 public class ResizeHeightAnimation extends Animation {
 
-    private final int mStartHeight;
-    private final int mTargetHeight;
-    private final View mTargetView;
+    private float mFromHeight;
+    private float mToHeight;
 
-    public ResizeHeightAnimation(View targetView, int targetHeight) {
-        mTargetView = targetView;
-        mStartHeight = targetView.getHeight();
-        mTargetHeight = targetHeight;
+    private View mView;
+
+    public ResizeHeightAnimation(View view, float toHeight) {
+        mFromHeight = view.getHeight();
+        mToHeight = toHeight;
+        mView = view;
     }
 
     @Override
     protected void applyTransformation(float interpolatedTime, Transformation t) {
-        mTargetView.getLayoutParams().height = (int) (mStartHeight + (mTargetHeight - mStartHeight) * interpolatedTime);
-        mTargetView.requestLayout();
-    }
-
-    @Override
-    public boolean willChangeBounds() {
-        return true;
+        mView.getLayoutParams().height = (int) ((mToHeight - mFromHeight) * interpolatedTime + mFromHeight);
+        mView.requestLayout();
     }
 
 }

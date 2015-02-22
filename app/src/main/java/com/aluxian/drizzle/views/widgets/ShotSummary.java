@@ -63,7 +63,6 @@ public class ShotSummary extends LinearLayout {
         // User avatar
         mUserAvatar = new ImageView(context);
         mUserAvatar.setLayoutParams(new RelativeLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
-        mUserAvatar.setBackgroundResource(R.drawable.round_placeholder);
         avatarContainer.addView(mUserAvatar);
 
         // Team avatar
@@ -110,17 +109,8 @@ public class ShotSummary extends LinearLayout {
         Picasso.with(getContext())
                 .load(shot.user.avatarUrl)
                 .transform(new CircularTransformation())
-                .into(mUserAvatar, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        //ImageLoadingTransition.apply(mUserAvatar);
-                    }
-
-                    @Override
-                    public void onError() {
-
-                    }
-                });
+                .placeholder(R.drawable.round_placeholder)
+                .into(mUserAvatar);
 
         mShot = shot;
     }

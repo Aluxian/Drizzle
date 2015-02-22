@@ -1,4 +1,4 @@
-package com.aluxian.drizzle.lists;
+package com.aluxian.drizzle.recycler;
 
 import android.content.Context;
 import android.content.Intent;

@@ -17,6 +17,7 @@
         <item name="android:colorPrimary">@color/primary</item>
         <item name="android:colorPrimaryDark">@color/primaryDark</item>
         <item name="android:navigationBarColor">@color/charcoal</item>
+        <item name="android:popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
     </style>
 
     <style name="Drizzle.Theme.SearchWidget" parent="Drizzle.Theme.Dark">

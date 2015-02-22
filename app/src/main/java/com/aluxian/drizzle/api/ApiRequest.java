@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
  */
 public class ApiRequest<T> extends Request.Builder {
 
-    private static final Pattern LINK_NEXT_URL_PATTERN = Pattern.compile("<([^>]*)>; rel=\"next\"");
+    private static final Pattern LINK_NEXT_URL_PATTERN = Pattern.compile(".*<([^>]*)>; rel=\"next\".*");
 
     private static ApiCache mApiCache;
     private static OkHttpClient mHttpClient = new OkHttpClient();

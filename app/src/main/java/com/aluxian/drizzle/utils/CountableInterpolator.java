@@ -19,4 +19,12 @@ public class CountableInterpolator {
         }
     }
 
+    public String apply(int count, int pluralString, int singularString, int zeroString) {
+        if (count == 0) {
+            return mResources.getString(zeroString);
+        } else {
+            return apply(count, pluralString, singularString);
+        }
+    }
+
 }

@@ -13,7 +13,7 @@ import android.view.View;
 import com.aluxian.drizzle.R;
 import com.aluxian.drizzle.api.models.User;
 import com.aluxian.drizzle.api.providers.UserShotsProvider;
-import com.aluxian.drizzle.lists.UserAdapter;
+import com.aluxian.drizzle.recycler.UserAdapter;
 import com.aluxian.drizzle.utils.Dp;
 import com.aluxian.drizzle.views.CustomEdgeRecyclerView;
 import com.aluxian.drizzle.views.toolbar.NativeToolbar;
