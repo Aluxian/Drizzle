@@ -2,10 +2,8 @@ package com.aluxian.drizzle.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.ViewTreeObserver;
 import android.widget.EdgeEffect;
 import android.widget.HorizontalScrollView;
-import android.widget.ScrollView;
 
 import com.aluxian.drizzle.utils.Log;
 

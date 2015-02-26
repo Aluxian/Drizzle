@@ -1,15 +1,15 @@
 package com.aluxian.drizzle.adapters;
 
-import android.support.v7.graphics.Palette;
+import com.aluxian.drizzle.utils.UberSwatch;
 
 public interface AdapterHeaderListener {
 
     /**
      * Called after the header view is loaded.
      *
-     * @param swatch The generated colour swatch for the shot preview.
+     * @param swatch The generated colours for the shot preview.
      * @param height The height of the entire header view.
      */
-    public void onHeaderLoaded(Palette.Swatch swatch, int height);
+    public void onHeaderLoaded(UberSwatch swatch, int height);
 
 }

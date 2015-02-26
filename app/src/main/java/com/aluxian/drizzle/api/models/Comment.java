@@ -1,7 +1,6 @@
 package com.aluxian.drizzle.api.models;
 
 import java.util.Date;
-import java.util.List;
 
 public final class Comment {
 

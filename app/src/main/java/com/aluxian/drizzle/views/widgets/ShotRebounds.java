@@ -2,10 +2,8 @@ package com.aluxian.drizzle.views.widgets;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.graphics.Palette;
 import android.util.AttributeSet;
 import android.view.Gravity;
-import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -19,6 +17,7 @@ import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.utils.CountableInterpolator;
 import com.aluxian.drizzle.utils.Dp;
 import com.aluxian.drizzle.utils.Log;
+import com.aluxian.drizzle.utils.UberSwatch;
 import com.aluxian.drizzle.views.CustomEdgeHorizontalScrollView;
 import com.aluxian.drizzle.views.FixedAspectRatioImageView;
 import com.google.gson.Gson;
@@ -36,6 +35,7 @@ public class ShotRebounds extends LinearLayout {
     private LinearLayout mScrollViewContainer;
 
     private CustomEdgeHorizontalScrollView mScrollView;
+    private UberSwatch swatch;
 
     public ShotRebounds(Context context) {
         super(context);
@@ -144,8 +144,9 @@ public class ShotRebounds extends LinearLayout {
         });
     }
 
-    public void color(Palette.Swatch swatch) {
-        mScrollView.setEdgeColor(swatch.getRgb());
+    public void color(UberSwatch swatch) {
+        this.swatch = swatch;
+        mScrollView.setEdgeColor(swatch.rgb);
     }
 
 }

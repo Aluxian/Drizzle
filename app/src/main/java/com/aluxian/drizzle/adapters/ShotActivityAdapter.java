@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
-import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.Html;
 import android.text.TextUtils;
@@ -32,7 +31,7 @@ import com.aluxian.drizzle.utils.CountableInterpolator;
 import com.aluxian.drizzle.utils.LocaleManager;
 import com.aluxian.drizzle.utils.Log;
 import com.aluxian.drizzle.utils.Mapper;
-import com.aluxian.drizzle.utils.Utils;
+import com.aluxian.drizzle.utils.UberSwatch;
 import com.aluxian.drizzle.utils.transformations.CircularTransformation;
 import com.aluxian.drizzle.utils.transformations.PaletteTransformation;
 import com.aluxian.drizzle.views.CustomEdgeRecyclerView;
@@ -156,11 +155,9 @@ public class ShotActivityAdapter extends MultiTypeInfiniteAdapter<Comment> {
                                     }.execute();
                                 }
 
-                                Palette palette = PaletteTransformation.getPalette(holder.preview);
-                                Palette.Swatch swatch = Utils.getSwatch(palette);
-
+                                UberSwatch swatch = new UberSwatch(PaletteTransformation.getPalette(holder.preview));
                                 headerListener.onHeaderLoaded(swatch, holder.preview.getHeight());
-                                onSetColors(holder, swatch);
+                                onSetStyle(holder, swatch);
                             }, 100);
                         }
 
@@ -175,9 +172,9 @@ public class ShotActivityAdapter extends MultiTypeInfiniteAdapter<Comment> {
         }
 
         @Override
-        protected void onSetColors(ViewHolder holder, Palette.Swatch swatch) {
-            holder.description.setLinkTextColor(swatch.getRgb());
-            holder.preview.setBackgroundColor(swatch.getRgb());
+        protected void onSetStyle(ViewHolder holder, UberSwatch swatch) {
+            holder.description.setLinkTextColor(swatch.rgb);
+            holder.preview.setBackgroundColor(swatch.rgb);
 
             holder.summary.color(swatch);
             holder.rebounds.color(swatch);
@@ -185,10 +182,10 @@ public class ShotActivityAdapter extends MultiTypeInfiniteAdapter<Comment> {
 
             holder.likes.setOnClickListener(v -> {
                 LinearLayout dialogLayout = (LinearLayout) LayoutInflater.from(holder.context).inflate(R.layout.dialog_likes, null);
-                dialogLayout.setBackgroundColor(swatch.getRgb());
+                dialogLayout.setBackgroundColor(swatch.rgb);
 
                 TextView titleView = (TextView) dialogLayout.findViewById(R.id.title);
-                titleView.setTextColor(swatch.getTitleTextColor());
+                titleView.setTextColor(swatch.titleTextColor);
 
                 LikesAdapter likesAdapter = new LikesAdapter(new LikesProvider((int) holder.likes.getTag()), new StatusListener() {
                     @Override
@@ -210,7 +207,7 @@ public class ShotActivityAdapter extends MultiTypeInfiniteAdapter<Comment> {
                 recyclerView.setHasFixedSize(true);
                 recyclerView.setAdapter(likesAdapter);
 
-                recyclerView.postDelayed(() -> recyclerView.setEdgeColor(swatch.getRgb()), 500);
+                recyclerView.postDelayed(() -> recyclerView.setEdgeColor(swatch.rgb), 500);
                 new AlertDialog.Builder(holder.context, R.style.Drizzle_Widget_Dialog).setView(dialogLayout).show();
             });
         }
@@ -293,8 +290,8 @@ public class ShotActivityAdapter extends MultiTypeInfiniteAdapter<Comment> {
         }
 
         @Override
-        protected void onSetColors(ViewHolder holder, Palette.Swatch swatch) {
-            holder.body.setLinkTextColor(swatch.getRgb());
+        protected void onSetStyle(ViewHolder holder, UberSwatch swatch) {
+            holder.body.setLinkTextColor(swatch.rgb);
         }
 
         public static class ViewHolder extends MultiTypeBaseItem.ViewHolder {

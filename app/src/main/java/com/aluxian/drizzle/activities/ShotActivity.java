@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +16,7 @@ import com.aluxian.drizzle.adapters.multi.MultiTypeInfiniteAdapter;
 import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.api.providers.ShotCommentsProvider;
 import com.aluxian.drizzle.utils.Dp;
+import com.aluxian.drizzle.utils.UberSwatch;
 import com.aluxian.drizzle.views.CustomEdgeRecyclerView;
 import com.aluxian.drizzle.views.toolbar.NativeToolbar;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
@@ -110,12 +110,12 @@ public class ShotActivity extends Activity implements AdapterHeaderListener, Mul
     }
 
     @Override
-    public void onHeaderLoaded(Palette.Swatch swatch, int height) {
-        mRecyclerView.post(() -> mRecyclerView.setEdgeColor(swatch.getRgb()));
+    public void onHeaderLoaded(UberSwatch swatch, int height) {
+        mRecyclerView.post(() -> mRecyclerView.setEdgeColor(swatch.rgb));
         mAdapter.setColors(swatch);
 
         View toolbarBackground = findViewById(R.id.toolbar_background);
-        toolbarBackground.setBackgroundColor(swatch.getRgb());
+        toolbarBackground.setBackgroundColor(swatch.rgb);
         toolbarBackground.getBackground().setAlpha(0);
         toolbarBackground.setElevation(0);
 

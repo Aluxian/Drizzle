@@ -3,9 +3,7 @@ package com.aluxian.drizzle;
 import android.app.Application;
 import android.os.StrictMode;
 
-import com.aluxian.drizzle.activities.MainActivity;
 import com.aluxian.drizzle.api.ApiRequest;
-import com.aluxian.drizzle.utils.Dp;
 import com.aluxian.drizzle.utils.UserManager;
 
 public class App extends Application {

@@ -2,7 +2,6 @@ package com.aluxian.drizzle.views.widgets;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.graphics.Palette;
 import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -18,8 +17,8 @@ import com.aluxian.drizzle.api.Dribbble;
 import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.utils.Dp;
 import com.aluxian.drizzle.utils.Log;
+import com.aluxian.drizzle.utils.UberSwatch;
 import com.aluxian.drizzle.utils.transformations.PaletteTransformation;
-import com.aluxian.drizzle.utils.Utils;
 import com.aluxian.drizzle.views.FixedAspectRatioImageView;
 import com.google.gson.Gson;
 import com.squareup.picasso.Callback;
@@ -120,15 +119,11 @@ public class ShotReboundOf extends LinearLayout {
         mLoaded = true;
 
         mShotPreview.postDelayed(() -> {
-            Palette palette = PaletteTransformation.getPalette(mShotPreview);
-            Palette.Swatch swatch = Utils.getSwatch(palette);
-
-            if (swatch != null) {
-                mContentLayout.setBackgroundColor(swatch.getRgb());
-                mShotTitle.setTextColor(swatch.getTitleTextColor());
-                mUserDescription.setTextColor(swatch.getBodyTextColor());
-                mUserDescription.setLinkTextColor(swatch.getTitleTextColor());
-            }
+            UberSwatch swatch = new UberSwatch(PaletteTransformation.getPalette(mShotPreview));
+            mContentLayout.setBackgroundColor(swatch.rgb);
+            mShotTitle.setTextColor(swatch.titleTextColor);
+            mUserDescription.setTextColor(swatch.bodyTextColor);
+            mUserDescription.setLinkTextColor(swatch.titleTextColor);
         }, 100);
     }
 

@@ -3,7 +3,6 @@ package com.aluxian.drizzle.api.providers;
 import com.aluxian.drizzle.api.ApiRequest;
 import com.aluxian.drizzle.api.Dribbble;
 import com.aluxian.drizzle.api.models.Like;
-import com.aluxian.drizzle.utils.Log;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.List;

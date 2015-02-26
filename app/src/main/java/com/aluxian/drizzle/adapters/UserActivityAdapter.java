@@ -1,6 +1,6 @@
 package com.aluxian.drizzle.adapters;
 
-import android.support.v7.graphics.Palette;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
@@ -21,9 +21,10 @@ import com.aluxian.drizzle.api.providers.ItemsProvider;
 import com.aluxian.drizzle.utils.CountableInterpolator;
 import com.aluxian.drizzle.utils.Dp;
 import com.aluxian.drizzle.utils.Mapper;
-import com.aluxian.drizzle.utils.Utils;
+import com.aluxian.drizzle.utils.UberSwatch;
 import com.aluxian.drizzle.utils.transformations.CircularTransformation;
 import com.aluxian.drizzle.utils.transformations.PaletteTransformation;
+import com.melnykov.fab.FloatingActionButton;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -99,10 +100,9 @@ public class UserActivityAdapter extends MultiTypeInfiniteAdapter<Shot> {
                         @Override
                         public void onSuccess() {
                             holder.userAvatar.postDelayed(() -> {
-                                Palette palette = PaletteTransformation.getPalette(holder.userAvatar);
-                                Palette.Swatch swatch = Utils.getSwatch(palette);
+                                UberSwatch swatch = new UberSwatch(PaletteTransformation.getPalette(holder.userAvatar));
                                 mHeaderListener.onHeaderLoaded(swatch, holder.header.getHeight());
-                                onSetColors(holder, swatch);
+                                onSetStyle(holder, swatch);
                             }, 100);
                         }
 
@@ -117,13 +117,18 @@ public class UserActivityAdapter extends MultiTypeInfiniteAdapter<Shot> {
         }
 
         @Override
-        protected void onSetColors(ViewHolder holder, Palette.Swatch swatch) {
-            holder.userName.setTextColor(swatch.getTitleTextColor());
-            holder.userLocation.setTextColor(swatch.getBodyTextColor());
-            holder.userDescription.setTextColor(swatch.getBodyTextColor());
-            holder.userDescription.setLinkTextColor(swatch.getTitleTextColor());
-            holder.userLocationIcon.getDrawable().setTint(swatch.getBodyTextColor());
-            holder.header.setBackgroundColor(swatch.getRgb());
+        protected void onSetStyle(ViewHolder holder, UberSwatch swatch) {
+            holder.userName.setTextColor(swatch.titleTextColor);
+            holder.userLocation.setTextColor(swatch.bodyTextColor);
+            holder.userDescription.setTextColor(swatch.bodyTextColor);
+            holder.userDescription.setLinkTextColor(swatch.bodyTextColor);
+            holder.userLocationIcon.getDrawable().setTint(swatch.bodyTextColor);
+            holder.header.setBackgroundColor(swatch.rgb);
+
+            holder.actionButton.setColorNormal(swatch.rgb);
+            holder.actionButton.setColorPressed(swatch.titleTextColor);
+            holder.actionButton.setColorRipple(swatch.bodyTextColor);
+            holder.actionButton.getDrawable().setTint(swatch.titleTextColor);
         }
 
         public static class ViewHolder extends MultiTypeBaseItem.ViewHolder {
@@ -133,6 +138,7 @@ public class UserActivityAdapter extends MultiTypeInfiniteAdapter<Shot> {
             @InjectView(R.id.user_description) TextView userDescription;
             @InjectView(R.id.user_location_icon) ImageView userLocationIcon;
             @InjectView(R.id.user_location) TextView userLocation;
+            @InjectView(R.id.fab) FloatingActionButton actionButton;
             @InjectView(R.id.header) View header;
 
             @InjectView(R.id.user_shots) TextView userShots;

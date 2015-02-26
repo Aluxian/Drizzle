@@ -59,7 +59,7 @@ public class AttachmentActivity extends Activity {
 
         avatarBackground.postDelayed(() -> {
             Palette palette = PaletteTransformation.getPalette(avatarBackground);
-            Palette.Swatch swatch = palette.getMutedSwatch();
+            UberSwatch swatch = palette.getMutedSwatch();
 
             if (swatch == null) swatch = palette.getVibrantSwatch();
             if (swatch == null) swatch = palette.getDarkMutedSwatch();
@@ -71,14 +71,14 @@ public class AttachmentActivity extends Activity {
                 shotSummary.color(swatch);
 
                 CustomEdgeScrollView scrollView = (CustomEdgeScrollView) findViewById(R.id.scroll_view);
-                scrollView.setEdgeColor(swatch.getRgb());
+                scrollView.setEdgeColor(swatch.rgb);
 
                 View toolbarBackground = findViewById(R.id.toolbar_background);
-                toolbarBackground.setBackgroundColor(swatch.getRgb());
+                toolbarBackground.setBackgroundColor(swatch.rgb);
                 toolbarBackground.setAlpha(0);
 
                 View statusBarBackground = findViewById(R.id.status_bar_background);
-                statusBarBackground.setBackgroundColor(swatch.getRgb());
+                statusBarBackground.setBackgroundColor(swatch.rgb);
                 statusBarBackground.setAlpha(0);
 
                 float full = avatarBackground.getHeight() - statusBarBackground.getHeight();

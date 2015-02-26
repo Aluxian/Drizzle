@@ -1,8 +1,6 @@
 package com.aluxian.drizzle.adapters.multi;
 
-import android.support.v7.graphics.Palette;
-
-import com.aluxian.drizzle.utils.Log;
+import com.aluxian.drizzle.utils.UberSwatch;
 
 /**
  * A MultiTypeAdapter that supports styleable items.
@@ -10,14 +8,14 @@ import com.aluxian.drizzle.utils.Log;
 public abstract class MultiTypeStyleableAdapter extends MultiTypeAdapter {
 
     /** The currently set colors. */
-    protected Palette.Swatch mSwatch;
+    protected UberSwatch mSwatch;
 
     /**
      * Set the colour palette that the items should use.
      *
-     * @param swatch The Swatch of colours to use.
+     * @param swatch The colour palette to use.
      */
-    public void setColors(Palette.Swatch swatch) {
+    public void setColors(UberSwatch swatch) {
         mSwatch = swatch;
 
         // Update existing items
@@ -39,7 +37,7 @@ public abstract class MultiTypeStyleableAdapter extends MultiTypeAdapter {
         if (mSwatch != null && item instanceof MultiTypeStyleableItem) {
             MultiTypeStyleableItem styleableItem = (MultiTypeStyleableItem) item;
 
-            if (styleableItem.getSwatch() == null || styleableItem.getSwatch().getRgb() != mSwatch.getRgb()) {
+            if (styleableItem.getSwatch() == null || styleableItem.getSwatch() != mSwatch) {
                 styleableItem.setColors(holder, mSwatch);
             }
         }

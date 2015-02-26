@@ -2,7 +2,6 @@ package com.aluxian.drizzle.adapters.multi;
 
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.graphics.Palette;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -12,6 +11,7 @@ import com.aluxian.drizzle.api.providers.ItemsProvider;
 import com.aluxian.drizzle.utils.Config;
 import com.aluxian.drizzle.utils.ItemLoader;
 import com.aluxian.drizzle.utils.Log;
+import com.aluxian.drizzle.utils.UberSwatch;
 
 import java.util.List;
 
@@ -131,8 +131,8 @@ public abstract class MultiTypeInfiniteAdapter<T> extends MultiTypeStyleableAdap
     public static class LoadingItem extends MultiTypeStyleableItem<LoadingItem.ViewHolder> {
 
         @Override
-        protected void onSetColors(ViewHolder holder, Palette.Swatch swatch) {
-            holder.progressBar.getIndeterminateDrawable().setTint(swatch.getRgb());
+        protected void onSetStyle(ViewHolder holder, UberSwatch swatch) {
+            holder.progressBar.getIndeterminateDrawable().setTint(swatch.rgb);
         }
 
         public static class ViewHolder extends MultiTypeBaseItem.ViewHolder {

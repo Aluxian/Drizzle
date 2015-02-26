@@ -28,7 +28,6 @@ import com.aluxian.drizzle.utils.Dp;
 import com.aluxian.drizzle.utils.Log;
 import com.aluxian.drizzle.utils.UserManager;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -167,8 +166,8 @@ public class DrawerFragment extends Fragment implements UserManager.AuthStateCha
 
     /**
      * Change the drawer icon.
-     *  @param state   The state to which the drawer icon should be changed.
      *
+     * @param state The state to which the drawer icon should be changed.
      */
     public void toggleDrawerIcon(DrawerIconState state) {
         ValueAnimator iconAnimator = ValueAnimator.ofFloat(state.from, state.to);

@@ -16,9 +16,9 @@ import android.view.ViewGroup;
 import android.widget.Spinner;
 
 import com.aluxian.drizzle.R;
-import com.aluxian.drizzle.api.Params;
 import com.aluxian.drizzle.adapters.pager.FeedPagerAdapter;
 import com.aluxian.drizzle.adapters.pager.ShotsPagerAdapter;
+import com.aluxian.drizzle.api.Params;
 import com.astuetz.PagerSlidingTabStrip;
 
 import java.util.Arrays;

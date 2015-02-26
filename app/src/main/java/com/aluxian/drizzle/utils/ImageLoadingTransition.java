@@ -4,8 +4,6 @@ import android.animation.ObjectAnimator;
 import android.graphics.ColorMatrixColorFilter;
 import android.widget.ImageView;
 
-import com.aluxian.drizzle.utils.AlphaSatColorMatrixEvaluator;
-
 public class ImageLoadingTransition {
 
     public static ObjectAnimator apply(ImageView imageView) {

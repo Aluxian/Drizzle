@@ -2,7 +2,6 @@ package com.aluxian.drizzle.utils;
 
 import android.animation.TypeEvaluator;
 import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
 
 /**
  * @source http://stackoverflow.com/a/27286385/1133344

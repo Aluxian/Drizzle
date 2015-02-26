@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.graphics.Palette;
 import android.support.v7.widget.GridLayoutManager;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +16,7 @@ import com.aluxian.drizzle.adapters.multi.MultiTypeInfiniteAdapter;
 import com.aluxian.drizzle.api.models.User;
 import com.aluxian.drizzle.api.providers.UserShotsProvider;
 import com.aluxian.drizzle.utils.Dp;
+import com.aluxian.drizzle.utils.UberSwatch;
 import com.aluxian.drizzle.views.CustomEdgeRecyclerView;
 import com.aluxian.drizzle.views.toolbar.NativeToolbar;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
@@ -52,7 +52,7 @@ public class UserActivity extends Activity implements AdapterHeaderListener, Mul
 
         mRecyclerView = (CustomEdgeRecyclerView) findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);
-        mAdapter= new UserActivityAdapter(mUser, new UserShotsProvider(mUser.id), this, this);
+        mAdapter = new UserActivityAdapter(mUser, new UserShotsProvider(mUser.id), this, this);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
@@ -130,15 +130,15 @@ public class UserActivity extends Activity implements AdapterHeaderListener, Mul
     }
 
     @Override
-    public void onHeaderLoaded(Palette.Swatch swatch, int height) {
+    public void onHeaderLoaded(UberSwatch swatch, int height) {
         mRecyclerView.post(() -> {
-            mRecyclerView.setTopEdgeColor(swatch.getTitleTextColor());
-            mRecyclerView.setBottomEdgeColor(swatch.getRgb());
+            mRecyclerView.setTopEdgeColor(swatch.titleTextColor);
+            mRecyclerView.setBottomEdgeColor(swatch.rgb);
         });
         mAdapter.setColors(swatch);
 
         View toolbarBackground = findViewById(R.id.toolbar_background);
-        toolbarBackground.setBackgroundColor(swatch.getRgb());
+        toolbarBackground.setBackgroundColor(swatch.rgb);
         toolbarBackground.getBackground().setAlpha(0);
         toolbarBackground.setElevation(0);
 
