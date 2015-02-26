@@ -11,9 +11,11 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.aluxian.drizzle.R;
+import com.aluxian.drizzle.adapters.AdapterHeaderListener;
+import com.aluxian.drizzle.adapters.ShotActivityAdapter;
+import com.aluxian.drizzle.adapters.multi.MultiTypeInfiniteAdapter;
 import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.api.providers.ShotCommentsProvider;
-import com.aluxian.drizzle.recycler.ShotAdapter;
 import com.aluxian.drizzle.utils.Dp;
 import com.aluxian.drizzle.views.CustomEdgeRecyclerView;
 import com.aluxian.drizzle.views.toolbar.NativeToolbar;
@@ -21,7 +23,7 @@ import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCal
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.google.gson.Gson;
 
-public class ShotActivity extends Activity implements ShotAdapter.HeaderListener {
+public class ShotActivity extends Activity implements AdapterHeaderListener, MultiTypeInfiniteAdapter.StatusListener {
 
     public static final String EXTRA_SHOT_DATA = "shot_data";
     public static final String EXTRA_REBOUND_OF = "rebound_of";
@@ -29,6 +31,7 @@ public class ShotActivity extends Activity implements ShotAdapter.HeaderListener
     private Shot shot;
     private NativeToolbar mToolbar;
     private CustomEdgeRecyclerView mRecyclerView;
+    private ShotActivityAdapter mAdapter;
 
     @SuppressWarnings("ConstantConditions")
     @Override
@@ -56,7 +59,8 @@ public class ShotActivity extends Activity implements ShotAdapter.HeaderListener
         mRecyclerView = (CustomEdgeRecyclerView) findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.setAdapter(new ShotAdapter(shot, reboundShot, new ShotCommentsProvider(shot.id), this));
+        mAdapter = new ShotActivityAdapter(shot, reboundShot, new ShotCommentsProvider(shot.id), this, this);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
@@ -98,7 +102,6 @@ public class ShotActivity extends Activity implements ShotAdapter.HeaderListener
 
             case R.id.action_share_image:
 
-
                 return true;
 
             default:
@@ -109,6 +112,7 @@ public class ShotActivity extends Activity implements ShotAdapter.HeaderListener
     @Override
     public void onHeaderLoaded(Palette.Swatch swatch, int height) {
         mRecyclerView.post(() -> mRecyclerView.setEdgeColor(swatch.getRgb()));
+        mAdapter.setColors(swatch);
 
         View toolbarBackground = findViewById(R.id.toolbar_background);
         toolbarBackground.setBackgroundColor(swatch.getRgb());
@@ -139,6 +143,16 @@ public class ShotActivity extends Activity implements ShotAdapter.HeaderListener
             @Override
             public void onUpOrCancelMotionEvent(ScrollState scrollState) {}
         });
+    }
+
+    @Override
+    public void onAdapterLoadingFinished(boolean successful) {
+
+    }
+
+    @Override
+    public void onAdapterLoadingError(Exception e, boolean hasItems) {
+
     }
 
 }

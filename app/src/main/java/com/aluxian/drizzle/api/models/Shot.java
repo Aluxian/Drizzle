@@ -87,6 +87,10 @@ public final class Shot {
         return spannable;
     }
 
+    public boolean isGIF() {
+        return images.normal.endsWith(".gif");
+    }
+
     public static final class Images {
 
         public final String hidpi;

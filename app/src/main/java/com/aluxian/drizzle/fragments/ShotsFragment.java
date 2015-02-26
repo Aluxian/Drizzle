@@ -11,17 +11,18 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.aluxian.drizzle.R;
+import com.aluxian.drizzle.adapters.ShotsAdapter;
+import com.aluxian.drizzle.adapters.multi.MultiTypeInfiniteAdapter;
 import com.aluxian.drizzle.api.Params;
 import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.api.providers.FilteredShotsProvider;
 import com.aluxian.drizzle.api.providers.ItemsProvider;
 import com.aluxian.drizzle.recycler.ShotAnimator;
-import com.aluxian.drizzle.recycler.ShotsAdapter;
 import com.aluxian.drizzle.utils.Log;
 
 import java.lang.reflect.InvocationTargetException;
 
-public class ShotsFragment extends Fragment implements ShotsAdapter.AdapterListener {
+public class ShotsFragment extends Fragment implements ShotsAdapter.StatusListener {
 
     private static final String ARG_PROVIDER_CLASS = "provider_class";
     private static final String ARG_LIST_API_VALUE = "list_api_value";
@@ -80,7 +81,7 @@ public class ShotsFragment extends Fragment implements ShotsAdapter.AdapterListe
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mShotsAdapter = new ShotsAdapter(this, getShotsProvider(getArguments()));
+        mShotsAdapter = new ShotsAdapter(getShotsProvider(getArguments()), this);
 
         View view = inflater.inflate(R.layout.fragment_shots, container, false);
         mErrorView = view.findViewById(R.id.error_view);
@@ -92,7 +93,15 @@ public class ShotsFragment extends Fragment implements ShotsAdapter.AdapterListe
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);
 
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
+        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                return mShotsAdapter.itemsList().get(position) instanceof MultiTypeInfiniteAdapter.LoadingItem ? 2 : 1;
+            }
+        });
+
+        mRecyclerView.setLayoutManager(layoutManager);
         //mRecyclerView.setItemAnimator(animator);
         mRecyclerView.setAdapter(mShotsAdapter);
         //mRecyclerView.postDelayed(() -> mRecyclerView.setAdapter(mShotsAdapter), getArguments().getInt(ARG_LOAD_DELAY));
@@ -161,7 +170,7 @@ public class ShotsFragment extends Fragment implements ShotsAdapter.AdapterListe
     }
 
     @Override
-    public void onAdapterLoadingError(boolean hasItems) {
+    public void onAdapterLoadingError(Exception e, boolean hasItems) {
         if (hasItems) {
             Toast.makeText(getActivity(), "Adapter error.", Toast.LENGTH_LONG).show();
         } else {

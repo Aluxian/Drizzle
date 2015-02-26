@@ -1,4 +1,4 @@
-package com.aluxian.drizzle.recycler;
+package com.aluxian.drizzle.adapters.pager;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;

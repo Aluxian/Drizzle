@@ -12,6 +12,7 @@ import java.util.List;
 public class ItemLoader<T> {
 
     private int mItemsThreshold;
+    private boolean mPendingReload;
     private ItemsProvider<T> mItemsProvider;
     private Listener<T> mListener;
     private LoadTask mLoadTask;
@@ -25,8 +26,7 @@ public class ItemLoader<T> {
     /**
      * Do the initial load of items.
      */
-    public void firstLoad() {
-        Log.d(mItemsProvider, mItemsThreshold);
+    public void loadFirstItems() {
         mLoadTask = new LoadTask();
         mLoadTask.execute();
     }
@@ -38,12 +38,23 @@ public class ItemLoader<T> {
      * @param itemCount The total number of items in the adapter.
      */
     public void notifyBoundItemAt(int position, int itemCount) {
-        Log.d(position, itemCount);
-
         if (itemCount - position <= mItemsThreshold && (mLoadTask == null || mLoadTask.getStatus() == AsyncTask.Status.FINISHED)) {
             mLoadTask = new LoadTask();
             mLoadTask.execute();
         }
+    }
+
+    /**
+     * Called when items need to be reloaded.
+     */
+    public void reload() {
+        if (mLoadTask != null) {
+            mLoadTask.cancel(true);
+        }
+
+        mPendingReload = true;
+        mLoadTask = new LoadTask();
+        mLoadTask.execute();
     }
 
     private class LoadTask extends AsyncTask<Void, Void, List<T>> {
@@ -57,7 +68,12 @@ public class ItemLoader<T> {
         @Override
         protected List<T> doInBackground(Void... params) {
             try {
-                return mItemsProvider.load();
+                if (mPendingReload) {
+                    mPendingReload = false;
+                    return mItemsProvider.refresh();
+                } else {
+                    return mItemsProvider.load();
+                }
             } catch (IOException | BadRequestException | TooManyRequestsException e) {
                 mListener.onItemsLoadError(e);
             }
@@ -67,7 +83,7 @@ public class ItemLoader<T> {
 
         @Override
         protected void onPostExecute(List<T> response) {
-            mListener.onFinishedLoading();
+            mListener.onFinishedLoading(response != null);
 
             if (response != null) {
                 mListener.onItemsLoaded(response);
@@ -76,6 +92,11 @@ public class ItemLoader<T> {
 
     }
 
+    /**
+     * Listen for loading status and result. Used by adapters.
+     *
+     * @param <T> The type of the items.
+     */
     public static interface Listener<T> {
 
         /**
@@ -83,24 +104,26 @@ public class ItemLoader<T> {
          *
          * @param items The list of items that have just been loaded.
          */
-        public void onItemsLoaded(List<T> items);
-
-        /**
-         * Called when there's an error loading the items.
-         *
-         * @param e The error's exception.
-         */
-        public void onItemsLoadError(Exception e);
+        void onItemsLoaded(List<T> items);
 
         /**
          * Called when the loader starts downloading items.
          */
-        public void onStartedLoading();
+        void onStartedLoading();
 
         /**
-         * Called when the loaders finishes downloading items.
+         * Called when there's an error loading the items.
+         *
+         * @param e The error's Exception.
          */
-        public void onFinishedLoading();
+        void onItemsLoadError(Exception e);
+
+        /**
+         * Called when the loader finishes downloading items.
+         *
+         * @param successful Whether the loading was successful (i.e. without errors).
+         */
+        void onFinishedLoading(boolean successful);
 
     }
 

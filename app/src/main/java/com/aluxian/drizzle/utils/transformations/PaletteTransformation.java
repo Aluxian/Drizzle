@@ -2,6 +2,7 @@ package com.aluxian.drizzle.utils.transformations;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.v7.graphics.Palette;
 import android.widget.ImageView;
 
@@ -20,7 +21,13 @@ public class PaletteTransformation implements Transformation {
     }
 
     public static Palette getPalette(ImageView imageView) {
-        return CACHE.get(((BitmapDrawable) imageView.getDrawable()).getBitmap());
+        Drawable drawable = imageView.getDrawable();
+
+        if (drawable instanceof BitmapDrawable) {
+            return CACHE.get(((BitmapDrawable) drawable).getBitmap());
+        }
+
+        return null;
     }
 
     private PaletteTransformation() {}

@@ -157,8 +157,10 @@ public class AuthActivity extends Activity {
         getMenuInflater().inflate(R.menu.auth, menu);
         mLoadingIndicatorItem = menu.findItem(R.id.loading);
         mLoadingIndicatorItem.setActionView(R.layout.inflate_indeterminate_progress);
-        ((ProgressBar) mLoadingIndicatorItem.getActionView().findViewById(R.id.progress_bar))
-                .getIndeterminateDrawable().setTint(Color.WHITE);
+
+        ProgressBar progressBar = (ProgressBar) mLoadingIndicatorItem.getActionView().findViewById(R.id.progress_bar);
+        progressBar.getIndeterminateDrawable().setTint(Color.WHITE);
+
         return true;
     }
 

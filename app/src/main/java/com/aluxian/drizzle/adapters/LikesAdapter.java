@@ -1,4 +1,4 @@
-package com.aluxian.drizzle.recycler.adapters;
+package com.aluxian.drizzle.adapters;
 
 import android.content.Intent;
 import android.view.View;
@@ -7,16 +7,17 @@ import android.widget.TextView;
 
 import com.aluxian.drizzle.R;
 import com.aluxian.drizzle.activities.UserActivity;
+import com.aluxian.drizzle.adapters.multi.MultiTypeBaseItem;
+import com.aluxian.drizzle.adapters.multi.MultiTypeInfiniteAdapter;
+import com.aluxian.drizzle.adapters.multi.MultiTypeItemType;
 import com.aluxian.drizzle.api.models.Like;
 import com.aluxian.drizzle.api.providers.ItemsProvider;
 import com.aluxian.drizzle.utils.CountableInterpolator;
-import com.aluxian.drizzle.utils.Log;
 import com.aluxian.drizzle.utils.Mapper;
 import com.aluxian.drizzle.utils.transformations.CircularTransformation;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -24,26 +25,19 @@ import butterknife.InjectView;
 
 public class LikesAdapter extends MultiTypeInfiniteAdapter<Like> {
 
-    public LikesAdapter(ItemsProvider<Like> itemsProvider) {
-        super(itemsProvider);
+    public LikesAdapter(ItemsProvider<Like> itemsProvider, StatusListener statusListener) {
+        super(itemsProvider, statusListener);
     }
 
     @Override
-    protected List<MultiTypeItemType<? extends MultiTypeBaseItem.ViewHolder>> getItemTypes() {
-        List<MultiTypeItemType<? extends MultiTypeBaseItem.ViewHolder>> items = new ArrayList<>(super.getItemTypes());
-        items.add(new MultiTypeItemType<>(LikeItem.class, LikeItem.ViewHolder.class, R.layout.item_like));
-        return items;
+    protected void onAddItemTypes() {
+        super.onAddItemTypes();
+        addItemType(new MultiTypeItemType<>(LikeItem.class, LikeItem.ViewHolder.class, R.layout.item_like));
     }
 
     @Override
-    protected List<MultiTypeBaseItem<? extends MultiTypeBaseItem.ViewHolder>> mapItems(List<Like> items) {
+    protected List<MultiTypeBaseItem<? extends MultiTypeBaseItem.ViewHolder>> mapLoadedItems(List<Like> items) {
         return Mapper.map(items, LikeItem::new);
-    }
-
-    @Override
-    public void onItemsLoadError(Exception e) {
-        // TODO: Notify the user
-        Log.e(e);
     }
 
     public static class LikeItem extends MultiTypeBaseItem<LikeItem.ViewHolder> {
@@ -55,7 +49,7 @@ public class LikesAdapter extends MultiTypeInfiniteAdapter<Like> {
         }
 
         @Override
-        protected void onBindViewHolder(ViewHolder holder) {
+        protected void onBindViewHolder(ViewHolder holder, int position) {
             Picasso.with(holder.context)
                     .load(like.user.avatarUrl)
                     .transform(new CircularTransformation())

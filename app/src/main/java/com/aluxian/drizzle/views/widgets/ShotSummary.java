@@ -120,7 +120,7 @@ public class ShotSummary extends LinearLayout {
         mShotTitle.setTextColor(swatch.getTitleTextColor());
         mAuthorDescription.setTextColor(swatch.getBodyTextColor());
 
-        mAuthorDescription.setLinkTextColor(swatch.getTitleTextColor());
+        mAuthorDescription.setLinkTextColor(swatch.getBodyTextColor());
 
         if (mShot.team != null) {
             Picasso.with(getContext())

@@ -6,7 +6,6 @@
 
     <com.aluxian.drizzle.views.SquareImageView
         android:id="@+id/comment_avatar"
-        android:background="@drawable/round_placeholder"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:contentDescription="@null" />

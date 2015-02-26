@@ -11,9 +11,11 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.aluxian.drizzle.R;
+import com.aluxian.drizzle.adapters.AdapterHeaderListener;
+import com.aluxian.drizzle.adapters.UserActivityAdapter;
+import com.aluxian.drizzle.adapters.multi.MultiTypeInfiniteAdapter;
 import com.aluxian.drizzle.api.models.User;
 import com.aluxian.drizzle.api.providers.UserShotsProvider;
-import com.aluxian.drizzle.recycler.UserAdapter;
 import com.aluxian.drizzle.utils.Dp;
 import com.aluxian.drizzle.views.CustomEdgeRecyclerView;
 import com.aluxian.drizzle.views.toolbar.NativeToolbar;
@@ -21,13 +23,14 @@ import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCal
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.google.gson.Gson;
 
-public class UserActivity extends Activity implements UserAdapter.HeaderListener {
+public class UserActivity extends Activity implements AdapterHeaderListener, MultiTypeInfiniteAdapter.StatusListener {
 
     public static final String EXTRA_USER_DATA = "user_data";
 
     private User mUser;
-    private CustomEdgeRecyclerView mRecyclerView;
     private NativeToolbar mToolbar;
+    private CustomEdgeRecyclerView mRecyclerView;
+    private UserActivityAdapter mAdapter;
 
     @SuppressWarnings("ConstantConditions")
     @Override
@@ -49,20 +52,21 @@ public class UserActivity extends Activity implements UserAdapter.HeaderListener
 
         mRecyclerView = (CustomEdgeRecyclerView) findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);
+        mAdapter= new UserActivityAdapter(mUser, new UserShotsProvider(mUser.id), this, this);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                // Header
-                if (position == 0) {
+                // Header or loading indicator
+                if (position == 0 || mAdapter.itemsList().get(position) instanceof MultiTypeInfiniteAdapter.LoadingItem) {
                     return 2;
-                } // else if is last item in list, span = 1 to show loader
+                }
 
                 return 1;
             }
         });
         mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.setAdapter(new UserAdapter(mUser, this, new UserShotsProvider(mUser.id)));
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
@@ -121,7 +125,7 @@ public class UserActivity extends Activity implements UserAdapter.HeaderListener
     }
 
     @Override
-    public void onAdapterLoadingError(boolean hasItems) {
+    public void onAdapterLoadingError(Exception e, boolean hasItems) {
 
     }
 
@@ -131,6 +135,7 @@ public class UserActivity extends Activity implements UserAdapter.HeaderListener
             mRecyclerView.setTopEdgeColor(swatch.getTitleTextColor());
             mRecyclerView.setBottomEdgeColor(swatch.getRgb());
         });
+        mAdapter.setColors(swatch);
 
         View toolbarBackground = findViewById(R.id.toolbar_background);
         toolbarBackground.setBackgroundColor(swatch.getRgb());

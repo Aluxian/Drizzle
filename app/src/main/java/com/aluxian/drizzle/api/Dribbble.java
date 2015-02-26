@@ -2,8 +2,8 @@ package com.aluxian.drizzle.api;
 
 import com.aluxian.drizzle.api.models.Attachment;
 import com.aluxian.drizzle.api.models.Comment;
-import com.aluxian.drizzle.api.models.Like;
 import com.aluxian.drizzle.api.models.Credentials;
+import com.aluxian.drizzle.api.models.Like;
 import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.utils.Config;
 import com.aluxian.drizzle.utils.UserManager;
@@ -136,16 +136,6 @@ public class Dribbble {
                 .url("https://www.kimonolabs.com/api/cfxxcg4u")
                 .queryParam("apikey", "hQMs8xI09wAzLH5qYKtTnR5o4Na3qnWI")
                 .queryParam("kimmodify", "1");
-    }
-
-    public static ApiRequest<Shot.Extra> getShotExtra(int id) {
-        return new ApiRequest<Shot.Extra>()
-                .responseType(new TypeToken<Shot.Extra>() {})
-                .useCache(true)// TODO: set long cache period
-                .url("https://www.kimonolabs.com/api/9db6053s")
-                .queryParam("apikey", "hQMs8xI09wAzLH5qYKtTnR5o4Na3qnWI")
-                .queryParam("kimmodify", "1")
-                .queryParam("kimpath2", String.valueOf(id));
     }
 
     public static ApiRequest<List<Shot>> listShotsFromFollowing() {

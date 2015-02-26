@@ -1,4 +1,4 @@
-package com.aluxian.drizzle.recycler.adapters;
+package com.aluxian.drizzle.adapters.multi;
 
 /**
  * Holds data about an item type used in a MultiTypeAdapter.
