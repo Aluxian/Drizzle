@@ -12,10 +12,10 @@
         <attr name="insetApplyPadding" format="boolean" />
     </declare-styleable>
 
-    <declare-styleable name="OverlayLinearLayout">
-        <attr name="overlay" format="reference" />
-        <attr name="overlayInsidePadding" format="boolean" />
-        <attr name="overlayGravity" format="integer" />
+    <declare-styleable name="ForegroundLinearLayout">
+        <attr name="foreground" format="reference" />
+        <attr name="foregroundInsidePadding" format="boolean" />
+        <attr name="foregroundGravity" format="integer" />
     </declare-styleable>
 
 </resources>

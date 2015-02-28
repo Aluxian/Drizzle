@@ -25,10 +25,11 @@ import com.aluxian.drizzle.adapters.multi.MultiTypeItemType;
 import com.aluxian.drizzle.adapters.multi.MultiTypeStyleableItem;
 import com.aluxian.drizzle.api.models.Comment;
 import com.aluxian.drizzle.api.models.Shot;
+import com.aluxian.drizzle.api.providers.AttachmentsProvider;
 import com.aluxian.drizzle.api.providers.BucketsProvider;
 import com.aluxian.drizzle.api.providers.ItemsProvider;
 import com.aluxian.drizzle.api.providers.LikesProvider;
-import com.aluxian.drizzle.api.providers.ProjectsProvider;
+import com.aluxian.drizzle.api.providers.ReboundsProvider;
 import com.aluxian.drizzle.utils.CountableInterpolator;
 import com.aluxian.drizzle.utils.LocaleManager;
 import com.aluxian.drizzle.utils.Log;
@@ -38,9 +39,7 @@ import com.aluxian.drizzle.utils.transformations.CircularTransformation;
 import com.aluxian.drizzle.utils.transformations.PaletteTransformation;
 import com.aluxian.drizzle.views.CustomEdgeRecyclerView;
 import com.aluxian.drizzle.views.ShotPreviewGifImageView;
-import com.aluxian.drizzle.views.widgets.ShotAttachments;
 import com.aluxian.drizzle.views.widgets.ShotReboundOf;
-import com.aluxian.drizzle.views.widgets.ShotRebounds;
 import com.aluxian.drizzle.views.widgets.ShotSummary;
 import com.google.gson.Gson;
 import com.squareup.okhttp.OkHttpClient;
@@ -92,8 +91,8 @@ public class ShotActivityAdapter extends MultiTypeInfiniteAdapter<Comment> {
 
         @Override
         protected void onBindViewHolder(ViewHolder holder, int position) {
-            holder.rebounds.load(shot);
-            holder.attachments.load(shot);
+            loadRebounds(holder);
+            loadAttachments(holder);
 
             holder.reboundOf.setVisibility(View.GONE);
 
@@ -171,6 +170,52 @@ public class ShotActivityAdapter extends MultiTypeInfiniteAdapter<Comment> {
                     });
         }
 
+        private void loadRebounds(ViewHolder holder) {
+            if (shot.reboundsCount == 0) {
+                holder.reboundsContainer.setVisibility(View.GONE);
+                return;
+            }
+
+            CountableInterpolator countableInterpolator = new CountableInterpolator(holder.context);
+            String title = countableInterpolator.apply(shot.reboundsCount, R.string.section_rebounds, R.string.section_rebound);
+            holder.reboundsHeader.setText(title);
+
+            holder.reboundsRecycler.setAdapter(new ReboundsAdapter(shot, new ReboundsProvider(shot.id), new StatusListener() {
+                @Override
+                public void onAdapterLoadingFinished(boolean successful) {
+                    // TODO
+                }
+
+                @Override
+                public void onAdapterLoadingError(Exception e, boolean hasItems) {
+                    Log.e(e);
+                }
+            }));
+        }
+
+        private void loadAttachments(ViewHolder holder) {
+            if (shot.attachmentsCount == 0) {
+                holder.attachmentsContainer.setVisibility(View.GONE);
+                return;
+            }
+
+            CountableInterpolator countableInterpolator = new CountableInterpolator(holder.context);
+            String title = countableInterpolator.apply(shot.attachmentsCount, R.string.section_attachments, R.string.section_attachment);
+            holder.attachmentsHeader.setText(title);
+
+            holder.attachmentsRecycler.setAdapter(new AttachmentsAdapter(new AttachmentsProvider(shot.id), new StatusListener() {
+                @Override
+                public void onAdapterLoadingFinished(boolean successful) {
+                    // TODO
+                }
+
+                @Override
+                public void onAdapterLoadingError(Exception e, boolean hasItems) {
+                    Log.e(e);
+                }
+            }));
+        }
+
         @Override
         public int getId(int position) {
             return shot.id;
@@ -182,8 +227,9 @@ public class ShotActivityAdapter extends MultiTypeInfiniteAdapter<Comment> {
             holder.preview.setBackgroundColor(swatch.rgb);
 
             holder.summary.color(swatch);
-            holder.rebounds.color(swatch);
-            holder.attachments.color(swatch);
+
+            holder.reboundsRecycler.setEdgeColor(swatch.rgb);
+            holder.attachmentsRecycler.setEdgeColor(swatch.rgb);
 
             holder.likes.setOnClickListener(v -> {
                 LinearLayout dialogLayout = (LinearLayout) LayoutInflater.from(holder.context).inflate(R.layout.dialog_list, null);
@@ -273,8 +319,15 @@ public class ShotActivityAdapter extends MultiTypeInfiniteAdapter<Comment> {
             @InjectView(R.id.gif_loader) ProgressBar gifLoader;
             @InjectView(R.id.shot_summary) ShotSummary summary;
             @InjectView(R.id.shot_rebound_of) ShotReboundOf reboundOf;
-            @InjectView(R.id.shot_rebounds) ShotRebounds rebounds;
-            @InjectView(R.id.shot_attachments) ShotAttachments attachments;
+
+            @InjectView(R.id.rebounds) View reboundsContainer;
+            @InjectView(R.id.rebounds_header) TextView reboundsHeader;
+            @InjectView(R.id.rebounds_recycler) CustomEdgeRecyclerView reboundsRecycler;
+
+            @InjectView(R.id.attachments) View attachmentsContainer;
+            @InjectView(R.id.attachments_header) TextView attachmentsHeader;
+            @InjectView(R.id.attachments_recycler) CustomEdgeRecyclerView attachmentsRecycler;
+
             @InjectView(R.id.shot_description) TextView description;
             @InjectView(R.id.subheader_comments) TextView commentsSubheader;
 
@@ -286,6 +339,12 @@ public class ShotActivityAdapter extends MultiTypeInfiniteAdapter<Comment> {
             public ViewHolder(View itemView) {
                 super(itemView);
                 ButterKnife.inject(this, itemView);
+
+                reboundsRecycler.setHasFixedSize(true);
+                reboundsRecycler.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+
+                attachmentsRecycler.setHasFixedSize(true);
+                attachmentsRecycler.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
             }
 
         }

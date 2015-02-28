@@ -156,7 +156,7 @@ public class UserActivity extends Activity implements AdapterHeaderListener, Mul
                 }
 
                 toolbarBackground.getBackground().setAlpha((int) (fraction * 255));
-                toolbarBackground.setElevation(fraction * Dp.PX_4);
+                toolbarBackground.setElevation(fraction * Dp.PX_04);
                 mToolbar.getTitleTextView().setAlpha(fraction);
             }
 

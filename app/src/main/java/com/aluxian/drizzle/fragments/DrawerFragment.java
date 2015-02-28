@@ -130,7 +130,7 @@ public class DrawerFragment extends Fragment implements UserManager.AuthStateCha
 
         // Add a margin at the top and at the bottom of the list
         View spacingView = new View(getActivity());
-        spacingView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Dp.PX_8));
+        spacingView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Dp.PX_08));
 
         mListView.addHeaderView(spacingView, null, false);
         mListView.addFooterView(spacingView, null, false);

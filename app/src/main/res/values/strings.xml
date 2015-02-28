@@ -79,11 +79,11 @@
     <string name="stats_followers">%d followers</string>
 
     <string name="stats_like">1 like</string>
-    <string name="stats_bucket">1 project</string>
+    <string name="stats_bucket">1 bucket</string>
     <string name="stats_view">1 view</string>
     <string name="stats_tag">1 tag</string>
 
-    <string name="stats_shot">1 shot</string>
+    <string name="stats_shot">1 attachment</string>
     <string name="stats_project">1 project</string>
     <string name="stats_follower">1 follower</string>
 
@@ -110,9 +110,9 @@
 
     <string-array name="filter_timeframe_options">
         <item>Now</item>
-        <item>This Last Week</item>
-        <item>This Last Month</item>
-        <item>This Last Year</item>
+        <item>This Past Week</item>
+        <item>This Past Month</item>
+        <item>This Past Year</item>
         <item>All Time</item>
     </string-array>
 

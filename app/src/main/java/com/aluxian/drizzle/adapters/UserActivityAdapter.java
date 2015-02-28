@@ -1,6 +1,5 @@
 package com.aluxian.drizzle.adapters;
 
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
@@ -165,11 +164,11 @@ public class UserActivityAdapter extends MultiTypeInfiniteAdapter<Shot> {
             RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) holder.itemView.getLayoutParams();
 
             if (position % 2 == 0) {
-                params.setMarginStart(Dp.PX_4);
-                params.setMarginEnd(Dp.PX_8);
+                params.setMarginStart(Dp.PX_04);
+                params.setMarginEnd(Dp.PX_08);
             } else {
-                params.setMarginStart(Dp.PX_8);
-                params.setMarginEnd(Dp.PX_4);
+                params.setMarginStart(Dp.PX_08);
+                params.setMarginEnd(Dp.PX_04);
             }
 
             holder.itemView.requestLayout();

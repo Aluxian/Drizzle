@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.LinearLayout;
@@ -14,7 +15,7 @@ import com.aluxian.drizzle.R;
 /**
  * @source https://gist.github.com/chrisbanes/9091754
  */
-public class OverlayLinearLayout extends LinearLayout {
+public class ForegroundLinearLayout extends LinearLayout {
 
     private Drawable mForeground;
 
@@ -22,74 +23,31 @@ public class OverlayLinearLayout extends LinearLayout {
     private final Rect mOverlayBounds = new Rect();
 
     private int mForegroundGravity = Gravity.FILL;
-
     protected boolean mForegroundInPadding = true;
-
     boolean mForegroundBoundsChanged = false;
 
-    public OverlayLinearLayout(Context context) {
+
+    public ForegroundLinearLayout(Context context) {
         super(context);
     }
 
-    public OverlayLinearLayout(Context context, AttributeSet attrs) {
+    public ForegroundLinearLayout(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public OverlayLinearLayout(Context context, AttributeSet attrs, int defStyle) {
+    public ForegroundLinearLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.OverlayLinearLayout,
-                defStyle, 0);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ForegroundLinearLayout,defStyle, 0);
+        mForegroundGravity = a.getInt(R.styleable.ForegroundLinearLayout_foregroundGravity, mForegroundGravity);
+        final Drawable d = a.getDrawable(R.styleable.ForegroundLinearLayout_foreground);
 
-        mForegroundGravity = a.getInt(
-                R.styleable.OverlayLinearLayout_overlayGravity, mForegroundGravity);
-
-        final Drawable d = a.getDrawable(R.styleable.OverlayLinearLayout_overlay);
         if (d != null) {
             setForeground(d);
         }
 
-        mForegroundInPadding = a.getBoolean(
-                R.styleable.OverlayLinearLayout_overlayInsidePadding, true);
-
+        mForegroundInPadding = a.getBoolean(R.styleable.ForegroundLinearLayout_foregroundInsidePadding, true);
         a.recycle();
-    }
-
-    /**
-     * Describes how the foreground is positioned.
-     *
-     * @return foreground gravity.
-     * @see #setForegroundGravity(int)
-     */
-    public int getForegroundGravity() {
-        return mForegroundGravity;
-    }
-
-    /**
-     * Describes how the foreground is positioned. Defaults to START and TOP.
-     *
-     * @param foregroundGravity See {@link android.view.Gravity}
-     * @see #getForegroundGravity()
-     */
-    public void setForegroundGravity(int foregroundGravity) {
-        if (mForegroundGravity != foregroundGravity) {
-            if ((foregroundGravity & Gravity.RELATIVE_HORIZONTAL_GRAVITY_MASK) == 0) {
-                foregroundGravity |= Gravity.START;
-            }
-
-            if ((foregroundGravity & Gravity.VERTICAL_GRAVITY_MASK) == 0) {
-                foregroundGravity |= Gravity.TOP;
-            }
-
-            mForegroundGravity = foregroundGravity;
-
-            if (mForegroundGravity == Gravity.FILL && mForeground != null) {
-                Rect padding = new Rect();
-                mForeground.getPadding(padding);
-            }
-
-            requestLayout();
-        }
     }
 
     @Override
@@ -146,16 +104,6 @@ public class OverlayLinearLayout extends LinearLayout {
         }
     }
 
-    /**
-     * Returns the drawable used as the foreground of this FrameLayout. The
-     * foreground drawable, if non-null, is always drawn on top of the children.
-     *
-     * @return A Drawable or null if no foreground was set.
-     */
-    public Drawable getForeground() {
-        return mForeground;
-    }
-
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
@@ -169,7 +117,7 @@ public class OverlayLinearLayout extends LinearLayout {
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(@NonNull Canvas canvas) {
         super.draw(canvas);
 
         if (mForeground != null) {

@@ -31,7 +31,7 @@ public final class Shot {
     public final String htmlUrl;
     public final List<String> tags;
     public User user;
-    public final Team team;
+    public Team team;
 
     public Shot(int id, String title, String description, Images images, int viewsCount, int likesCount, int commentsCount,
                 int attachmentsCount, int reboundsCount, int bucketsCount, Date createdAt, Date updatedAt, String htmlUrl,

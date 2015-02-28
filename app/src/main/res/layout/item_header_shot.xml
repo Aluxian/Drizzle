@@ -10,10 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.aluxian.drizzle.views.OverlayLinearLayout
+        <com.aluxian.drizzle.views.ForegroundLinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:overlay="?android:attr/selectableItemBackground">
+            app:foreground="?android:attr/selectableItemBackground">
 
             <com.aluxian.drizzle.views.ShotPreviewGifImageView
                 android:id="@+id/shot_preview"
@@ -24,7 +24,7 @@
                 android:scaleType="centerCrop"
                 tools:src="@drawable/drawer_cover" />
 
-        </com.aluxian.drizzle.views.OverlayLinearLayout>
+        </com.aluxian.drizzle.views.ForegroundLinearLayout>
 
         <View
             android:layout_width="match_parent"
@@ -63,15 +63,49 @@
             android:paddingEnd="16dp"
             android:paddingStart="16dp" />
 
-        <com.aluxian.drizzle.views.widgets.ShotRebounds
-            android:id="@+id/shot_rebounds"
+        <LinearLayout
+            android:id="@+id/rebounds"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-        <com.aluxian.drizzle.views.widgets.ShotAttachments
-            android:id="@+id/shot_attachments"
+            <TextView
+                android:id="@+id/rebounds_header"
+                style="@android:style/TextAppearance.Material.Body2"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:gravity="center_vertical"
+                android:paddingEnd="16dp"
+                android:paddingStart="16dp" />
+
+            <com.aluxian.drizzle.views.CustomEdgeRecyclerView
+                android:id="@+id/rebounds_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="72dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/attachments"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/attachments_header"
+                style="@android:style/TextAppearance.Material.Body2"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:gravity="center_vertical"
+                android:paddingEnd="16dp"
+                android:paddingStart="16dp" />
+
+            <com.aluxian.drizzle.views.CustomEdgeRecyclerView
+                android:id="@+id/attachments_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="72dp" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
