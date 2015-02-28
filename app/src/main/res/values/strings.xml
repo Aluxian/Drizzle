@@ -7,6 +7,7 @@
     <string name="action_sort">Sort</string>
 
     <string name="action_share">Share</string>
+    <string name="action_share_profile">Share profile</string>
     <string name="action_share_shot">Shot</string>
     <string name="action_share_link">Link</string>
     <string name="action_share_image">Image</string>
@@ -43,7 +44,9 @@
     <string name="dialog_apply">Apply</string>
     <string name="dialog_cancel">Cancel</string>
 
-    <string name="dialog_fans_title">Fans</string>
+    <string name="dialog_title_likes">Likes</string>
+    <string name="dialog_title_buckets">Buckets</string>
+    <string name="dialog_title_tags">Tags</string>
 
     <string name="intro_title">Hi there!</string>
     <string name="intro_description">Drizzle is a beautiful app for Dribbble,\ncrafted with care and attention to details.\n\nBrowse,
@@ -64,6 +67,7 @@
     <string name="word_for">for</string>
 
     <string name="share_shot">Share %s</string>
+    <string name="share_user">Share %s\'s profile</string>
 
     <string name="stats_likes">%d likes</string>
     <string name="stats_buckets">%d buckets</string>
@@ -75,7 +79,7 @@
     <string name="stats_followers">%d followers</string>
 
     <string name="stats_like">1 like</string>
-    <string name="stats_bucket">1 bucket</string>
+    <string name="stats_bucket">1 project</string>
     <string name="stats_view">1 view</string>
     <string name="stats_tag">1 tag</string>
 

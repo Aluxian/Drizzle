@@ -1,9 +1,11 @@
 package com.aluxian.drizzle.api;
 
 import com.aluxian.drizzle.api.models.Attachment;
+import com.aluxian.drizzle.api.models.Bucket;
 import com.aluxian.drizzle.api.models.Comment;
 import com.aluxian.drizzle.api.models.Credentials;
 import com.aluxian.drizzle.api.models.Like;
+import com.aluxian.drizzle.api.models.Project;
 import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.utils.Config;
 import com.aluxian.drizzle.utils.UserManager;
@@ -88,6 +90,30 @@ public class Dribbble {
                 .accessToken(UserManager.getInstance().getAccessToken())
                 .useCache(true)
                 .path("shots/" + shotId + "/likes");
+    }
+
+    /**
+     * @param shotId The ID of the shot whose buckets to get.
+     * @return The list of buckets for the given shot id.
+     */
+    public static ApiRequest<List<Bucket>> listBuckets(int shotId) {
+        return new ApiRequest<List<Bucket>>()
+                .responseType(new TypeToken<List<Bucket>>() {})
+                .accessToken(UserManager.getInstance().getAccessToken())
+                .useCache(true)
+                .path("shots/" + shotId + "/buckets");
+    }
+
+    /**
+     * @param shotId The ID of the shot whose projects to get.
+     * @return The list of projects for the given shot id.
+     */
+    public static ApiRequest<List<Project>> listProjects(int shotId) {
+        return new ApiRequest<List<Project>>()
+                .responseType(new TypeToken<List<Project>>() {})
+                .accessToken(UserManager.getInstance().getAccessToken())
+                .useCache(true)
+                .path("shots/" + shotId + "/projects");
     }
 
     /**

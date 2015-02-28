@@ -2,7 +2,6 @@ package com.aluxian.drizzle.activities;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.Menu;
@@ -32,6 +31,7 @@ public class ShotActivity extends Activity implements AdapterHeaderListener, Mul
     private NativeToolbar mToolbar;
     private CustomEdgeRecyclerView mRecyclerView;
     private ShotActivityAdapter mAdapter;
+    private Menu mMenu;
 
     @SuppressWarnings("ConstantConditions")
     @Override
@@ -66,6 +66,7 @@ public class ShotActivity extends Activity implements AdapterHeaderListener, Mul
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.shot, menu);
+        mMenu = menu;
         return true;
     }
 
@@ -81,7 +82,7 @@ public class ShotActivity extends Activity implements AdapterHeaderListener, Mul
 
                 return true;
 
-            case R.id.action_share_shot:
+            case R.id.action_share_link:
                 String by = " " + getResources().getString(R.string.word_by) + " ";
                 String title = shot.title + by + shot.user.name;
 
@@ -91,12 +92,6 @@ public class ShotActivity extends Activity implements AdapterHeaderListener, Mul
                 sharingIntent.putExtra(Intent.EXTRA_SUBJECT, title);
                 sharingIntent.putExtra(Intent.EXTRA_TEXT, shot.htmlUrl);
                 startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_shot, shot.title)));
-
-                return true;
-
-            case R.id.action_share_link:
-                Intent linkSharingIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(shot.htmlUrl));
-                startActivity(Intent.createChooser(linkSharingIntent, getResources().getString(R.string.share_shot, shot.title)));
 
                 return true;
 
@@ -113,6 +108,9 @@ public class ShotActivity extends Activity implements AdapterHeaderListener, Mul
     public void onHeaderLoaded(UberSwatch swatch, int height) {
         mRecyclerView.post(() -> mRecyclerView.setEdgeColor(swatch.rgb));
         mAdapter.setColors(swatch);
+
+        mMenu.findItem(R.id.action_share_link).getIcon().setTint(swatch.rgb);
+        mMenu.findItem(R.id.action_share_image).getIcon().setTint(swatch.rgb);
 
         View toolbarBackground = findViewById(R.id.toolbar_background);
         toolbarBackground.setBackgroundColor(swatch.rgb);

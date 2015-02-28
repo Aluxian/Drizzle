@@ -110,7 +110,7 @@ public class UserActivity extends Activity implements AdapterHeaderListener, Mul
                 sharingIntent.putExtra(Intent.EXTRA_TITLE, mUser.name);
                 sharingIntent.putExtra(Intent.EXTRA_SUBJECT, mUser.name);
                 sharingIntent.putExtra(Intent.EXTRA_TEXT, mUser.htmlUrl);
-                startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_shot, mUser.name)));
+                startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_user, mUser.name)));
 
                 return true;
 

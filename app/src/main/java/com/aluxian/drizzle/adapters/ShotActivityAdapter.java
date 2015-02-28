@@ -25,8 +25,10 @@ import com.aluxian.drizzle.adapters.multi.MultiTypeItemType;
 import com.aluxian.drizzle.adapters.multi.MultiTypeStyleableItem;
 import com.aluxian.drizzle.api.models.Comment;
 import com.aluxian.drizzle.api.models.Shot;
+import com.aluxian.drizzle.api.providers.BucketsProvider;
 import com.aluxian.drizzle.api.providers.ItemsProvider;
 import com.aluxian.drizzle.api.providers.LikesProvider;
+import com.aluxian.drizzle.api.providers.ProjectsProvider;
 import com.aluxian.drizzle.utils.CountableInterpolator;
 import com.aluxian.drizzle.utils.LocaleManager;
 import com.aluxian.drizzle.utils.Log;
@@ -101,7 +103,10 @@ public class ShotActivityAdapter extends MultiTypeInfiniteAdapter<Comment> {
             }
 
             holder.summary.load(shot);
+
             holder.likes.setTag(shot.id);
+            holder.buckets.setTag(shot.id);
+            holder.tags.setTag(shot.id);
 
             CountableInterpolator countableInterpolator = new CountableInterpolator(holder.context);
 
@@ -181,11 +186,12 @@ public class ShotActivityAdapter extends MultiTypeInfiniteAdapter<Comment> {
             holder.attachments.color(swatch);
 
             holder.likes.setOnClickListener(v -> {
-                LinearLayout dialogLayout = (LinearLayout) LayoutInflater.from(holder.context).inflate(R.layout.dialog_likes, null);
+                LinearLayout dialogLayout = (LinearLayout) LayoutInflater.from(holder.context).inflate(R.layout.dialog_list, null);
                 dialogLayout.setBackgroundColor(swatch.rgb);
 
                 TextView titleView = (TextView) dialogLayout.findViewById(R.id.title);
                 titleView.setTextColor(swatch.titleTextColor);
+                titleView.setText(R.string.dialog_title_likes);
 
                 LikesAdapter likesAdapter = new LikesAdapter(new LikesProvider((int) holder.likes.getTag()), new StatusListener() {
                     @Override
@@ -210,6 +216,55 @@ public class ShotActivityAdapter extends MultiTypeInfiniteAdapter<Comment> {
                 recyclerView.postDelayed(() -> recyclerView.setEdgeColor(swatch.rgb), 500);
                 new AlertDialog.Builder(holder.context, R.style.Drizzle_Widget_Dialog).setView(dialogLayout).show();
             });
+
+            holder.buckets.setOnClickListener(v -> {
+                LinearLayout dialogLayout = (LinearLayout) LayoutInflater.from(holder.context).inflate(R.layout.dialog_list, null);
+                dialogLayout.setBackgroundColor(swatch.rgb);
+
+                TextView titleView = (TextView) dialogLayout.findViewById(R.id.title);
+                titleView.setTextColor(swatch.titleTextColor);
+                titleView.setText(R.string.dialog_title_buckets);
+
+                BucketsAdapter bucketsAdapter = new BucketsAdapter(new BucketsProvider((int) holder.likes.getTag()), new StatusListener() {
+                    @Override
+                    public void onAdapterLoadingFinished(boolean successful) {
+
+                    }
+
+                    @Override
+                    public void onAdapterLoadingError(Exception e, boolean hasItems) {
+
+                    }
+                });
+
+                bucketsAdapter.setColors(swatch);
+                bucketsAdapter.showLoadingIndicatorWhenEmpty(true);
+
+                CustomEdgeRecyclerView recyclerView = (CustomEdgeRecyclerView) dialogLayout.findViewById(R.id.list);
+                recyclerView.setLayoutManager(new LinearLayoutManager(holder.context));
+                recyclerView.setHasFixedSize(true);
+                recyclerView.setAdapter(bucketsAdapter);
+
+                recyclerView.postDelayed(() -> recyclerView.setEdgeColor(swatch.rgb), 500);
+                new AlertDialog.Builder(holder.context, R.style.Drizzle_Widget_Dialog).setView(dialogLayout).show();
+            });
+
+            holder.tags.setOnClickListener(v -> {
+                LinearLayout dialogLayout = (LinearLayout) LayoutInflater.from(holder.context).inflate(R.layout.dialog_list, null);
+                dialogLayout.setBackgroundColor(swatch.rgb);
+
+                TextView titleView = (TextView) dialogLayout.findViewById(R.id.title);
+                titleView.setTextColor(swatch.titleTextColor);
+                titleView.setText(R.string.dialog_title_tags);
+
+                CustomEdgeRecyclerView recyclerView = (CustomEdgeRecyclerView) dialogLayout.findViewById(R.id.list);
+                recyclerView.setLayoutManager(new LinearLayoutManager(holder.context));
+                recyclerView.setHasFixedSize(true);
+                recyclerView.setAdapter(new TagsAdapter(shot.tags));
+
+                recyclerView.postDelayed(() -> recyclerView.setEdgeColor(swatch.rgb), 500);
+                new AlertDialog.Builder(holder.context, R.style.Drizzle_Widget_Dialog).setView(dialogLayout).show();
+            });
         }
 
         public static class ViewHolder extends MultiTypeBaseItem.ViewHolder {
@@ -226,7 +281,7 @@ public class ShotActivityAdapter extends MultiTypeInfiniteAdapter<Comment> {
             @InjectView(R.id.shot_likes) TextView likes;
             @InjectView(R.id.shot_buckets) TextView buckets;
             @InjectView(R.id.shot_views) TextView views;
-            @InjectView(R.id.shot_tags) TextView tags;
+            @InjectView(R.id.shot_projects) TextView tags;
 
             public ViewHolder(View itemView) {
                 super(itemView);
@@ -296,10 +351,10 @@ public class ShotActivityAdapter extends MultiTypeInfiniteAdapter<Comment> {
 
         public static class ViewHolder extends MultiTypeBaseItem.ViewHolder {
 
-            @InjectView(R.id.comment_avatar) ImageView avatar;
-            @InjectView(R.id.comment_author) TextView author;
-            @InjectView(R.id.comment_body) TextView body;
-            @InjectView(R.id.comment_footer) TextView footer;
+            @InjectView(R.id.avatar) ImageView avatar;
+            @InjectView(R.id.title) TextView author;
+            @InjectView(R.id.description) TextView body;
+            @InjectView(R.id.footer) TextView footer;
 
             public ViewHolder(View itemView) {
                 super(itemView);
