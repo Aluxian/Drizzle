@@ -10,6 +10,6 @@ public interface AdapterHeaderListener {
      * @param swatch The generated colours for the shot preview.
      * @param height The height of the entire header view.
      */
-    public void onHeaderLoaded(UberSwatch swatch, int height);
+    void onHeaderLoaded(UberSwatch swatch, int height);
 
 }

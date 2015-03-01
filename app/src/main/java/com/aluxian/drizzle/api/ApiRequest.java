@@ -39,10 +39,10 @@ public class ApiRequest<T> extends Request.Builder {
     /** RegExp pattern to extract the 'next' url from a Link header. */
     private static final Pattern LINK_NEXT_URL_PATTERN = Pattern.compile(".*<([^>]*)>; rel=\"next\".*");
 
-    private static ApiCache mApiCache;
-    private static final OkHttpClient mHttpClient = new OkHttpClient();
+    private static ApiCache API_CACHE;
+    private static final OkHttpClient OK_HTTP_CLIENT = new OkHttpClient();
 
-    public static final Gson gson = new GsonBuilder()
+    public static final Gson GSON = new GsonBuilder()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
             .registerTypeAdapter(Date.class, new DateTypeAdapter())
             .create();
@@ -65,7 +65,7 @@ public class ApiRequest<T> extends Request.Builder {
      */
     public static void initCache(Context context) {
         try {
-            mApiCache = new ApiCache(context);
+            API_CACHE = new ApiCache(context);
         } catch (IOException e) {
             Log.e(e);
         }
@@ -226,13 +226,13 @@ public class ApiRequest<T> extends Request.Builder {
      * @return Whether the request can be fulfilled immediately (from cache).
      */
     public boolean canLoadImmediately() {
-        return mApiCache != null && mApiCache.containsNotExpired(build().urlString());
+        return API_CACHE != null && API_CACHE.containsNotExpired(build().urlString());
     }
 
     /**
      * Execute the request and return the result. Cache may be used.
      *
-     * @return A {@link Dribbble.Response} object.
+     * @return A {@link com.aluxian.drizzle.api.Dribbble.Response} object.
      * @throws IOException              For network related errors.
      * @throws BadRequestException      When the request is invalid.
      * @throws TooManyRequestsException When too many API requests in a short timeframe were made.
@@ -300,12 +300,12 @@ public class ApiRequest<T> extends Request.Builder {
      * Try to get a response object from the cache.
      *
      * @param key The cache key of the response.
-     * @return The {@link Dribbble.Response} object corresponding to the given key if found, otherwise null.
+     * @return The {@link com.aluxian.drizzle.api.Dribbble.Response} object corresponding to the given key if found, otherwise null.
      */
     @SuppressWarnings("unchecked")
     private Dribbble.Response<T> getFromCache(String key) {
-        if (mApiCache != null) {
-            return mApiCache.get(key, mResponseType);
+        if (API_CACHE != null) {
+            return API_CACHE.get(key, mResponseType);
         }
 
         return null;
@@ -315,7 +315,7 @@ public class ApiRequest<T> extends Request.Builder {
      * Execute the given network request and parse the response.
      *
      * @param request The network request to execute.
-     * @return A {@link Dribbble.Response} object.
+     * @return A {@link com.aluxian.drizzle.api.Dribbble.Response} object.
      * @throws IOException              For network related errors.
      * @throws BadRequestException      When the request is invalid.
      * @throws TooManyRequestsException When too many API requests in a short timeframe were made.
@@ -325,7 +325,7 @@ public class ApiRequest<T> extends Request.Builder {
         String requestHash = request.urlString();
         Log.d("Loading " + requestHash + " from the API");
 
-        Response httpResponse = mHttpClient.newCall(request).execute();
+        Response httpResponse = OK_HTTP_CLIENT.newCall(request).execute();
         String body = httpResponse.body().string();
 
         // Handle errors
@@ -343,13 +343,13 @@ public class ApiRequest<T> extends Request.Builder {
         }
 
         // Parse the response
-        T data = gson.fromJson(body, mResponseType.getType());
+        T data = GSON.fromJson(body, mResponseType.getType());
         String nextPageUrl = extractNextPageUrl(httpResponse.headers().get("Link"));
         Dribbble.Response<T> dribbbleResponse = new Dribbble.Response<>(data, nextPageUrl);
 
         // Cache the response
-        if (mApiCache != null && request.method().equalsIgnoreCase("GET")) {
-            mApiCache.put(requestHash, dribbbleResponse, TimeUnit.HOURS.toMillis(1));
+        if (API_CACHE != null && request.method().equalsIgnoreCase("GET")) {
+            API_CACHE.put(requestHash, dribbbleResponse, TimeUnit.HOURS.toMillis(1));
             Log.d("Cached " + requestHash + " for 1 hour");
         }
 

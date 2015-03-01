@@ -1,4 +1,4 @@
-package com.aluxian.drizzle.utils;
+package com.aluxian.drizzle.recycler;
 
 import android.os.AsyncTask;
 

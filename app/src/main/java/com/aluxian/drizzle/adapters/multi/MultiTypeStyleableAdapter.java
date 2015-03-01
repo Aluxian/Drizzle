@@ -3,7 +3,7 @@ package com.aluxian.drizzle.adapters.multi;
 import com.aluxian.drizzle.utils.UberSwatch;
 
 /**
- * A MultiTypeAdapter that supports styleable items.
+ * A MultiTypeAdapter that supports styleable items. Items should extend {@link com.aluxian.drizzle.adapters.multi.MultiTypeStyleableItem}.
  */
 public abstract class MultiTypeStyleableAdapter extends MultiTypeAdapter {
 

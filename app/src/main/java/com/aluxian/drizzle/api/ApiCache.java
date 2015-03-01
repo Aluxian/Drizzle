@@ -27,7 +27,7 @@ public class ApiCache {
 
         if (cached != null) {
             Log.d("Loaded " + key + " from cache");
-            return new Dribbble.Response<>((T) ApiRequest.gson.fromJson(cached.data, dataType.getType()), cached.nextPageUrl);
+            return new Dribbble.Response<>((T) ApiRequest.GSON.fromJson(cached.data, dataType.getType()), cached.nextPageUrl);
         }
 
         return null;

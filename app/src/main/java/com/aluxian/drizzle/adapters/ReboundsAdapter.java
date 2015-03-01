@@ -3,7 +3,6 @@ package com.aluxian.drizzle.adapters;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.aluxian.drizzle.R;
@@ -40,11 +39,10 @@ public class ReboundsAdapter extends MultiTypeInfiniteAdapter<Shot> {
 
     @Override
     protected List<MultiTypeBaseItem<? extends MultiTypeBaseItem.ViewHolder>> mapLoadedItems(List<Shot> items) {
-        return Mapper.map(items, item -> {
-            item.user = mReboundShot.user;
-            item.team = mReboundShot.team;
-            return new ReboundItem(mReboundShot, item);
-        });
+        return Mapper.map(items, shot -> new ReboundItem(mReboundShot, shot.cloneAndUpdate(json -> {
+            json.add("user", mReboundShot.user.toJsonObject());
+            json.add("team", mReboundShot.team.toJsonObject());
+        })));
     }
 
     public static class ReboundItem extends MultiTypeBaseItem<ReboundItem.ViewHolder> implements View.OnClickListener {

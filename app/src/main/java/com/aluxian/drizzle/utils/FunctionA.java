@@ -1,12 +1,12 @@
 package com.aluxian.drizzle.utils;
 
-public interface FunctionInOut<I, O> {
+public interface FunctionA<T> {
 
     /**
      * Apply the function with the given argument.
      *
      * @param arg An argument.
      */
-    public O apply(I arg);
+    public void apply(T arg);
 
 }

@@ -98,7 +98,7 @@ public class UserManager {
          *
          * @param authenticated Whether the user is signed in or not.
          */
-        public void onAuthenticationStateChanged(boolean authenticated);
+        void onAuthenticationStateChanged(boolean authenticated);
 
     }
 

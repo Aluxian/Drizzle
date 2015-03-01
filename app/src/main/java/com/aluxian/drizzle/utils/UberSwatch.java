@@ -45,12 +45,16 @@ public class UberSwatch {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof UberSwatch) {
-            UberSwatch s = (UberSwatch) o;
-            return s.swatch == swatch;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-        return super.equals(o);
+        UberSwatch uberSwatch = (UberSwatch) o;
+        return swatch.equals(uberSwatch.swatch);
+    }
+
+    @Override
+    public int hashCode() {
+        return swatch.hashCode();
     }
 
 }

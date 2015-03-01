@@ -53,10 +53,7 @@ public class UserActivityAdapter extends MultiTypeInfiniteAdapter<Shot> {
 
     @Override
     protected List<MultiTypeBaseItem<? extends MultiTypeBaseItem.ViewHolder>> mapLoadedItems(List<Shot> items) {
-        return Mapper.map(items, shot -> {
-            shot.user = mUser; // TODO: or load entirely from url?
-            return new ShotItem(shot);
-        });
+        return Mapper.map(items, shot -> new ShotItem(shot.cloneAndUpdate(json -> json.add("user", mUser.toJsonObject()))));
     }
 
     public static class HeaderItem extends MultiTypeStyleableItem<HeaderItem.ViewHolder> implements MultiTypeHeader {

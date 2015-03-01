@@ -1,9 +1,12 @@
 package com.aluxian.drizzle.utils;
 
 import android.content.res.Resources;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
 
 public class Dp {
+
+    private static final DisplayMetrics DISPLAY_METRICS = Resources.getSystem().getDisplayMetrics();
 
     public static final int PX_04 = toPx(4);
     public static final int PX_08 = toPx(8);
@@ -13,7 +16,7 @@ public class Dp {
     public static final int PX_72 = toPx(72);
 
     public static int toPx(float units) {
-        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, units, Resources.getSystem().getDisplayMetrics()));
+        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, units, DISPLAY_METRICS));
     }
 
 }

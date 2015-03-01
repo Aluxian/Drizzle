@@ -34,7 +34,7 @@ public class ObjectCache {
                 if (expiresAt > 0 && System.currentTimeMillis() >= expiresAt) {
                     remove(key);
                 } else {
-                    return ApiRequest.gson.fromJson(value, typeToken.getType());
+                    return ApiRequest.GSON.fromJson(value, typeToken.getType());
                 }
             }
         } catch (IOException e) {
@@ -56,7 +56,7 @@ public class ObjectCache {
                 editor = mDiskLruCache.edit(encodeKey(key));
 
                 if (editor != null) {
-                    editor.set(DATA_INDEX, ApiRequest.gson.toJson(value));
+                    editor.set(DATA_INDEX, ApiRequest.GSON.toJson(value));
                     editor.set(EXPIRES_INDEX, timeToLive <= 0 ? "0" : String.valueOf(System.currentTimeMillis() + timeToLive));
                     editor.commit();
                     mDiskLruCache.flush();

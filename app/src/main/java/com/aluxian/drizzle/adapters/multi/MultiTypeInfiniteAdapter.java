@@ -9,7 +9,7 @@ import android.widget.ProgressBar;
 import com.aluxian.drizzle.R;
 import com.aluxian.drizzle.api.providers.ItemsProvider;
 import com.aluxian.drizzle.utils.Config;
-import com.aluxian.drizzle.utils.ItemLoader;
+import com.aluxian.drizzle.recycler.ItemLoader;
 import com.aluxian.drizzle.utils.Log;
 import com.aluxian.drizzle.utils.UberSwatch;
 

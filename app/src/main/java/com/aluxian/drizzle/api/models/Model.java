@@ -1,13 +1,14 @@
 package com.aluxian.drizzle.api.models;
 
-import com.google.gson.Gson;
+import com.aluxian.drizzle.utils.FunctionA;
+import com.google.gson.JsonObject;
+
+import static com.aluxian.drizzle.api.ApiRequest.GSON;
 
 /**
  * Base class for models.
  */
 public abstract class Model {
-
-    private static final Gson GSON = new Gson();
 
     /**
      * Convert this model into a JSON string.
@@ -16,6 +17,24 @@ public abstract class Model {
      */
     public String toJson() {
         return GSON.toJson(this);
+    }
+
+    /**
+     * Convert this model into a JSON string.
+     *
+     * @return A JSON object..
+     */
+    public JsonObject toJsonObject() {
+        return GSON.toJsonTree(this).getAsJsonObject();
+    }
+
+    /**
+     * Clone this model and update some fields. Used to edit models without giving up immutability and {@code public final} fields.
+     */
+    public <T extends Model> T cloneAndUpdate(FunctionA<JsonObject> updateFunction) {
+        JsonObject json = GSON.toJsonTree(this).getAsJsonObject();
+        updateFunction.apply(json);
+        return GSON.<T>fromJson(json, getClass());
     }
 
 }

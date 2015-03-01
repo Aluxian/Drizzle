@@ -2,7 +2,7 @@ package com.aluxian.drizzle.utils;
 
 public class Config {
 
-    /** There have to be at least this many unloaded items in a grid, otherwise more items are loaded. */
+    /** There have to be at least this many items to be loaded in a grid, otherwise more items are loaded. */
     public static final int LOAD_ITEMS_THRESHOLD = 6;
 
     /** The ID of the bucket from which the featured shots are displayed. */
@@ -24,7 +24,7 @@ public class Config {
     public static final String API_CLIENT_TOKEN = "ff549b889305c04600bab572bc1e9f90fd61272c5eb803bcd5ad5d68b4afa120";
 
     /** The url the user is redirected to during authorization. */
-    public static final String API_CALLBACK_URL = "drizzle://oauth";
+    public static final String API_CALLBACK_URL = "drizzle://android-oauth";
 
     /** The email address users will send feedback to. */
     public static final String FEEDBACK_EMAIL = "hello@getdrizzle.co";
