@@ -40,6 +40,18 @@ public class Log {
     }
 
     /**
+     * Log formatted debug messages.
+     *
+     * @param format The format pattern.
+     * @param args The arguments for the format pattern.
+     */
+    public static void d(String format, Object... args) {
+        if (BuildConfig.DEBUG) {
+            android.util.Log.d(tag(), String.format(format, args));
+        }
+    }
+
+    /**
      * Log info messages.
      *
      * @param messages Objects whose values to write to logcat (all on the same line).

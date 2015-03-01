@@ -1,6 +1,6 @@
 package com.aluxian.drizzle.api.models;
 
-public final class User {
+public final class User extends Model {
 
     public final int id;
     public final String name;
@@ -53,6 +53,20 @@ public final class User {
         this.likesUrl = likesUrl;
         this.shotsUrl = shotsUrl;
         this.teamsUrl = teamsUrl;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+        return id == user.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
     }
 
 }

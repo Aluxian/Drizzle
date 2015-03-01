@@ -119,7 +119,7 @@ public class AuthActivity extends Activity {
             long startedAt = System.currentTimeMillis();
 
             try {
-                response = Dribbble.oauthToken(params[0]).execute();
+                response = Dribbble.exchangeOAuthToken(params[0]).execute();
             } catch (IOException | BadRequestException | TooManyRequestsException e) {
                 Log.d(e);
             }

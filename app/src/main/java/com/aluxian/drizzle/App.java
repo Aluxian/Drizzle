@@ -16,7 +16,7 @@ public class App extends Application {
             StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll().penaltyLog().build());
         }
 
-        ApiRequest.initCache(this);
+        //ApiRequest.initCache(this);
         UserManager.init(this);
     }
 

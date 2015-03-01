@@ -9,9 +9,13 @@ import java.util.Arrays;
 /**
  * Holds enums with possible parameter values used across the Dribbble API.
  */
-public class Params {
+public final class Params {
 
-    public enum List {
+    /**
+     * Filter shots by their type.
+     */
+    public static enum List {
+
         ANY(null),
         TEAM_SHOTS("teams"),
         DEBUTS("debuts"),
@@ -29,9 +33,14 @@ public class Params {
         public String getHumanReadableValue(Context context) {
             return context.getResources().getStringArray(R.array.filter_list_options)[Arrays.asList(List.values()).indexOf(this)];
         }
+
     }
 
-    public enum Timeframe {
+    /**
+     * Filter shots by a timeframe.
+     */
+    public static enum Timeframe {
+
         NOW(null),
         THIS_PAST_WEEK("week"),
         THIS_PAST_MONTH("month"),
@@ -43,9 +52,14 @@ public class Params {
         Timeframe(String apiValue) {
             this.apiValue = apiValue;
         }
+
     }
 
-    public enum Sort {
+    /**
+     * Sort shots.
+     */
+    public static enum Sort {
+
         POPULAR(null),
         RECENT("recent"),
         MOST_VIEWED("views"),
@@ -56,6 +70,7 @@ public class Params {
         Sort(String apiValue) {
             this.apiValue = apiValue;
         }
+
     }
 
 }

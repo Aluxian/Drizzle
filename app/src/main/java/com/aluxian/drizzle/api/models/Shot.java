@@ -7,14 +7,16 @@ import android.text.Spanned;
 import android.text.style.ClickableSpan;
 import android.view.View;
 
+import com.aluxian.drizzle.R;
 import com.aluxian.drizzle.activities.TeamActivity;
 import com.aluxian.drizzle.activities.UserActivity;
 import com.google.gson.Gson;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
-public final class Shot {
+public final class Shot extends Model {
 
     public final int id;
     public final String title;
@@ -30,8 +32,8 @@ public final class Shot {
     public final Date updatedAt;
     public final String htmlUrl;
     public final List<String> tags;
-    public User user;
-    public Team team;
+    public final User user;
+    public final Team team;
 
     public Shot(int id, String title, String description, Images images, int viewsCount, int likesCount, int commentsCount,
                 int attachmentsCount, int reboundsCount, int bucketsCount, Date createdAt, Date updatedAt, String htmlUrl,
@@ -54,15 +56,21 @@ public final class Shot {
         this.team = team;
     }
 
+    /**
+     * Generates a {@code SpannableString} with clickable segments..
+     *
+     * @param context A context required for starting intents.
+     * @return A "by {@link #user} for {@link #team}" string.
+     */
     public SpannableString generateAuthorDescription(Context context) {
-        String wordBy = "by ";
-        String wordFor = " for ";
+        String wordBy = context.getResources().getString(R.string.word_by) + " ";
+        String wordFor = " " + context.getResources().getString(R.string.word_for) + " ";
 
         ClickableSpan userClickable = new ClickableSpan() {
             @Override
             public void onClick(View textView) {
                 Intent intent = new Intent(context, UserActivity.class);
-                intent.putExtra(UserActivity.EXTRA_USER_DATA, new Gson().toJson(user));
+                intent.putExtra(UserActivity.EXTRA_USER_DATA, user.toJson());
                 context.startActivity(intent);
             }
         };
@@ -75,7 +83,7 @@ public final class Shot {
                 @Override
                 public void onClick(View textView) {
                     Intent intent = new Intent(context, TeamActivity.class);
-                    intent.putExtra(TeamActivity.EXTRA_TEAM_DATA, new Gson().toJson(team));
+                    intent.putExtra(TeamActivity.EXTRA_TEAM_DATA, team.toJson());
                     context.startActivity(intent);
                 }
             };
@@ -87,8 +95,25 @@ public final class Shot {
         return spannable;
     }
 
-    public boolean isGIF() {
-        return images.normal.endsWith(".gif");
+    /**
+     * @return Whether this shot is a GIF image.
+     */
+    public boolean isGif() {
+        return images.normal.toLowerCase().endsWith(".gif");
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Shot shot = (Shot) o;
+        return id == shot.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
     }
 
     public static final class Images {
@@ -103,6 +128,9 @@ public final class Shot {
             this.teaser = teaser;
         }
 
+        /**
+         * @return The largest version of the images which is available.
+         */
         public String largest() {
             if (hidpi != null) {
                 return hidpi;
@@ -111,16 +139,21 @@ public final class Shot {
             return normal;
         }
 
-    }
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
 
-    public static final class Extra {
+            Images images = (Images) o;
 
-        public final List<String> colours;
-        public final Integer reboundOf;
+            return Objects.equals(hidpi, images.hidpi)
+                    && Objects.equals(normal, images.normal)
+                    && Objects.equals(teaser, images.teaser);
+        }
 
-        public Extra(List<String> colours, Integer reboundOf) {
-            this.colours = colours;
-            this.reboundOf = reboundOf;
+        @Override
+        public int hashCode() {
+            return Objects.hash(hidpi, normal, teaser);
         }
 
     }

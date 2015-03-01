@@ -2,7 +2,7 @@ package com.aluxian.drizzle.api.models;
 
 import java.util.Date;
 
-public final class Team {
+public final class Team extends Model {
 
     public final int id;
     public final String name;
@@ -61,6 +61,20 @@ public final class Team {
         this.teamShotsUrl = teamShotsUrl;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Team team = (Team) o;
+        return id == team.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
     }
 
 }

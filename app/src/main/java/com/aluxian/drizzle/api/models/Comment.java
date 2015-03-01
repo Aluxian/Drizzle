@@ -2,7 +2,7 @@ package com.aluxian.drizzle.api.models;
 
 import java.util.Date;
 
-public final class Comment {
+public final class Comment extends Model {
 
     public final int id;
     public final String body;
@@ -16,6 +16,20 @@ public final class Comment {
         this.likesCount = likesCount;
         this.createdAt = createdAt;
         this.user = user;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Comment comment = (Comment) o;
+        return id == comment.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
     }
 
 }

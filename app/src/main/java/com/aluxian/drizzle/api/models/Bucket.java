@@ -2,7 +2,7 @@ package com.aluxian.drizzle.api.models;
 
 import java.util.Date;
 
-public final class Bucket {
+public final class Bucket extends Model {
 
     public final int id;
     public final String name;
@@ -18,6 +18,20 @@ public final class Bucket {
         this.shotsCount = shotsCount;
         this.createdAt = createdAt;
         this.user = user;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Bucket bucket = (Bucket) o;
+        return id == bucket.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
     }
 
 }

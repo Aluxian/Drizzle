@@ -132,7 +132,7 @@ public class ShotActivityAdapter extends MultiTypeInfiniteAdapter<Comment> {
                         @Override
                         public void onSuccess() {
                             holder.preview.postDelayed(() -> {
-                                if (shot.isGIF()) {
+                                if (shot.isGif()) {
                                     holder.gifLoader.setVisibility(View.VISIBLE);
 
                                     new AsyncTask<Void, Void, GifDrawable>() {

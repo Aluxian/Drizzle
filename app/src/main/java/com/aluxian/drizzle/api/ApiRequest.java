@@ -30,18 +30,19 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Request builder for Dribbble API requests. Can be used for any other URL too.
+ * Request builder for Dribbble API requests. Can be used for any other type of request too.
  *
  * @param <T> The type of the expected response.
  */
 public class ApiRequest<T> extends Request.Builder {
 
+    /** RegExp pattern to extract the 'next' url from a Link header. */
     private static final Pattern LINK_NEXT_URL_PATTERN = Pattern.compile(".*<([^>]*)>; rel=\"next\".*");
 
     private static ApiCache mApiCache;
-    private static OkHttpClient mHttpClient = new OkHttpClient();
+    private static final OkHttpClient mHttpClient = new OkHttpClient();
 
-    public static Gson gson = new GsonBuilder()
+    public static final Gson gson = new GsonBuilder()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
             .registerTypeAdapter(Date.class, new DateTypeAdapter())
             .create();
@@ -49,6 +50,13 @@ public class ApiRequest<T> extends Request.Builder {
     private boolean mUseCache;
     private TypeToken<T> mResponseType;
     private String mUrl = Config.API_ENDPOINT;
+
+    /**
+     * @param responseType A TypeToken used to get the type of the expected response for Gson deserialization.
+     */
+    public ApiRequest(TypeToken<T> responseType) {
+        mResponseType = responseType;
+    }
 
     /**
      * Creates a new ApiCache instance to be used for caching future requests.
@@ -90,15 +98,6 @@ public class ApiRequest<T> extends Request.Builder {
     }
 
     /**
-     * @param responseType A TypeToken used to get the type of the expected response for Gson deserialization.
-     * @return This instance.
-     */
-    public ApiRequest<T> responseType(TypeToken<T> responseType) {
-        mResponseType = responseType;
-        return this;
-    }
-
-    /**
      * @param token The access token to use for this request.
      * @return This instance.
      */
@@ -111,6 +110,8 @@ public class ApiRequest<T> extends Request.Builder {
     }
 
     /**
+     * Specify a path segmented to be appended to the url.
+     *
      * @param path A path to append to the url.
      * @return This instance.
      */
@@ -182,6 +183,15 @@ public class ApiRequest<T> extends Request.Builder {
         return this;
     }
 
+    /**
+     * Mark this as a POST request.
+     *
+     * @return This instance.
+     */
+    public ApiRequest<T> post() {
+        return post(null);
+    }
+
     @Override
     public ApiRequest<T> patch(RequestBody body) {
         super.patch(body);
@@ -222,16 +232,12 @@ public class ApiRequest<T> extends Request.Builder {
     /**
      * Execute the request and return the result. Cache may be used.
      *
-     * @return A Dribbble.Response object.
+     * @return A {@link Dribbble.Response} object.
      * @throws IOException              For network related errors.
      * @throws BadRequestException      When the request is invalid.
      * @throws TooManyRequestsException When too many API requests in a short timeframe were made.
      */
     public Dribbble.Response<T> execute() throws IOException, BadRequestException, TooManyRequestsException {
-        if (mResponseType == null) {
-            throw new IllegalArgumentException("responseType is null");
-        }
-
         Request request = build();
         Dribbble.Response<T> response = null;
 
@@ -294,7 +300,7 @@ public class ApiRequest<T> extends Request.Builder {
      * Try to get a response object from the cache.
      *
      * @param key The cache key of the response.
-     * @return The Dribbble.Response object corresponding to the given key if found, otherwise null.
+     * @return The {@link Dribbble.Response} object corresponding to the given key if found, otherwise null.
      */
     @SuppressWarnings("unchecked")
     private Dribbble.Response<T> getFromCache(String key) {
@@ -309,7 +315,7 @@ public class ApiRequest<T> extends Request.Builder {
      * Execute the given network request and parse the response.
      *
      * @param request The network request to execute.
-     * @return A Dribbble.Response object.
+     * @return A {@link Dribbble.Response} object.
      * @throws IOException              For network related errors.
      * @throws BadRequestException      When the request is invalid.
      * @throws TooManyRequestsException When too many API requests in a short timeframe were made.
@@ -344,7 +350,7 @@ public class ApiRequest<T> extends Request.Builder {
         // Cache the response
         if (mApiCache != null && request.method().equalsIgnoreCase("GET")) {
             mApiCache.put(requestHash, dribbbleResponse, TimeUnit.HOURS.toMillis(1));
-            Log.d("Cached " + requestHash);
+            Log.d("Cached " + requestHash + " for 1 hour");
         }
 
         return dribbbleResponse;
@@ -368,6 +374,11 @@ public class ApiRequest<T> extends Request.Builder {
         return null;
     }
 
+    /**
+     * Callback used for async executions.
+     *
+     * @param <T> The type of the response data.
+     */
     public static interface Callback<T> {
 
         /**

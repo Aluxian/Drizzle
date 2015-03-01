@@ -69,7 +69,7 @@ public class ShotsAdapter extends MultiTypeInfiniteAdapter<Shot> {
             adaptMargins(holder, position);
 
             // Hide or show the GIF badge
-            holder.gifBadge.setVisibility(shot.isGIF() ? View.VISIBLE : View.INVISIBLE);
+            holder.gifBadge.setVisibility(shot.isGif() ? View.VISIBLE : View.INVISIBLE);
         }
 
         /**
