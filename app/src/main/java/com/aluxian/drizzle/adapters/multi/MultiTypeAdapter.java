@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Custom implementation of RecyclerView.Adapter which supports different item view types.
  */
-public abstract class MultiTypeBaseAdapter extends RecyclerView.Adapter<MultiTypeBaseItem.ViewHolder> {
+public abstract class MultiTypeAdapter extends RecyclerView.Adapter<MultiTypeBaseItem.ViewHolder> {
 
     /** A list that holds the {@link com.aluxian.drizzle.adapters.multi.MultiTypeItemType}s supported by the adapter. */
     private List<MultiTypeItemType<? extends MultiTypeBaseItem.ViewHolder>> mItemTypes = new ArrayList<>();
@@ -25,7 +25,7 @@ public abstract class MultiTypeBaseAdapter extends RecyclerView.Adapter<MultiTyp
     /**
      * Load the item types.
      */
-    protected MultiTypeBaseAdapter() {
+    protected MultiTypeAdapter() {
         onAddItemTypes();
     }
 

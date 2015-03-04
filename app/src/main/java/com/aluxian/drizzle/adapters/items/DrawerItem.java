@@ -21,6 +21,7 @@ public class DrawerItem extends AuthStateDependantItem<DrawerItem.ViewHolder> {
     private final DrawerItemClickListener mDrawerItemClickListener;
     private final int drawableResId;
     private final int titleResId;
+    private int itemHeight;
 
     public DrawerItem(int drawableResId, int titleResId, DrawerItemClickListener drawerItemClickListener) {
         this(drawableResId, titleResId, drawerItemClickListener, null);
@@ -44,6 +45,10 @@ public class DrawerItem extends AuthStateDependantItem<DrawerItem.ViewHolder> {
 
     @Override
     protected void onBindViewHolder(ViewHolder holder, int position) {
+        if (itemHeight == 0) {
+            itemHeight = holder.itemView.getLayoutParams().height;
+        }
+
         super.onBindViewHolder(holder, position);
         holder.itemView.setOnClickListener(v -> mDrawerItemClickListener.onDrawerItemClick(position));
         holder.icon.setImageResource(drawableResId);
@@ -52,11 +57,7 @@ public class DrawerItem extends AuthStateDependantItem<DrawerItem.ViewHolder> {
 
     @Override
     protected void changeVisibility(ViewHolder holder, boolean visible) {
-        //holder.icon.setVisibility(visible ? View.VISIBLE : View.GONE);
-        //holder.title.setVisibility(visible ? View.VISIBLE : View.GONE);
-
-        holder.icon.getLayoutParams().height = holder.icon.getLayoutParams().height / 2;
-        holder.title.getLayoutParams().height = holder.title.getLayoutParams().height / 2;
+        holder.itemView.getLayoutParams().height = visible ? itemHeight : 0;
     }
 
     @Override

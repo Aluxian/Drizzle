@@ -158,6 +158,7 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Dra
 
         items.add(new DrawerItem(R.drawable.ic_sign_out, R.string.drawer_personal_sign_out, position -> {
             UserManager.getInstance().clearAccessToken();
+            replaceFragment(TabsFragment.newInstance(TabsFragment.Type.SHOTS));
             mDrawerFragment.checkAuthState();
             mDrawerFragment.closeDrawer();
         }, true));

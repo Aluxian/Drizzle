@@ -1,6 +1,6 @@
 package com.aluxian.drizzle.adapters.multi.adapters;
 
-import com.aluxian.drizzle.adapters.multi.MultiTypeBaseAdapter;
+import com.aluxian.drizzle.adapters.multi.MultiTypeAdapter;
 import com.aluxian.drizzle.adapters.multi.items.MultiTypeBaseItem;
 import com.aluxian.drizzle.adapters.multi.items.MultiTypeStyleableItem;
 import com.aluxian.drizzle.adapters.multi.traits.MultiTypeHeader;
@@ -8,9 +8,9 @@ import com.aluxian.drizzle.utils.Log;
 import com.aluxian.drizzle.utils.UberSwatch;
 
 /**
- * A {@link com.aluxian.drizzle.adapters.multi.MultiTypeBaseAdapter} that supports {@link com.aluxian.drizzle.adapters.multi.items.MultiTypeStyleableItem}s.
+ * A {@link com.aluxian.drizzle.adapters.multi.MultiTypeAdapter} that supports {@link com.aluxian.drizzle.adapters.multi.items.MultiTypeStyleableItem}s.
  */
-public abstract class MultiTypeStyleableAdapter extends MultiTypeBaseAdapter {
+public abstract class MultiTypeStyleableAdapter extends MultiTypeAdapter {
 
     /** The currently set colors. */
     protected UberSwatch mSwatch;

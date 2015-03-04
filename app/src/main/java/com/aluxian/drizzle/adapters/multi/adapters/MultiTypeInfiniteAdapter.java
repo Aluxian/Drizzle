@@ -15,7 +15,7 @@ import com.aluxian.drizzle.utils.Log;
 import java.util.List;
 
 /**
- * A {@link com.aluxian.drizzle.adapters.multi.MultiTypeBaseAdapter} that uses an
+ * A {@link com.aluxian.drizzle.adapters.multi.MultiTypeAdapter} that uses an
  * {@link com.aluxian.drizzle.api.providers.ItemsProvider} to load items indefinitely.
  *
  * @param <T> The type of data items that the {@link com.aluxian.drizzle.api.providers.ItemsProvider} provides.
