@@ -17,7 +17,7 @@ import android.view.ViewGroup;
 import com.aluxian.drizzle.R;
 import com.aluxian.drizzle.adapters.DrawerAdapter;
 import com.aluxian.drizzle.adapters.items.DrawerItem;
-import com.aluxian.drizzle.adapters.multi.items.MultiTypeBaseItem;
+import com.aluxian.drizzle.multi.items.MultiTypeBaseItem;
 import com.aluxian.drizzle.utils.Log;
 import com.aluxian.drizzle.utils.UberSwatch;
 import com.aluxian.drizzle.utils.UserManager;
@@ -163,8 +163,8 @@ public class DrawerFragment extends Fragment implements AuthStateChangeListener 
      * @param swatch The colour style to set.
      */
     public void setStyle(UberSwatch swatch) {
-        //mRecyclerView.setEdgeColor(swatch.rgb);
-        //mAdapter.setStyle(swatch);
+        mRecyclerView.setEdgeColor(swatch.rgb);
+        mAdapter.setStyle(swatch);
     }
 
     @Override

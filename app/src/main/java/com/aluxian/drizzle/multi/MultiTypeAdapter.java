@@ -1,11 +1,11 @@
-package com.aluxian.drizzle.adapters.multi;
+package com.aluxian.drizzle.multi;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.aluxian.drizzle.adapters.multi.items.MultiTypeBaseItem;
+import com.aluxian.drizzle.multi.items.MultiTypeBaseItem;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import java.util.List;
  */
 public abstract class MultiTypeAdapter extends RecyclerView.Adapter<MultiTypeBaseItem.ViewHolder> {
 
-    /** A list that holds the {@link com.aluxian.drizzle.adapters.multi.MultiTypeItemType}s supported by the adapter. */
+    /** A list that holds the {@link com.aluxian.drizzle.multi.MultiTypeItemType}s supported by the adapter. */
     private List<MultiTypeItemType<? extends MultiTypeBaseItem.ViewHolder>> mItemTypes = new ArrayList<>();
 
     /** A list that holds the adapter's items. */
@@ -39,12 +39,12 @@ public abstract class MultiTypeAdapter extends RecyclerView.Adapter<MultiTypeBas
     }
 
     /**
-     * Subclasses need to add the supported ItemTypes inside this method.
+     * Subclasses need to add supported {@link com.aluxian.drizzle.multi.MultiTypeItemType}s inside this method.
      */
     protected abstract void onAddItemTypes();
 
     /**
-     * @return The list that holds this adapter's items.
+     * @return The list with this adapter's items.
      */
     public List<MultiTypeBaseItem<? extends MultiTypeBaseItem.ViewHolder>> itemsList() {
         return mItems;
@@ -53,11 +53,13 @@ public abstract class MultiTypeAdapter extends RecyclerView.Adapter<MultiTypeBas
     @Override
     public MultiTypeBaseItem.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         try {
-            // Use reflection to instantiate the corresponding ViewHolder
+            // Inflate the layout specified by MultiTypeItemType
             View view = LayoutInflater.from(parent.getContext()).inflate(mItemTypes.get(viewType).layoutId, parent, false);
+
+            // Use reflection to instantiate the corresponding ViewHolder
             return mItemTypes.get(viewType).viewHolderClass.getConstructor(View.class).newInstance(view);
         } catch (InvocationTargetException | InstantiationException | NoSuchMethodException | IllegalAccessException e) {
-            throw new IllegalArgumentException("Invalid item type supplied", e);
+            throw new IllegalArgumentException("Invalid item type supplied for " + getClass().getSimpleName(), e);
         }
     }
 

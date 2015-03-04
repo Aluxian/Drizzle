@@ -9,11 +9,11 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.aluxian.drizzle.R;
-import com.aluxian.drizzle.adapters.listeners.HeaderLoadListener;
 import com.aluxian.drizzle.adapters.ShotActivityAdapter;
-import com.aluxian.drizzle.adapters.multi.adapters.MultiTypeInfiniteAdapter;
+import com.aluxian.drizzle.multi.adapters.MultiTypeInfiniteAdapter;
 import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.api.providers.ShotCommentsProvider;
+import com.aluxian.drizzle.multi.traits.MultiTypeHeader;
 import com.aluxian.drizzle.utils.Dp;
 import com.aluxian.drizzle.utils.UberSwatch;
 import com.aluxian.drizzle.views.CustomEdgeRecyclerView;
@@ -22,7 +22,7 @@ import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCal
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.google.gson.Gson;
 
-public class ShotActivity extends Activity implements HeaderLoadListener, MultiTypeInfiniteAdapter.StatusListener {
+public class ShotActivity extends Activity implements MultiTypeHeader.StateListener, MultiTypeInfiniteAdapter.StatusListener {
 
     public static final String EXTRA_SHOT_DATA = "shot_data";
     public static final String EXTRA_REBOUND_OF = "rebound_of";

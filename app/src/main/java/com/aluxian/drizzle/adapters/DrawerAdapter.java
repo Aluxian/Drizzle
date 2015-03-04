@@ -5,8 +5,8 @@ import com.aluxian.drizzle.adapters.items.DrawerHeaderItem;
 import com.aluxian.drizzle.adapters.items.DrawerItem;
 import com.aluxian.drizzle.adapters.items.SpacingItem;
 import com.aluxian.drizzle.adapters.items.SubHeaderItem;
-import com.aluxian.drizzle.adapters.multi.adapters.MultiTypeSelectableAdapter;
-import com.aluxian.drizzle.adapters.multi.items.MultiTypeBaseItem;
+import com.aluxian.drizzle.multi.adapters.MultiTypeSelectableAdapter;
+import com.aluxian.drizzle.multi.items.MultiTypeBaseItem;
 import com.aluxian.drizzle.fragments.DrawerFragment;
 
 public class DrawerAdapter extends MultiTypeSelectableAdapter {

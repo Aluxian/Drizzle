@@ -5,8 +5,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aluxian.drizzle.R;
-import com.aluxian.drizzle.adapters.multi.MultiTypeItemType;
-import com.aluxian.drizzle.adapters.multi.items.MultiTypeBaseItem;
+import com.aluxian.drizzle.multi.MultiTypeItemType;
+import com.aluxian.drizzle.multi.items.MultiTypeBaseItem;
 import com.aluxian.drizzle.api.models.Project;
 import com.aluxian.drizzle.utils.CountableInterpolator;
 import com.aluxian.drizzle.utils.transformations.CircularTransformation;
@@ -17,7 +17,7 @@ import butterknife.InjectView;
 
 public class ProjectItem extends MultiTypeBaseItem<ProjectItem.ViewHolder> {
 
-    /** The {@link com.aluxian.drizzle.adapters.multi.MultiTypeItemType} of this item. */
+    /** The {@link com.aluxian.drizzle.multi.MultiTypeItemType} of this item. */
     public static final MultiTypeItemType<ViewHolder> ITEM_TYPE = new MultiTypeItemType<>(ProjectItem.class,
             ViewHolder.class, R.layout.item_project);
 

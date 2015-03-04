@@ -2,12 +2,12 @@ package com.aluxian.drizzle.adapters;
 
 import com.aluxian.drizzle.adapters.items.ShotItemUserActivity;
 import com.aluxian.drizzle.adapters.items.UserHeaderItem;
-import com.aluxian.drizzle.adapters.listeners.HeaderLoadListener;
-import com.aluxian.drizzle.adapters.multi.adapters.MultiTypeInfiniteAdapter;
-import com.aluxian.drizzle.adapters.multi.items.MultiTypeBaseItem;
+import com.aluxian.drizzle.multi.adapters.MultiTypeInfiniteAdapter;
+import com.aluxian.drizzle.multi.items.MultiTypeBaseItem;
 import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.api.models.User;
 import com.aluxian.drizzle.api.providers.ItemsProvider;
+import com.aluxian.drizzle.multi.traits.MultiTypeHeader;
 import com.aluxian.drizzle.utils.Mapper;
 
 import java.util.List;
@@ -17,7 +17,7 @@ public class UserActivityAdapter extends MultiTypeInfiniteAdapter<Shot> {
     private User mUser;
 
     public UserActivityAdapter(User user, ItemsProvider<Shot> itemsProvider,
-                               HeaderLoadListener headerListener, StatusListener statusListener) {
+                               MultiTypeHeader.StateListener headerListener, StatusListener statusListener) {
         super(itemsProvider, statusListener);
         mUser = user;
         itemsList().add(new UserHeaderItem(user, headerListener));
@@ -32,7 +32,7 @@ public class UserActivityAdapter extends MultiTypeInfiniteAdapter<Shot> {
     }
 
     @Override
-    protected List<MultiTypeBaseItem<? extends MultiTypeBaseItem.ViewHolder>> mapLoadedItems(List<Shot> items) {
+    protected List<MultiTypeBaseItem<? extends MultiTypeBaseItem.ViewHolder>> convertLoadedItems(List<Shot> items) {
         return Mapper.map(items, shot -> new ShotItemUserActivity(shot.cloneAndUpdate(json -> json.add("user", mUser.toJsonObject()))));
     }
 

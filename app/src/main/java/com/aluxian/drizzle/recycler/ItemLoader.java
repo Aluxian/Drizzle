@@ -9,6 +9,10 @@ import com.aluxian.drizzle.api.providers.ItemsProvider;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Helpers that facilitates the use of {@link com.aluxian.drizzle.api.providers.ItemsProvider}s in adapters.
+ * @param <T>
+ */
 public class ItemLoader<T> {
 
     private int mItemsThreshold;
@@ -59,6 +63,8 @@ public class ItemLoader<T> {
 
     private class LoadTask extends AsyncTask<Void, Void, List<T>> {
 
+        private Exception mException;
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -75,7 +81,7 @@ public class ItemLoader<T> {
                     return mItemsProvider.load();
                 }
             } catch (IOException | BadRequestException | TooManyRequestsException e) {
-                mListener.onItemsLoadError(e);
+                mException = e;
             }
 
             return null;
@@ -87,6 +93,10 @@ public class ItemLoader<T> {
 
             if (response != null) {
                 mListener.onItemsLoaded(response);
+            }
+
+            if (mException != null) {
+                mListener.onItemsLoadError(mException);
             }
         }
 

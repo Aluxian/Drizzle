@@ -1,11 +1,11 @@
-package com.aluxian.drizzle.adapters.multi.adapters;
+package com.aluxian.drizzle.multi.adapters;
 
-import com.aluxian.drizzle.adapters.multi.items.MultiTypeBaseItem;
-import com.aluxian.drizzle.adapters.multi.items.MultiTypeSelectableItem;
+import com.aluxian.drizzle.multi.items.MultiTypeBaseItem;
+import com.aluxian.drizzle.multi.items.MultiTypeSelectableItem;
 import com.aluxian.drizzle.utils.Log;
 
 /**
- * Implementation of {@link com.aluxian.drizzle.adapters.multi.adapters.MultiTypeStyleableAdapter} which supports single item selection.
+ * Implementation of {@link com.aluxian.drizzle.multi.adapters.MultiTypeStyleableAdapter} which supports single item selection.
  */
 public abstract class MultiTypeSelectableAdapter extends MultiTypeStyleableAdapter {
 

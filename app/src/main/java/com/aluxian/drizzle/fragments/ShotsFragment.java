@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aluxian.drizzle.R;
@@ -20,6 +21,7 @@ import com.aluxian.drizzle.api.providers.ItemsProvider;
 import com.aluxian.drizzle.recycler.ShotAnimator;
 import com.aluxian.drizzle.utils.Log;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 public class ShotsFragment extends Fragment implements ShotsAdapter.StatusListener {
@@ -31,7 +33,7 @@ public class ShotsFragment extends Fragment implements ShotsAdapter.StatusListen
     private ShotsAdapter mShotsAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
-    private View mErrorView;
+    private TextView mErrorText;
 
     /**
      * Facilitates the creation of the fragment. The parameters are serialized and attached to the fragment instance in a Bundle.
@@ -84,7 +86,7 @@ public class ShotsFragment extends Fragment implements ShotsAdapter.StatusListen
         mShotsAdapter = new ShotsAdapter(getShotsProvider(getArguments()), this);
 
         View view = inflater.inflate(R.layout.fragment_shots, container, false);
-        mErrorView = view.findViewById(R.id.error_view);
+        mErrorText = (TextView) view.findViewById(R.id.error_text);
 
         ShotAnimator animator = new ShotAnimator();
         animator.setSupportsChangeAnimations(true);
@@ -104,7 +106,6 @@ public class ShotsFragment extends Fragment implements ShotsAdapter.StatusListen
         mRecyclerView.setLayoutManager(layoutManager);
         //mRecyclerView.setItemAnimator(animator);
         mRecyclerView.setAdapter(mShotsAdapter);
-        //mRecyclerView.postDelayed(() -> mRecyclerView.setAdapter(mShotsAdapter), getArguments().getInt(ARG_LOAD_DELAY));
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.accent);
@@ -164,18 +165,25 @@ public class ShotsFragment extends Fragment implements ShotsAdapter.StatusListen
         mSwipeRefreshLayout.setRefreshing(false);
 
         // Hide the error indicator
-        if (successful && mErrorView.getVisibility() != View.GONE) {
-            mErrorView.animate().alpha(0).withEndAction(() -> mErrorView.setVisibility(View.GONE));
+        if (successful && mErrorText.getVisibility() != View.GONE) {
+            mErrorText.animate().alpha(0).withEndAction(() -> mErrorText.setVisibility(View.GONE));
         }
     }
 
     @Override
     public void onAdapterLoadingError(Exception e, boolean hasItems) {
+        int errorId = R.string.dribbble_error_generic;
+
+        if (e instanceof IOException) {
+
+        }
+
         if (hasItems) {
-            Toast.makeText(getActivity(), "Adapter error.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), getString(errorId), Toast.LENGTH_LONG).show();
         } else {
-            mErrorView.setVisibility(View.VISIBLE);
-            mErrorView.animate().alpha(1);
+            mErrorText.setVisibility(View.VISIBLE);
+            mErrorText.setText(errorId);
+            mErrorText.animate().alpha(1);
         }
     }
 

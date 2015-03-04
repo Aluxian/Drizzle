@@ -4,9 +4,9 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.aluxian.drizzle.R;
-import com.aluxian.drizzle.adapters.multi.MultiTypeItemType;
-import com.aluxian.drizzle.adapters.multi.items.MultiTypeBaseItem;
-import com.aluxian.drizzle.adapters.multi.items.MultiTypeStyleableItem;
+import com.aluxian.drizzle.multi.MultiTypeItemType;
+import com.aluxian.drizzle.multi.items.MultiTypeBaseItem;
+import com.aluxian.drizzle.multi.items.MultiTypeStyleableItem;
 import com.aluxian.drizzle.utils.UberSwatch;
 
 import butterknife.ButterKnife;
@@ -14,7 +14,7 @@ import butterknife.InjectView;
 
 public class LoadingItem extends MultiTypeStyleableItem<LoadingItem.ViewHolder> {
 
-    /** The {@link com.aluxian.drizzle.adapters.multi.MultiTypeItemType} of this item. */
+    /** The {@link com.aluxian.drizzle.multi.MultiTypeItemType} of this item. */
     public static final MultiTypeItemType<ViewHolder> ITEM_TYPE = new MultiTypeItemType<>(LoadingItem.class,
             ViewHolder.class, R.layout.item_loading);
 

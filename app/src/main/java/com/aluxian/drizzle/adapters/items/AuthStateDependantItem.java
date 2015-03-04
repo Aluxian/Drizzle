@@ -1,7 +1,7 @@
 package com.aluxian.drizzle.adapters.items;
 
-import com.aluxian.drizzle.adapters.multi.items.MultiTypeBaseItem;
-import com.aluxian.drizzle.adapters.multi.items.MultiTypeSelectableItem;
+import com.aluxian.drizzle.multi.items.MultiTypeBaseItem;
+import com.aluxian.drizzle.multi.items.MultiTypeSelectableItem;
 
 public abstract class AuthStateDependantItem<VH extends MultiTypeBaseItem.ViewHolder> extends MultiTypeSelectableItem<VH> {
 

@@ -11,9 +11,9 @@ import android.widget.TextView;
 
 import com.aluxian.drizzle.R;
 import com.aluxian.drizzle.activities.UserActivity;
-import com.aluxian.drizzle.adapters.multi.MultiTypeItemType;
-import com.aluxian.drizzle.adapters.multi.items.MultiTypeBaseItem;
-import com.aluxian.drizzle.adapters.multi.items.MultiTypeStyleableItem;
+import com.aluxian.drizzle.multi.MultiTypeItemType;
+import com.aluxian.drizzle.multi.items.MultiTypeBaseItem;
+import com.aluxian.drizzle.multi.items.MultiTypeStyleableItem;
 import com.aluxian.drizzle.api.models.Comment;
 import com.aluxian.drizzle.utils.CountableInterpolator;
 import com.aluxian.drizzle.utils.LocaleManager;
@@ -28,7 +28,7 @@ import butterknife.InjectView;
 
 public class CommentItem extends MultiTypeStyleableItem<CommentItem.ViewHolder> {
 
-    /** The {@link com.aluxian.drizzle.adapters.multi.MultiTypeItemType} of this item. */
+    /** The {@link com.aluxian.drizzle.multi.MultiTypeItemType} of this item. */
     public static final MultiTypeItemType<ViewHolder> ITEM_TYPE = new MultiTypeItemType<>(CommentItem.class,
             ViewHolder.class, R.layout.item_comment);
 

@@ -1,8 +1,8 @@
 package com.aluxian.drizzle.adapters;
 
 import com.aluxian.drizzle.adapters.items.ShotItem;
-import com.aluxian.drizzle.adapters.multi.items.MultiTypeBaseItem;
-import com.aluxian.drizzle.adapters.multi.adapters.MultiTypeInfiniteAdapter;
+import com.aluxian.drizzle.multi.items.MultiTypeBaseItem;
+import com.aluxian.drizzle.multi.adapters.MultiTypeInfiniteAdapter;
 import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.api.providers.ItemsProvider;
 import com.aluxian.drizzle.utils.Mapper;
@@ -25,7 +25,7 @@ public class ShotsAdapter extends MultiTypeInfiniteAdapter<Shot> {
     }
 
     @Override
-    protected List<MultiTypeBaseItem<? extends MultiTypeBaseItem.ViewHolder>> mapLoadedItems(List<Shot> items) {
+    protected List<MultiTypeBaseItem<? extends MultiTypeBaseItem.ViewHolder>> convertLoadedItems(List<Shot> items) {
         return Mapper.map(items, ShotItem::new);
     }
 

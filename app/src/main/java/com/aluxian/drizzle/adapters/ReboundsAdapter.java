@@ -1,8 +1,8 @@
 package com.aluxian.drizzle.adapters;
 
 import com.aluxian.drizzle.adapters.items.ReboundItem;
-import com.aluxian.drizzle.adapters.multi.items.MultiTypeBaseItem;
-import com.aluxian.drizzle.adapters.multi.adapters.MultiTypeInfiniteAdapter;
+import com.aluxian.drizzle.multi.items.MultiTypeBaseItem;
+import com.aluxian.drizzle.multi.adapters.MultiTypeInfiniteAdapter;
 import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.api.providers.ItemsProvider;
 import com.aluxian.drizzle.utils.Mapper;
@@ -25,7 +25,7 @@ public class ReboundsAdapter extends MultiTypeInfiniteAdapter<Shot> {
     }
 
     @Override
-    protected List<MultiTypeBaseItem<? extends MultiTypeBaseItem.ViewHolder>> mapLoadedItems(List<Shot> items) {
+    protected List<MultiTypeBaseItem<? extends MultiTypeBaseItem.ViewHolder>> convertLoadedItems(List<Shot> items) {
         return Mapper.map(items, shot -> new ReboundItem(mReboundShot, shot.cloneAndUpdate(json -> {
             json.add("user", mReboundShot.user.toJsonObject());
             json.add("team", mReboundShot.team.toJsonObject());

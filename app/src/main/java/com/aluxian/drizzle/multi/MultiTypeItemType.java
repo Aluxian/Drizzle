@@ -1,6 +1,6 @@
-package com.aluxian.drizzle.adapters.multi;
+package com.aluxian.drizzle.multi;
 
-import com.aluxian.drizzle.adapters.multi.items.MultiTypeBaseItem;
+import com.aluxian.drizzle.multi.items.MultiTypeBaseItem;
 
 import java.util.Objects;
 

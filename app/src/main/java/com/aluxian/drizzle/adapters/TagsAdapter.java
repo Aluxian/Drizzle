@@ -1,7 +1,7 @@
 package com.aluxian.drizzle.adapters;
 
 import com.aluxian.drizzle.adapters.items.TagItem;
-import com.aluxian.drizzle.adapters.multi.MultiTypeAdapter;
+import com.aluxian.drizzle.multi.MultiTypeAdapter;
 import com.aluxian.drizzle.utils.Mapper;
 
 import java.util.List;

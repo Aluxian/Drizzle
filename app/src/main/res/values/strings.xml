@@ -97,6 +97,7 @@
 
     <string name="section_rebound_of">Rebound of</string>
     <string name="loading">Loading…</string>
+    <string name="dribbble_error_generic">Can\'t connect to Dribbble.</string>
 
     <string-array name="filter_list_options">
         <item>Any</item>

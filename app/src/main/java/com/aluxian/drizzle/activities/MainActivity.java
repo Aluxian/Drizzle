@@ -22,7 +22,7 @@ import com.aluxian.drizzle.adapters.items.DrawerHeaderItem;
 import com.aluxian.drizzle.adapters.items.DrawerItem;
 import com.aluxian.drizzle.adapters.items.SpacingItem;
 import com.aluxian.drizzle.adapters.items.SubHeaderItem;
-import com.aluxian.drizzle.adapters.multi.items.MultiTypeBaseItem;
+import com.aluxian.drizzle.multi.items.MultiTypeBaseItem;
 import com.aluxian.drizzle.fragments.DrawerFragment;
 import com.aluxian.drizzle.fragments.TabsFragment;
 import com.aluxian.drizzle.utils.Config;
@@ -137,7 +137,8 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Dra
         }));
 
         items.add(new SpacingItem(ViewGroup.LayoutParams.MATCH_PARENT, Dp.PX_08));
-        items.add(new SubHeaderItem(R.string.drawer_personal));
+        //items.add(new SubHeaderItem(R.string.drawer_personal));
+        items.add(new DividerItem());
 
         items.add(new DrawerItem(R.drawable.ic_bucket, R.string.drawer_personal_buckets, position -> {
 

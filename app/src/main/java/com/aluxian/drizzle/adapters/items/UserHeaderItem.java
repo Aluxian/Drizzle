@@ -8,11 +8,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aluxian.drizzle.R;
-import com.aluxian.drizzle.adapters.listeners.HeaderLoadListener;
-import com.aluxian.drizzle.adapters.multi.MultiTypeItemType;
-import com.aluxian.drizzle.adapters.multi.items.MultiTypeBaseItem;
-import com.aluxian.drizzle.adapters.multi.items.MultiTypeStyleableItem;
-import com.aluxian.drizzle.adapters.multi.traits.MultiTypeHeader;
+import com.aluxian.drizzle.multi.MultiTypeItemType;
+import com.aluxian.drizzle.multi.items.MultiTypeBaseItem;
+import com.aluxian.drizzle.multi.items.MultiTypeStyleableItem;
+import com.aluxian.drizzle.multi.traits.MultiTypeHeader;
 import com.aluxian.drizzle.api.models.User;
 import com.aluxian.drizzle.utils.CountableInterpolator;
 import com.aluxian.drizzle.utils.UberSwatch;
@@ -27,14 +26,14 @@ import butterknife.InjectView;
 
 public class UserHeaderItem extends MultiTypeStyleableItem<UserHeaderItem.ViewHolder> implements MultiTypeHeader {
 
-    /** The {@link com.aluxian.drizzle.adapters.multi.MultiTypeItemType} of this item. */
+    /** The {@link com.aluxian.drizzle.multi.MultiTypeItemType} of this item. */
     public static final MultiTypeItemType<ViewHolder> ITEM_TYPE = new MultiTypeItemType<>(UserHeaderItem.class,
             ViewHolder.class, R.layout.item_header_user);
 
     private final User user;
-    private HeaderLoadListener mHeaderListener;
+    private StateListener mHeaderListener;
 
-    public UserHeaderItem(User user, HeaderLoadListener headerListener) {
+    public UserHeaderItem(User user, StateListener headerListener) {
         this.user = user;
         mHeaderListener = headerListener;
     }

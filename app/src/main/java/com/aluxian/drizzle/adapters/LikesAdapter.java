@@ -1,8 +1,8 @@
 package com.aluxian.drizzle.adapters;
 
 import com.aluxian.drizzle.adapters.items.LikeItem;
-import com.aluxian.drizzle.adapters.multi.items.MultiTypeBaseItem;
-import com.aluxian.drizzle.adapters.multi.adapters.MultiTypeInfiniteAdapter;
+import com.aluxian.drizzle.multi.items.MultiTypeBaseItem;
+import com.aluxian.drizzle.multi.adapters.MultiTypeInfiniteAdapter;
 import com.aluxian.drizzle.api.models.Like;
 import com.aluxian.drizzle.api.providers.ItemsProvider;
 import com.aluxian.drizzle.utils.Mapper;
@@ -22,7 +22,7 @@ public class LikesAdapter extends MultiTypeInfiniteAdapter<Like> {
     }
 
     @Override
-    protected List<MultiTypeBaseItem<? extends MultiTypeBaseItem.ViewHolder>> mapLoadedItems(List<Like> items) {
+    protected List<MultiTypeBaseItem<? extends MultiTypeBaseItem.ViewHolder>> convertLoadedItems(List<Like> items) {
         return Mapper.map(items, LikeItem::new);
     }
 

@@ -1,14 +1,14 @@
-package com.aluxian.drizzle.adapters.multi.adapters;
+package com.aluxian.drizzle.multi.adapters;
 
-import com.aluxian.drizzle.adapters.multi.MultiTypeAdapter;
-import com.aluxian.drizzle.adapters.multi.items.MultiTypeBaseItem;
-import com.aluxian.drizzle.adapters.multi.items.MultiTypeStyleableItem;
-import com.aluxian.drizzle.adapters.multi.traits.MultiTypeHeader;
+import com.aluxian.drizzle.multi.MultiTypeAdapter;
+import com.aluxian.drizzle.multi.items.MultiTypeBaseItem;
+import com.aluxian.drizzle.multi.items.MultiTypeStyleableItem;
+import com.aluxian.drizzle.multi.traits.MultiTypeHeader;
 import com.aluxian.drizzle.utils.Log;
 import com.aluxian.drizzle.utils.UberSwatch;
 
 /**
- * A {@link com.aluxian.drizzle.adapters.multi.MultiTypeAdapter} that supports {@link com.aluxian.drizzle.adapters.multi.items.MultiTypeStyleableItem}s.
+ * A {@link com.aluxian.drizzle.multi.MultiTypeAdapter} that supports {@link com.aluxian.drizzle.multi.items.MultiTypeStyleableItem}s.
  */
 public abstract class MultiTypeStyleableAdapter extends MultiTypeAdapter {
 

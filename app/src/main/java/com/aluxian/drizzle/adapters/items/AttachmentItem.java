@@ -7,8 +7,8 @@ import android.widget.ImageView;
 
 import com.aluxian.drizzle.R;
 import com.aluxian.drizzle.activities.AttachmentActivity;
-import com.aluxian.drizzle.adapters.multi.MultiTypeItemType;
-import com.aluxian.drizzle.adapters.multi.items.MultiTypeBaseItem;
+import com.aluxian.drizzle.multi.MultiTypeItemType;
+import com.aluxian.drizzle.multi.items.MultiTypeBaseItem;
 import com.aluxian.drizzle.api.models.Attachment;
 import com.aluxian.drizzle.utils.Dp;
 import com.squareup.picasso.Picasso;
@@ -18,7 +18,7 @@ import butterknife.InjectView;
 
 public class AttachmentItem extends MultiTypeBaseItem<AttachmentItem.ViewHolder> implements View.OnClickListener {
 
-    /** The {@link com.aluxian.drizzle.adapters.multi.MultiTypeItemType} of this item. */
+    /** The {@link com.aluxian.drizzle.multi.MultiTypeItemType} of this item. */
     public static final MultiTypeItemType<ViewHolder> ITEM_TYPE = new MultiTypeItemType<>(AttachmentItem.class,
             ViewHolder.class, R.layout.item_attachment);
 

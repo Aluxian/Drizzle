@@ -1,4 +1,4 @@
-package com.aluxian.drizzle.adapters.multi.adapters;
+package com.aluxian.drizzle.multi.adapters;
 
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 
 import com.aluxian.drizzle.R;
 import com.aluxian.drizzle.adapters.items.LoadingItem;
-import com.aluxian.drizzle.adapters.multi.items.MultiTypeBaseItem;
+import com.aluxian.drizzle.multi.items.MultiTypeBaseItem;
 import com.aluxian.drizzle.api.providers.ItemsProvider;
 import com.aluxian.drizzle.recycler.ItemLoader;
 import com.aluxian.drizzle.utils.Config;
@@ -15,7 +15,7 @@ import com.aluxian.drizzle.utils.Log;
 import java.util.List;
 
 /**
- * A {@link com.aluxian.drizzle.adapters.multi.MultiTypeAdapter} that uses an
+ * A {@link com.aluxian.drizzle.multi.MultiTypeAdapter} that uses an
  * {@link com.aluxian.drizzle.api.providers.ItemsProvider} to load items indefinitely.
  *
  * @param <T> The type of data items that the {@link com.aluxian.drizzle.api.providers.ItemsProvider} provides.
@@ -23,11 +23,19 @@ import java.util.List;
 public abstract class MultiTypeInfiniteAdapter<T> extends MultiTypeStyleableAdapter
         implements ItemLoader.Listener<T>, SwipeRefreshLayout.OnRefreshListener {
 
+    /** The position of the loading indicator item. */
     private int mLoadingItemPosition = -1;
+
+    /** Whether the loading indicator should be shown when the list is empty. */
     private boolean mShowLoadingIndicatorWhenEmpty;
 
+    /** Helper for loading items. */
     private ItemLoader<T> mItemLoader;
+
+    /** A listener for the adapter's status. */
     private StatusListener mStatusListener;
+
+    /** Whether the adapter is pending refresh. */
     private boolean mPendingRefresh;
 
     public MultiTypeInfiniteAdapter(ItemsProvider<T> itemsProvider, StatusListener statusListener) {
@@ -54,9 +62,10 @@ public abstract class MultiTypeInfiniteAdapter<T> extends MultiTypeStyleableAdap
     public MultiTypeBaseItem.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         MultiTypeBaseItem.ViewHolder holder = super.onCreateViewHolder(parent, viewType);
 
+        // Set the default tint (the adapter isn't always applied a style)
         if (holder instanceof LoadingItem.ViewHolder) {
-            int tint = parent.getContext().getResources().getColor(R.color.accent);
-            ((LoadingItem.ViewHolder) holder).progressBar.getIndeterminateDrawable().setTint(tint);
+            int accentColor = parent.getContext().getResources().getColor(R.color.accent);
+            ((LoadingItem.ViewHolder) holder).progressBar.getIndeterminateDrawable().setTint(accentColor);
         }
 
         return holder;
@@ -75,11 +84,11 @@ public abstract class MultiTypeInfiniteAdapter<T> extends MultiTypeStyleableAdap
             itemsList().clear();
 
             if (items.size() > 0) {
-                itemsList().addAll(mapLoadedItems(items));
+                itemsList().addAll(convertLoadedItems(items));
                 notifyDataSetChanged();
             }
         } else if (items.size() > 0) {
-            itemsList().addAll(mapLoadedItems(items));
+            itemsList().addAll(convertLoadedItems(items));
             notifyItemRangeInserted(itemsList().size() - items.size(), items.size());
         }
     }
@@ -91,12 +100,12 @@ public abstract class MultiTypeInfiniteAdapter<T> extends MultiTypeStyleableAdap
     }
 
     /**
-     * Converts the given list of data items into a list of {@link com.aluxian.drizzle.adapters.multi.items.MultiTypeBaseItem} objects.
+     * Converts the given list of data items into a list of {@link com.aluxian.drizzle.multi.items.MultiTypeBaseItem}s.
      *
      * @param items The list of items to map.
-     * @return A list of {@link com.aluxian.drizzle.adapters.multi.items.MultiTypeBaseItem} objects.
+     * @return A list of {@link com.aluxian.drizzle.multi.items.MultiTypeBaseItem} objects.
      */
-    protected abstract List<MultiTypeBaseItem<? extends MultiTypeBaseItem.ViewHolder>> mapLoadedItems(List<T> items);
+    protected abstract List<MultiTypeBaseItem<? extends MultiTypeBaseItem.ViewHolder>> convertLoadedItems(List<T> items);
 
     @Override
     public void onStartedLoading() {
@@ -137,7 +146,7 @@ public abstract class MultiTypeInfiniteAdapter<T> extends MultiTypeStyleableAdap
         void onAdapterLoadingFinished(boolean successful);
 
         /**
-         * Called when there's an error while loading results.
+         * Called when there's an error loading results.
          *
          * @param e        The error's Exception.
          * @param hasItems Whether the adapter has at least 1 (data) item.

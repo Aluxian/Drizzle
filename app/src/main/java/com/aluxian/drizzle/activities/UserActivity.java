@@ -11,11 +11,11 @@ import android.view.View;
 
 import com.aluxian.drizzle.R;
 import com.aluxian.drizzle.adapters.items.LoadingItem;
-import com.aluxian.drizzle.adapters.listeners.HeaderLoadListener;
 import com.aluxian.drizzle.adapters.UserActivityAdapter;
-import com.aluxian.drizzle.adapters.multi.adapters.MultiTypeInfiniteAdapter;
+import com.aluxian.drizzle.multi.adapters.MultiTypeInfiniteAdapter;
 import com.aluxian.drizzle.api.models.User;
 import com.aluxian.drizzle.api.providers.UserShotsProvider;
+import com.aluxian.drizzle.multi.traits.MultiTypeHeader;
 import com.aluxian.drizzle.utils.Dp;
 import com.aluxian.drizzle.utils.UberSwatch;
 import com.aluxian.drizzle.views.CustomEdgeRecyclerView;
@@ -24,7 +24,7 @@ import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCal
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.google.gson.Gson;
 
-public class UserActivity extends Activity implements HeaderLoadListener, MultiTypeInfiniteAdapter.StatusListener {
+public class UserActivity extends Activity implements MultiTypeHeader.StateListener, MultiTypeInfiniteAdapter.StatusListener {
 
     public static final String EXTRA_USER_DATA = "user_data";
 

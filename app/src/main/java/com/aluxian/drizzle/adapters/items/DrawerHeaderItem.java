@@ -9,12 +9,12 @@ import android.widget.TextView;
 
 import com.aluxian.drizzle.R;
 import com.aluxian.drizzle.activities.ShotActivity;
-import com.aluxian.drizzle.adapters.listeners.HeaderLoadListener;
-import com.aluxian.drizzle.adapters.multi.MultiTypeItemType;
-import com.aluxian.drizzle.adapters.multi.items.MultiTypeBaseItem;
+import com.aluxian.drizzle.multi.MultiTypeItemType;
+import com.aluxian.drizzle.multi.items.MultiTypeBaseItem;
 import com.aluxian.drizzle.api.ApiRequest;
 import com.aluxian.drizzle.api.Dribbble;
 import com.aluxian.drizzle.api.models.Shot;
+import com.aluxian.drizzle.multi.traits.MultiTypeHeader;
 import com.aluxian.drizzle.utils.Log;
 import com.aluxian.drizzle.utils.UberSwatch;
 import com.aluxian.drizzle.utils.transformations.PaletteTransformation;
@@ -33,15 +33,15 @@ import butterknife.InjectView;
 
 public class DrawerHeaderItem extends MultiTypeBaseItem<DrawerHeaderItem.ViewHolder> {
 
-    /** The {@link com.aluxian.drizzle.adapters.multi.MultiTypeItemType} of this item. */
+    /** The {@link com.aluxian.drizzle.multi.MultiTypeItemType} of this item. */
     public static final MultiTypeItemType<ViewHolder> ITEM_TYPE = new MultiTypeItemType<>(DrawerHeaderItem.class,
             ViewHolder.class, R.layout.item_header_drawer);
 
-    private final HeaderLoadListener mHeaderListener;
+    private final MultiTypeHeader.StateListener mHeaderListener;
 
     private static final Pattern PIXELS_COUNT_PATTERN = Pattern.compile("<strong>([0-9,]+)</strong> pixels dribbbled");
 
-    public DrawerHeaderItem(HeaderLoadListener headerListener) {
+    public DrawerHeaderItem(MultiTypeHeader.StateListener headerListener) {
         mHeaderListener = headerListener;
     }
 

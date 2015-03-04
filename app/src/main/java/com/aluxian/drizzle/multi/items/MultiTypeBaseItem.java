@@ -1,11 +1,11 @@
-package com.aluxian.drizzle.adapters.multi.items;
+package com.aluxian.drizzle.multi.items;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 /**
- * Base class for items that will appear in {@link com.aluxian.drizzle.adapters.multi.MultiTypeAdapter}.
+ * Base class for items that will appear in {@link com.aluxian.drizzle.multi.MultiTypeAdapter}.
  *
  * @param <VH> The type of the item's ViewHolder.
  */

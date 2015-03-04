@@ -4,15 +4,15 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.aluxian.drizzle.R;
-import com.aluxian.drizzle.adapters.multi.MultiTypeItemType;
-import com.aluxian.drizzle.adapters.multi.items.MultiTypeBaseItem;
+import com.aluxian.drizzle.multi.MultiTypeItemType;
+import com.aluxian.drizzle.multi.items.MultiTypeBaseItem;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class TagItem extends MultiTypeBaseItem<TagItem.ViewHolder> {
 
-    /** The {@link com.aluxian.drizzle.adapters.multi.MultiTypeItemType} of this item. */
+    /** The {@link com.aluxian.drizzle.multi.MultiTypeItemType} of this item. */
     public static final MultiTypeItemType<ViewHolder> ITEM_TYPE = new MultiTypeItemType<>(TagItem.class,
             ViewHolder.class, R.layout.item_tag);
 

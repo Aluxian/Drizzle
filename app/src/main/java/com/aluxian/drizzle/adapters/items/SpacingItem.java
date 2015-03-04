@@ -4,12 +4,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.aluxian.drizzle.R;
-import com.aluxian.drizzle.adapters.multi.MultiTypeItemType;
-import com.aluxian.drizzle.adapters.multi.items.MultiTypeBaseItem;
+import com.aluxian.drizzle.multi.MultiTypeItemType;
+import com.aluxian.drizzle.multi.items.MultiTypeBaseItem;
 
 public class SpacingItem extends MultiTypeBaseItem<SpacingItem.ViewHolder> {
 
-    /** The {@link com.aluxian.drizzle.adapters.multi.MultiTypeItemType} of this item. */
+    /** The {@link com.aluxian.drizzle.multi.MultiTypeItemType} of this item. */
     public static final MultiTypeItemType<ViewHolder> ITEM_TYPE = new MultiTypeItemType<>(SpacingItem.class,
             ViewHolder.class, R.layout.item_spacing);
 

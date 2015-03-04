@@ -3,14 +3,14 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/error_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:id="@+id/error_text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:alpha="0"
-        android:text="Err :("
+        android:gravity="center"
+        android:paddingBottom="24dp"
+        android:textAppearance="@android:style/TextAppearance.Material.Headline"
         android:textColor="@color/text_subheader"
-        android:textSize="36sp"
         android:visibility="gone" />
 
     <android.support.v4.widget.SwipeRefreshLayout

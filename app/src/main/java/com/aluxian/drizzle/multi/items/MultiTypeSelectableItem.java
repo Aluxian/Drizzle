@@ -1,7 +1,7 @@
-package com.aluxian.drizzle.adapters.multi.items;
+package com.aluxian.drizzle.multi.items;
 
 /**
- * Base class for items in {@link com.aluxian.drizzle.adapters.multi.adapters.MultiTypeSelectableAdapter}.
+ * Base class for items in {@link com.aluxian.drizzle.multi.adapters.MultiTypeSelectableAdapter}.
  *
  * @param <VH> The type of the item's ViewHolder.
  */
@@ -9,7 +9,7 @@ public abstract class MultiTypeSelectableItem<VH extends MultiTypeBaseItem.ViewH
 
     /**
      * Called when the item's selection state changes. This method is used by
-     * {@link com.aluxian.drizzle.adapters.multi.adapters.MultiTypeSelectableAdapter} to change the palette.
+     * {@link com.aluxian.drizzle.multi.adapters.MultiTypeSelectableAdapter} to change the palette.
      *
      * @param holder   The ViewHolder to bind.
      * @param selected Whether the item is selected.

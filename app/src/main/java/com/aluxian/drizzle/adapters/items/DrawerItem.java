@@ -5,8 +5,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aluxian.drizzle.R;
-import com.aluxian.drizzle.adapters.multi.MultiTypeItemType;
-import com.aluxian.drizzle.adapters.multi.items.MultiTypeBaseItem;
+import com.aluxian.drizzle.multi.MultiTypeItemType;
+import com.aluxian.drizzle.multi.items.MultiTypeBaseItem;
+import com.aluxian.drizzle.utils.Log;
 import com.aluxian.drizzle.utils.UberSwatch;
 
 import butterknife.ButterKnife;
@@ -14,7 +15,7 @@ import butterknife.InjectView;
 
 public class DrawerItem extends AuthStateDependantItem<DrawerItem.ViewHolder> {
 
-    /** The {@link com.aluxian.drizzle.adapters.multi.MultiTypeItemType} of this item. */
+    /** The {@link com.aluxian.drizzle.multi.MultiTypeItemType} of this item. */
     public static final MultiTypeItemType<ViewHolder> ITEM_TYPE = new MultiTypeItemType<>(DrawerItem.class,
             ViewHolder.class, R.layout.item_icon_text);
 
@@ -67,22 +68,24 @@ public class DrawerItem extends AuthStateDependantItem<DrawerItem.ViewHolder> {
 
     @Override
     protected void onSetStyle(ViewHolder holder, UberSwatch swatch) {
-        //holder.itemView.setTag(swatch);
+        Log.d(titleResId, "onSetStyle: setTag");
+        holder.itemView.setTag(swatch);
     }
 
     @Override
     protected void onSelectionStateChanged(ViewHolder holder, boolean selected) {
         if (selected) {
-            //UberSwatch swatch = (UberSwatch) holder.itemView.getTag();
-            //holder.icon.getDrawable().setTint(swatch.rgb);
-            //holder.title.setTextColor(swatch.rgb);
+            UberSwatch swatch = (UberSwatch) holder.itemView.getTag();
+            Log.d(titleResId, "onSelectionStateChanged: getTag", swatch);
+//            holder.icon.getDrawable().setTint(swatch.rgb);
+//            holder.title.setTextColor(swatch.rgb);
             int accentColor = holder.context.getResources().getColor(R.color.accent);
             holder.icon.getDrawable().setTint(accentColor);
             holder.title.setTextColor(accentColor);
         } else {
-            int initialColor = holder.title.getLinkTextColors().getDefaultColor();
-            holder.icon.getDrawable().setTint(initialColor);
-            holder.title.setTextColor(initialColor);
+            int defaultColor = holder.title.getLinkTextColors().getDefaultColor();
+            holder.icon.getDrawable().setTint(defaultColor);
+            holder.title.setTextColor(defaultColor);
         }
     }
 

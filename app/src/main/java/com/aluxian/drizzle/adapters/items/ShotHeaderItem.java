@@ -13,17 +13,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.aluxian.drizzle.R;
-import com.aluxian.drizzle.adapters.listeners.HeaderLoadListener;
 import com.aluxian.drizzle.adapters.AttachmentsAdapter;
 import com.aluxian.drizzle.adapters.BucketsAdapter;
 import com.aluxian.drizzle.adapters.LikesAdapter;
 import com.aluxian.drizzle.adapters.ReboundsAdapter;
 import com.aluxian.drizzle.adapters.TagsAdapter;
-import com.aluxian.drizzle.adapters.multi.MultiTypeItemType;
-import com.aluxian.drizzle.adapters.multi.adapters.MultiTypeInfiniteAdapter;
-import com.aluxian.drizzle.adapters.multi.items.MultiTypeBaseItem;
-import com.aluxian.drizzle.adapters.multi.items.MultiTypeStyleableItem;
-import com.aluxian.drizzle.adapters.multi.traits.MultiTypeHeader;
+import com.aluxian.drizzle.multi.MultiTypeItemType;
+import com.aluxian.drizzle.multi.adapters.MultiTypeInfiniteAdapter;
+import com.aluxian.drizzle.multi.items.MultiTypeBaseItem;
+import com.aluxian.drizzle.multi.items.MultiTypeStyleableItem;
+import com.aluxian.drizzle.multi.traits.MultiTypeHeader;
 import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.api.providers.AttachmentsProvider;
 import com.aluxian.drizzle.api.providers.BucketsProvider;
@@ -51,15 +50,15 @@ import pl.droidsonroids.gif.GifDrawable;
 
 public class ShotHeaderItem extends MultiTypeStyleableItem<ShotHeaderItem.ViewHolder> implements MultiTypeHeader {
 
-    /** The {@link com.aluxian.drizzle.adapters.multi.MultiTypeItemType} of this item. */
+    /** The {@link com.aluxian.drizzle.multi.MultiTypeItemType} of this item. */
     public static final MultiTypeItemType<ViewHolder> ITEM_TYPE = new MultiTypeItemType<>(ShotHeaderItem.class,
             ViewHolder.class, R.layout.item_header_shot);
 
     private final Shot shot;
     private final Shot reboundOfShot;
-    private HeaderLoadListener headerListener;
+    private StateListener headerListener;
 
-    public ShotHeaderItem(Shot shot, Shot reboundOfShot, HeaderLoadListener headerListener) {
+    public ShotHeaderItem(Shot shot, Shot reboundOfShot, StateListener headerListener) {
         this.shot = shot;
         this.reboundOfShot = reboundOfShot;
         this.headerListener = headerListener;
