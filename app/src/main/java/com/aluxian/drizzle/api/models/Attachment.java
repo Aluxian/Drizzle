@@ -25,7 +25,7 @@ public final class Attachment extends Model {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Attachment)) return false;
 
         Attachment attachment = (Attachment) o;
         return id == attachment.id;

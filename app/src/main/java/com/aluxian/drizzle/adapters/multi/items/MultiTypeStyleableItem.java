@@ -1,9 +1,9 @@
-package com.aluxian.drizzle.adapters.multi;
+package com.aluxian.drizzle.adapters.multi.items;
 
 import com.aluxian.drizzle.utils.UberSwatch;
 
 /**
- * Base class implementation for items that care about style.
+ * Base class for items in {@link com.aluxian.drizzle.adapters.multi.adapters.MultiTypeStyleableAdapter}.
  *
  * @param <VH> The type of the item's ViewHolder.
  */
@@ -14,13 +14,13 @@ public abstract class MultiTypeStyleableItem<VH extends MultiTypeBaseItem.ViewHo
 
     /**
      * Called when the adapter style changes. The item should apply the new colours to its views.
-     * This method is used by MultiTypeAdapter to change the palette.
+     * This method is used by {@link com.aluxian.drizzle.adapters.multi.adapters.MultiTypeStyleableAdapter} to change the palette.
      *
      * @param holder The ViewHolder to bind.
      * @param swatch The colours to apply.
      */
     @SuppressWarnings("unchecked")
-    public void setColors(ViewHolder holder, UberSwatch swatch) {
+    public final void setStyle(ViewHolder holder, UberSwatch swatch) {
         mSwatch = swatch;
         onSetStyle((VH) holder, swatch);
     }

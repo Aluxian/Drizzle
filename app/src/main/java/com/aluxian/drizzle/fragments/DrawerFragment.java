@@ -3,53 +3,43 @@ package com.aluxian.drizzle.fragments;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
 
 import com.aluxian.drizzle.R;
-import com.aluxian.drizzle.activities.ShotActivity;
-import com.aluxian.drizzle.api.ApiRequest;
-import com.aluxian.drizzle.api.Dribbble;
-import com.aluxian.drizzle.api.models.Shot;
-import com.aluxian.drizzle.utils.Config;
-import com.aluxian.drizzle.utils.Dp;
+import com.aluxian.drizzle.adapters.DrawerAdapter;
+import com.aluxian.drizzle.adapters.items.DrawerItem;
+import com.aluxian.drizzle.adapters.multi.items.MultiTypeBaseItem;
 import com.aluxian.drizzle.utils.Log;
+import com.aluxian.drizzle.utils.UberSwatch;
 import com.aluxian.drizzle.utils.UserManager;
-import com.google.gson.Gson;
-import com.squareup.picasso.Picasso;
+import com.aluxian.drizzle.views.CustomEdgeRecyclerView;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+
+import static com.aluxian.drizzle.utils.UserManager.AuthStateChangeListener;
 
 /**
  * Fragment used for managing interactions and presentation of a navigation drawer.
  */
-public class DrawerFragment extends Fragment implements UserManager.AuthStateChangeListener {
+public class DrawerFragment extends Fragment implements AuthStateChangeListener {
 
     /** Remember the position of the selected item. */
     private static final String STATE_SELECTED_POSITION = "selected_navigation_drawer_position";
 
     /** The callbacks instance (the Activity). */
-    private Callbacks mCallbacks;
+    private DrawerCallbacks mDrawerCallbacks;
 
     /** Helper component that ties the action bar to the navigation drawer. */
     private ActionBarDrawerToggle mDrawerToggle;
-
-    /** A list that holds all the items that appear in the drawer. */
-    private List<ListItem> mItems = new ArrayList<>();
 
     /** The layout that contains the content of the activity and the drawer view. */
     private DrawerLayout mDrawerLayout;
@@ -57,11 +47,14 @@ public class DrawerFragment extends Fragment implements UserManager.AuthStateCha
     /** The view that slides in from the left. */
     private View mDrawerView;
 
-    /** The list of available navigation items. */
-    private ListView mListView;
+    /** The RecyclerView that displays the items. */
+    private CustomEdgeRecyclerView mRecyclerView;
+
+    /** The adapter responsible for managing items. */
+    private DrawerAdapter mAdapter;
 
     /** The position of the currently selected item in the list view. */
-    private int mCurrentSelectedPosition = 1;
+    private int mSelectedItemPosition;
 
     /** Whether the user is authenticated. */
     private boolean mIsAuthenticated;
@@ -72,73 +65,28 @@ public class DrawerFragment extends Fragment implements UserManager.AuthStateCha
 
         // Recover the previously selected item
         if (savedInstanceState != null) {
-            mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
+            mSelectedItemPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
         }
 
-        loadItems(UserManager.getInstance().isAuthenticated());
+        mIsAuthenticated = UserManager.getInstance().isAuthenticated();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_drawer, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_drawer, container, false);
 
-        // Load the cover image
-        Dribbble.listBucketShots(Config.COVERS_BUCKET_ID).queryParam("per_page", "1").execute(new ApiRequest.Callback<List<Shot>>() {
-            @SuppressWarnings("CodeBlock2Expr")
-            @Override
-            public void onSuccess(Dribbble.Response<List<Shot>> response) {
-                ImageView cover = (ImageView) view.findViewById(R.id.cover);
-                Shot shot = response.data.get(0);
+        mRecyclerView = (CustomEdgeRecyclerView) rootView.findViewById(R.id.recycler_view);
+        mAdapter = new DrawerAdapter(mDrawerCallbacks);
 
-                Picasso.with(getActivity())
-                        .load(shot.images.largest())
-                        .into(cover);
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRecyclerView.setAdapter(mAdapter);
 
-                cover.setOnClickListener(v -> {
-                    Intent intent = new Intent(getActivity(), ShotActivity.class);
-                    intent.putExtra(ShotActivity.EXTRA_SHOT_DATA, new Gson().toJson(shot));
-                    getActivity().startActivity(intent);
-                });
-            }
+        onItemSelected(mIsAuthenticated ? 2 : 3);
+        mAdapter.updateItems(mIsAuthenticated);
 
-            @Override
-            public void onError(Exception e) {
-                Log.e(e);
-            }
-        });
-
-        // Load the dribbbled pixels count
-        Dribbble.pixelsDribbbledCount().execute(new ApiRequest.Callback<String>() {
-            @Override
-            public void onSuccess(Dribbble.Response<String> response) {
-                String pixels = response.data;
-                ((TextView) view.findViewById(R.id.pixels_count)).setText(pixels);
-                view.findViewById(R.id.pixels_description).setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onError(Exception e) {
-                Log.e(e);
-            }
-        });
-
-        // Set up the list
-        mListView = (ListView) view.findViewById(R.id.list);
-        mListView.setOnItemClickListener((parent, itemView, position, id) -> selectItem(position));
-        mListView.setAdapter(new ListAdapter(mItems));
-        mListView.setItemChecked(mCurrentSelectedPosition, true);
-
-        // Add a margin at the top and at the bottom of the list
-        View spacingView = new View(getActivity());
-        spacingView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Dp.PX_08));
-
-        mListView.addHeaderView(spacingView, null, false);
-        mListView.addFooterView(spacingView, null, false);
-
-        // Select either the default item or the last selected one
-        selectItem(mCurrentSelectedPosition);
-
-        return view;
+        rootView.post(() -> ((DrawerItem) mAdapter.itemsList().get(mSelectedItemPosition)).onClick(mSelectedItemPosition));
+        return rootView;
     }
 
     /**
@@ -210,50 +158,13 @@ public class DrawerFragment extends Fragment implements UserManager.AuthStateCha
     }
 
     /**
-     * (Re)Add items to the list. This is called when the user signs in or out, and on app start.
+     * Sets the given style on the adapter.
      *
-     * @param authenticated Whether there is an authenticated user.
+     * @param swatch The colour style to set.
      */
-    private void loadItems(boolean authenticated) {
-        mIsAuthenticated = authenticated;
-        mItems.clear();
-
-        if (authenticated) {
-            mItems.add(ListItem.IconText(R.string.drawer_main_feed, R.drawable.ic_feed));
-        }
-
-        mItems.add(ListItem.IconText(R.string.drawer_main_shots, R.drawable.ic_shots));
-        mItems.add(ListItem.SubHeader(R.string.drawer_personal));
-        //mItems.add(ListItem.Divider());
-
-        if (authenticated) {
-            mItems.add(ListItem.IconText(R.string.drawer_personal_buckets, R.drawable.ic_bucket));
-            mItems.add(ListItem.IconText(R.string.drawer_personal_go_pro, R.drawable.ic_dribbble));
-            mItems.add(ListItem.IconText(R.string.drawer_personal_account_settings, R.drawable.ic_account));
-            mItems.add(ListItem.IconText(R.string.drawer_personal_sign_out, R.drawable.ic_sign_out));
-        } else {
-            mItems.add(ListItem.IconText(R.string.drawer_personal_sign_in, R.drawable.ic_sign_in));
-        }
-
-        mItems.add(ListItem.Divider());
-        mItems.add(ListItem.IconText(R.string.drawer_app_rate, R.drawable.ic_rate));
-        mItems.add(ListItem.IconText(R.string.drawer_app_feedback, R.drawable.ic_feedback));
-    }
-
-    /**
-     * Called when an item has been clicked to mark it as selected and notify the callbacks object.
-     *
-     * @param position The position of the clicked item in the list.
-     */
-    private void selectItem(int position) {
-        closeDrawer();
-
-        if (position > 0 && mCallbacks != null && !mCallbacks.onDrawerItemSelected(mItems.get(position - 1).titleResourceId)) {
-            mListView.setItemChecked(mCurrentSelectedPosition, true);
-        } else {
-            mCurrentSelectedPosition = position;
-            mListView.setItemChecked(position, true);
-        }
+    public void setStyle(UberSwatch swatch) {
+        //mRecyclerView.setEdgeColor(swatch.rgb);
+        //mAdapter.setStyle(swatch);
     }
 
     @Override
@@ -274,7 +185,7 @@ public class DrawerFragment extends Fragment implements UserManager.AuthStateCha
         super.onAttach(activity);
 
         try {
-            mCallbacks = (Callbacks) activity;
+            mDrawerCallbacks = (DrawerCallbacks) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException("Activity must implement DrawerFragment.Callbacks");
         }
@@ -283,13 +194,13 @@ public class DrawerFragment extends Fragment implements UserManager.AuthStateCha
     @Override
     public void onDetach() {
         super.onDetach();
-        mCallbacks = null;
+        mDrawerCallbacks = null;
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(STATE_SELECTED_POSITION, mCurrentSelectedPosition);
+        outState.putInt(STATE_SELECTED_POSITION, mSelectedItemPosition);
     }
 
     @Override
@@ -313,25 +224,20 @@ public class DrawerFragment extends Fragment implements UserManager.AuthStateCha
 
     @Override
     public void onAuthenticationStateChanged(boolean authenticated) {
-        getActivity().runOnUiThread(() -> {
-            loadItems(authenticated);
-            selectItem(1);
-        });
+        mIsAuthenticated = authenticated;
+        mAdapter.updateItems(authenticated);
+        onItemSelected(authenticated ? 2 : 3);
     }
 
     /**
-     * Callbacks interface that all activities using this fragment must implement.
+     * Called when an item is clicked.
+     *
+     * @param position The position of the item in the adapter.
      */
-    public static interface Callbacks {
-
-        /**
-         * Called when an item in the navigation drawer is selected.
-         *
-         * @param titleResourceId The id of the selected item's title.
-         * @return Whether the selected item should remain selected.
-         */
-        boolean onDrawerItemSelected(int titleResourceId);
-
+    public void onItemSelected(int position) {
+        Log.d(position);
+        mSelectedItemPosition = position;
+        mAdapter.selectItem(position);
     }
 
     /**
@@ -351,109 +257,16 @@ public class DrawerFragment extends Fragment implements UserManager.AuthStateCha
     }
 
     /**
-     * Adapter used by the drawer list to show navigation options.
-     * TODO: Use a ViewHolder
+     * Callbacks interface that all activities using this fragment must implement.
      */
-    private static class ListAdapter extends BaseAdapter {
+    public static interface DrawerCallbacks {
 
-        /** The list of displayed items. */
-        private List<ListItem> mItems;
-
-        public ListAdapter(List<ListItem> items) {
-            mItems = items;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            ListItem item = mItems.get(position);
-
-            if (convertView == null) {
-                convertView = LayoutInflater.from(parent.getContext()).inflate(item.type.layoutId, parent, false);
-            }
-
-            switch (item.type) {
-                case ICON_TEXT:
-                    ImageView imageView = (ImageView) convertView.findViewById(R.id.icon);
-                    imageView.setImageResource(item.iconResourceId);
-
-                case SUBHEADER:
-                    TextView textView = (TextView) convertView.findViewById(R.id.title);
-                    textView.setText(item.titleResourceId);
-            }
-
-            return convertView;
-        }
-
-        @Override
-        public int getCount() {
-            return mItems.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return mItems.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public int getItemViewType(int position) {
-            return Arrays.asList(ListItem.Type.values()).indexOf(mItems.get(position).type);
-        }
-
-        @Override
-        public int getViewTypeCount() {
-            return ListItem.Type.values().length;
-        }
-
-        @Override
-        public boolean isEnabled(int position) {
-            return mItems.get(position).type == ListItem.Type.ICON_TEXT;
-        }
-
-    }
-
-    /**
-     * Object that stores data about an entry in the drawer's list.
-     */
-    private static class ListItem {
-
-        public final Type type;
-        public final int titleResourceId;
-        public final int iconResourceId;
-
-        private ListItem(Type type, int titleResourceId, int iconResourceId) {
-            this.type = type;
-            this.titleResourceId = titleResourceId;
-            this.iconResourceId = iconResourceId;
-        }
-
-        public static ListItem IconText(int titleResourceId, int iconResourceId) {
-            return new ListItem(Type.ICON_TEXT, titleResourceId, iconResourceId);
-        }
-
-        public static ListItem SubHeader(int titleResourceId) {
-            return new ListItem(Type.SUBHEADER, titleResourceId, 0);
-        }
-
-        public static ListItem Divider() {
-            return new ListItem(Type.DIVIDER, 0, 0);
-        }
-
-        public static enum Type {
-            ICON_TEXT(R.layout.item_icon_text),
-            SUBHEADER(R.layout.item_subheader),
-            DIVIDER(R.layout.item_divider);
-
-            public final int layoutId;
-
-            Type(int layoutId) {
-                this.layoutId = layoutId;
-            }
-        }
+        /**
+         * Load items in the drawer.
+         *
+         * @param items The list into which the new items should be added.
+         */
+        void onLoadDrawerItems(List<MultiTypeBaseItem<? extends MultiTypeBaseItem.ViewHolder>> items);
 
     }
 

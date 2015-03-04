@@ -105,7 +105,7 @@ public final class Shot extends Model {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Shot)) return false;
 
         Shot shot = (Shot) o;
         return id == shot.id;
@@ -142,7 +142,7 @@ public final class Shot extends Model {
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (!(o instanceof Images)) return false;
 
             Images images = (Images) o;
 

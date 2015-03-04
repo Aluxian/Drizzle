@@ -119,7 +119,7 @@ public class ShotReboundOf extends LinearLayout {
         mLoaded = true;
 
         mShotPreview.postDelayed(() -> {
-            UberSwatch swatch = new UberSwatch(PaletteTransformation.getPalette(mShotPreview));
+            UberSwatch swatch = UberSwatch.from(PaletteTransformation.getPalette(mShotPreview));
             mContentLayout.setBackgroundColor(swatch.rgb);
             mShotTitle.setTextColor(swatch.titleTextColor);
             mUserDescription.setTextColor(swatch.bodyTextColor);
@@ -135,7 +135,7 @@ public class ShotReboundOf extends LinearLayout {
 
         OnClickListener listener = v -> {
             Intent intent = new Intent(getContext(), ShotActivity.class);
-            intent.putExtra(ShotActivity.EXTRA_SHOT_DATA, new Gson().toJson(shot));
+            intent.putExtra(ShotActivity.EXTRA_SHOT_DATA, shot.toJson());
             getContext().startActivity(intent);
         };
 
@@ -145,7 +145,7 @@ public class ShotReboundOf extends LinearLayout {
 
         mUserDescription.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), UserActivity.class);
-            intent.putExtra(UserActivity.EXTRA_USER_DATA, new Gson().toJson(shot.user));
+            intent.putExtra(UserActivity.EXTRA_USER_DATA, shot.user.toJson());
             getContext().startActivity(intent);
         });
 

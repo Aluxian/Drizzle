@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.aluxian.drizzle.adapters.multi.items.MultiTypeBaseItem;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,12 +14,18 @@ import java.util.List;
 /**
  * Custom implementation of RecyclerView.Adapter which supports different item view types.
  */
-public abstract class MultiTypeAdapter extends RecyclerView.Adapter<MultiTypeBaseItem.ViewHolder> {
+public abstract class MultiTypeBaseAdapter extends RecyclerView.Adapter<MultiTypeBaseItem.ViewHolder> {
 
+    /** A list that holds the {@link com.aluxian.drizzle.adapters.multi.MultiTypeItemType}s supported by the adapter. */
     private List<MultiTypeItemType<? extends MultiTypeBaseItem.ViewHolder>> mItemTypes = new ArrayList<>();
+
+    /** A list that holds the adapter's items. */
     private List<MultiTypeBaseItem<? extends MultiTypeBaseItem.ViewHolder>> mItems = new ArrayList<>();
 
-    protected MultiTypeAdapter() {
+    /**
+     * Load the item types.
+     */
+    protected MultiTypeBaseAdapter() {
         onAddItemTypes();
     }
 

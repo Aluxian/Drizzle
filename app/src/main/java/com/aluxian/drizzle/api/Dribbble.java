@@ -9,6 +9,7 @@ import com.aluxian.drizzle.api.models.Project;
 import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.utils.Config;
 import com.aluxian.drizzle.utils.UserManager;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.List;
@@ -56,6 +57,13 @@ public final class Dribbble {
                 .accessToken(UserManager.getInstance().getAccessToken())
                 .useCache(true)
                 .path("buckets/" + bucketId + "/shots");
+    }
+
+    /**
+     * @return A list with only one shot, the one to use for the drawer cover.
+     */
+    public static ApiRequest<List<Shot>> getDrawerCoverShot() {
+        return listBucketShots(Config.COVERS_BUCKET_ID).queryParam("per_page", "1");
     }
 
     /**
@@ -164,17 +172,6 @@ public final class Dribbble {
                 .queryParam("client_secret", Config.API_CLIENT_SECRET)
                 .queryParam("code", code)
                 .post();
-    }
-
-    /**
-     * @return The 'pixels dribbbled' stat from the website.
-     */
-    public static ApiRequest<String> pixelsDribbbledCount() {
-        return new ApiRequest<>(new TypeToken<String>() {})
-                .useCache(true)
-                .url("https://www.kimonolabs.com/api/cfxxcg4u")
-                .queryParam("apikey", "hQMs8xI09wAzLH5qYKtTnR5o4Na3qnWI")
-                .queryParam("kimmodify", "1");
     }
 
     /**

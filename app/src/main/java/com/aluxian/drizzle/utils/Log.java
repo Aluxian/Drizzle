@@ -40,18 +40,6 @@ public class Log {
     }
 
     /**
-     * Log formatted debug messages.
-     *
-     * @param format The format pattern.
-     * @param args The arguments for the format pattern.
-     */
-    public static void d(String format, Object... args) {
-        if (BuildConfig.DEBUG) {
-            android.util.Log.d(tag(), String.format(format, args));
-        }
-    }
-
-    /**
      * Log info messages.
      *
      * @param messages Objects whose values to write to logcat (all on the same line).
@@ -113,6 +101,8 @@ public class Log {
             return "()";
         }
 
+        Gson gson = new Gson();
+
         // Convert objects that don't override the toString() method to JSON
         for (int i = 0; i < messages.length; i++) {
             try {
@@ -123,7 +113,7 @@ public class Log {
                 Log.e(e);
             }
 
-            messages[i] = messages[i].toString() + "=" + new Gson().toJson(messages[i]);
+            messages[i] = messages[i].toString() + "=" + gson.toJson(messages[i]);
         }
 
         return TextUtils.join(DELIMITER, messages);

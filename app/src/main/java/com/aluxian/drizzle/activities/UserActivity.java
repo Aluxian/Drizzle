@@ -10,9 +10,10 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.aluxian.drizzle.R;
-import com.aluxian.drizzle.adapters.AdapterHeaderListener;
+import com.aluxian.drizzle.adapters.items.LoadingItem;
+import com.aluxian.drizzle.adapters.listeners.HeaderLoadListener;
 import com.aluxian.drizzle.adapters.UserActivityAdapter;
-import com.aluxian.drizzle.adapters.multi.MultiTypeInfiniteAdapter;
+import com.aluxian.drizzle.adapters.multi.adapters.MultiTypeInfiniteAdapter;
 import com.aluxian.drizzle.api.models.User;
 import com.aluxian.drizzle.api.providers.UserShotsProvider;
 import com.aluxian.drizzle.utils.Dp;
@@ -23,7 +24,7 @@ import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCal
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.google.gson.Gson;
 
-public class UserActivity extends Activity implements AdapterHeaderListener, MultiTypeInfiniteAdapter.StatusListener {
+public class UserActivity extends Activity implements HeaderLoadListener, MultiTypeInfiniteAdapter.StatusListener {
 
     public static final String EXTRA_USER_DATA = "user_data";
 
@@ -58,7 +59,7 @@ public class UserActivity extends Activity implements AdapterHeaderListener, Mul
             @Override
             public int getSpanSize(int position) {
                 // Header or loading indicator
-                if (position == 0 || mAdapter.itemsList().get(position) instanceof MultiTypeInfiniteAdapter.LoadingItem) {
+                if (position == 0 || mAdapter.itemsList().get(position) instanceof LoadingItem) {
                     return 2;
                 }
 
@@ -135,7 +136,7 @@ public class UserActivity extends Activity implements AdapterHeaderListener, Mul
             mRecyclerView.setTopEdgeColor(swatch.titleTextColor);
             mRecyclerView.setBottomEdgeColor(swatch.rgb);
         });
-        mAdapter.setColors(swatch);
+        mAdapter.setStyle(swatch);
 
         View toolbarBackground = findViewById(R.id.toolbar_background);
         toolbarBackground.setBackgroundColor(swatch.rgb);

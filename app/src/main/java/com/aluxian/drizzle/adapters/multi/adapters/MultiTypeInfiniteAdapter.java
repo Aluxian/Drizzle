@@ -1,27 +1,24 @@
-package com.aluxian.drizzle.adapters.multi;
+package com.aluxian.drizzle.adapters.multi.adapters;
 
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
 import com.aluxian.drizzle.R;
+import com.aluxian.drizzle.adapters.items.LoadingItem;
+import com.aluxian.drizzle.adapters.multi.items.MultiTypeBaseItem;
 import com.aluxian.drizzle.api.providers.ItemsProvider;
-import com.aluxian.drizzle.utils.Config;
 import com.aluxian.drizzle.recycler.ItemLoader;
+import com.aluxian.drizzle.utils.Config;
 import com.aluxian.drizzle.utils.Log;
-import com.aluxian.drizzle.utils.UberSwatch;
 
 import java.util.List;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-
 /**
- * A MultiTypeAdapter that uses an ItemsProvider to load items infinitely.
+ * A {@link com.aluxian.drizzle.adapters.multi.MultiTypeBaseAdapter} that uses an
+ * {@link com.aluxian.drizzle.api.providers.ItemsProvider} to load items indefinitely.
  *
- * @param <T> The type of data items that the ItemsProvider provides.
+ * @param <T> The type of data items that the {@link com.aluxian.drizzle.api.providers.ItemsProvider} provides.
  */
 public abstract class MultiTypeInfiniteAdapter<T> extends MultiTypeStyleableAdapter
         implements ItemLoader.Listener<T>, SwipeRefreshLayout.OnRefreshListener {
@@ -50,8 +47,7 @@ public abstract class MultiTypeInfiniteAdapter<T> extends MultiTypeStyleableAdap
 
     @Override
     protected void onAddItemTypes() {
-        addItemType(new MultiTypeItemType<>(LoadingItem.class, LoadingItem.ViewHolder.class, R.layout.item_loading));
-        //addItemType(new MultiTypeItemType<>(SpacingItem.class, SpacingItem.ViewHolder.class, R.layout.item_spacing));
+        addItemType(LoadingItem.ITEM_TYPE);
     }
 
     @Override
@@ -95,10 +91,10 @@ public abstract class MultiTypeInfiniteAdapter<T> extends MultiTypeStyleableAdap
     }
 
     /**
-     * Converts the given list of data items into a list of MultiTypeBaseItem objects.
+     * Converts the given list of data items into a list of {@link com.aluxian.drizzle.adapters.multi.items.MultiTypeBaseItem} objects.
      *
      * @param items The list of items to map.
-     * @return A list of MultiTypeBaseItem objects.
+     * @return A list of {@link com.aluxian.drizzle.adapters.multi.items.MultiTypeBaseItem} objects.
      */
     protected abstract List<MultiTypeBaseItem<? extends MultiTypeBaseItem.ViewHolder>> mapLoadedItems(List<T> items);
 
@@ -128,40 +124,8 @@ public abstract class MultiTypeInfiniteAdapter<T> extends MultiTypeStyleableAdap
         mStatusListener.onAdapterLoadingFinished(successful);
     }
 
-    public static class LoadingItem extends MultiTypeStyleableItem<LoadingItem.ViewHolder> {
-
-        @Override
-        protected void onSetStyle(ViewHolder holder, UberSwatch swatch) {
-            holder.progressBar.getIndeterminateDrawable().setTint(swatch.rgb);
-        }
-
-        public static class ViewHolder extends MultiTypeBaseItem.ViewHolder {
-
-            @InjectView(R.id.progress_bar) ProgressBar progressBar;
-
-            public ViewHolder(View itemView) {
-                super(itemView);
-                ButterKnife.inject(this, itemView);
-            }
-
-        }
-
-    }
-
-//    public static class SpacingItem extends MultiTypeBaseItem<SpacingItem.ViewHolder> {
-//
-//        public static class ViewHolder extends MultiTypeBaseItem.ViewHolder {
-//
-//            public ViewHolder(View itemView) {
-//                super(itemView);
-//            }
-//
-//        }
-//
-//    }
-
     /**
-     * Listen for loading status and errors. Used by a RecyclerView's host.
+     * Listen for loading status and errors. Used by a {@code RecyclerView}'s host.
      */
     public static interface StatusListener {
 

@@ -17,7 +17,7 @@ public final class Credentials extends Model {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Credentials)) return false;
 
         Credentials credentials = (Credentials) o;
 

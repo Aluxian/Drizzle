@@ -1,29 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:id="@+id/container"
     android:layout_height="48dp"
-    android:theme="@style/Drizzle.Theme.Dark"
-    android:background="?android:attr/selectableItemBackground">
+    android:background="?android:attr/selectableItemBackground"
+    android:gravity="center_vertical">
 
     <ImageView
         android:id="@+id/icon"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_centerVertical="true"
         android:layout_marginStart="16dp"
         android:contentDescription="@null"
-        android:tint="@color/selector_drawer_text"
-        android:scaleType="center" />
+        android:tint="?android:attr/textColorPrimary" />
 
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="72dp"
-        android:fontFamily="sans-serif-medium"
-        android:textColor="@color/selector_drawer_text"
-        android:textSize="14sp" />
+        android:textAppearance="@android:style/TextAppearance.Material.Body2"
+        android:textColorLink="?android:attr/textColorPrimary" />
 
 </RelativeLayout>

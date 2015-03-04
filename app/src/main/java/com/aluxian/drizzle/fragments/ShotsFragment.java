@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import com.aluxian.drizzle.R;
 import com.aluxian.drizzle.adapters.ShotsAdapter;
-import com.aluxian.drizzle.adapters.multi.MultiTypeInfiniteAdapter;
+import com.aluxian.drizzle.adapters.items.LoadingItem;
 import com.aluxian.drizzle.api.Params;
 import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.api.providers.FilteredShotsProvider;
@@ -97,7 +97,7 @@ public class ShotsFragment extends Fragment implements ShotsAdapter.StatusListen
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                return mShotsAdapter.itemsList().get(position) instanceof MultiTypeInfiniteAdapter.LoadingItem ? 2 : 1;
+                return mShotsAdapter.itemsList().get(position) instanceof LoadingItem ? 2 : 1;
             }
         });
 

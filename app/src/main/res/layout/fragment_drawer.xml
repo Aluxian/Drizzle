@@ -1,98 +1,14 @@
 <com.aluxian.drizzle.views.ScrimInsetsFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
     android:fitsSystemWindows="true"
     app:insetForeground="#4000">
 
-    <LinearLayout
+    <com.aluxian.drizzle.views.CustomEdgeRecyclerView
+        android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/white"
-        android:clickable="true"
-        android:orientation="vertical">
-
-        <com.aluxian.drizzle.views.FixedAspectRatioRelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:aspectRatioHeight="10"
-            app:aspectRatioWidth="16">
-
-            <ImageView
-                android:id="@+id/cover"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:adjustViewBounds="true"
-                android:contentDescription="@null"
-                android:scaleType="centerCrop" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/overlay_drawer_cover" />
-
-            <LinearLayout
-                android:id="@+id/pixels_count_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="12dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginStart="16dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/pixels_count"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@android:color/white"
-                    android:fontFamily="sans-serif-medium"
-                    android:textSize="16sp"
-                    tools:text="290,936,742,552" />
-
-                <TextView
-                    android:id="@+id/pixels_description"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/drawer_pixels_dribbbled"
-                    android:textColor="#ddd"
-                    android:textSize="12sp"
-                    android:visibility="invisible" />
-
-            </LinearLayout>
-
-            <!--<TextView
-                android:id="@+id/username"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="16dp"
-                android:layout_marginStart="16dp"
-                android:fontFamily="sans-serif-medium"
-                android:text="Aluxian"
-                android:textSize="14sp"/>
-
-            <ImageView
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:layout_above="@id/username"
-                android:layout_marginBottom="16dp"
-                android:layout_marginStart="16dp"
-                android:background="@color/slate"
-                android:contentDescription="@null"/>-->
-
-        </com.aluxian.drizzle.views.FixedAspectRatioRelativeLayout>
-
-        <ListView
-            android:id="@+id/list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:choiceMode="singleChoice"
-            android:divider="@android:color/transparent"
-            android:dividerHeight="0dp"
-            android:drawSelectorOnTop="true" />
-
-    </LinearLayout>
+        android:layout_height="match_parent" />
 
 </com.aluxian.drizzle.views.ScrimInsetsFrameLayout>

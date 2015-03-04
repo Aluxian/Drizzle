@@ -17,7 +17,6 @@ import com.aluxian.drizzle.utils.Dp;
 import com.aluxian.drizzle.utils.UberSwatch;
 import com.aluxian.drizzle.utils.transformations.CircularBorderedTransformation;
 import com.aluxian.drizzle.utils.transformations.CircularTransformation;
-import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
@@ -101,7 +100,7 @@ public class ShotSummary extends LinearLayout {
 
         mUserAvatar.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), UserActivity.class);
-            intent.putExtra(UserActivity.EXTRA_USER_DATA, new Gson().toJson(shot.user));
+            intent.putExtra(UserActivity.EXTRA_USER_DATA, shot.user.toJson());
             getContext().startActivity(intent);
         });
 

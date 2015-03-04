@@ -69,14 +69,9 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
+            <include
                 android:id="@+id/rebounds_header"
-                style="@android:style/TextAppearance.Material.Body2"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:gravity="center_vertical"
-                android:paddingEnd="16dp"
-                android:paddingStart="16dp" />
+                layout="@layout/include_header" />
 
             <com.aluxian.drizzle.views.CustomEdgeRecyclerView
                 android:id="@+id/rebounds_recycler"
@@ -91,14 +86,9 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
+            <include
                 android:id="@+id/attachments_header"
-                style="@android:style/TextAppearance.Material.Body2"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:gravity="center_vertical"
-                android:paddingEnd="16dp"
-                android:paddingStart="16dp" />
+                layout="@layout/include_header" />
 
             <com.aluxian.drizzle.views.CustomEdgeRecyclerView
                 android:id="@+id/attachments_recycler"

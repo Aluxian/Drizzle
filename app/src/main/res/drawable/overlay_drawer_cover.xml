@@ -11,10 +11,4 @@
         </shape>
     </item>
 
-    <item>
-        <shape>
-            <solid android:color="#3000" />
-        </shape>
-    </item>
-
 </layer-list>

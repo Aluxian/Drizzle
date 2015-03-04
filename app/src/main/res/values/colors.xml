@@ -13,6 +13,7 @@
     <color name="background_pressed">#efefef</color>-->
 
     <color name="ripple_material_lightly">#20000000</color>
+    <color name="divider">#1fffffff</color>
 
     <color name="text_subheader">#777</color>
     <color name="text_light">#888</color>

@@ -251,7 +251,6 @@ public class ApiRequest<T> extends Request.Builder {
             } catch (BadCredentialsException e) {
                 if (UserManager.getInstance().isAuthenticated()) {
                     UserManager.getInstance().clearAccessToken();
-                    // TODO: move this and mUrl = CT somewhere else
                     // TODO: show bottom toast: you have been signed out
                 } else {
                     throw new BadRequestException(401, e.getLocalizedMessage());

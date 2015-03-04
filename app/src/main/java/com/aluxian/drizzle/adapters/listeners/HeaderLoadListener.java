@@ -1,8 +1,8 @@
-package com.aluxian.drizzle.adapters;
+package com.aluxian.drizzle.adapters.listeners;
 
 import com.aluxian.drizzle.utils.UberSwatch;
 
-public interface AdapterHeaderListener {
+public interface HeaderLoadListener {
 
     /**
      * Called after the header view is loaded.

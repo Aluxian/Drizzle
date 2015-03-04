@@ -12,7 +12,11 @@ public class UberSwatch {
     public final int bodyTextColor;
     public final int accentColor;
 
-    public UberSwatch(Palette palette) {
+    public static UberSwatch from(Palette palette) {
+        return new UberSwatch(palette);
+    }
+
+    private UberSwatch(Palette palette) {
         this.swatch = getSwatch(palette);
         this.rgb = swatch.getRgb();
         this.titleTextColor = swatch.getTitleTextColor();
@@ -46,7 +50,7 @@ public class UberSwatch {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof UberSwatch)) return false;
 
         UberSwatch uberSwatch = (UberSwatch) o;
         return swatch.equals(uberSwatch.swatch);

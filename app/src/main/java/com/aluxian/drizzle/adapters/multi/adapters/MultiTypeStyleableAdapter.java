@@ -1,11 +1,16 @@
-package com.aluxian.drizzle.adapters.multi;
+package com.aluxian.drizzle.adapters.multi.adapters;
 
+import com.aluxian.drizzle.adapters.multi.MultiTypeBaseAdapter;
+import com.aluxian.drizzle.adapters.multi.items.MultiTypeBaseItem;
+import com.aluxian.drizzle.adapters.multi.items.MultiTypeStyleableItem;
+import com.aluxian.drizzle.adapters.multi.traits.MultiTypeHeader;
+import com.aluxian.drizzle.utils.Log;
 import com.aluxian.drizzle.utils.UberSwatch;
 
 /**
- * A MultiTypeAdapter that supports styleable items. Items should extend {@link com.aluxian.drizzle.adapters.multi.MultiTypeStyleableItem}.
+ * A {@link com.aluxian.drizzle.adapters.multi.MultiTypeBaseAdapter} that supports {@link com.aluxian.drizzle.adapters.multi.items.MultiTypeStyleableItem}s.
  */
-public abstract class MultiTypeStyleableAdapter extends MultiTypeAdapter {
+public abstract class MultiTypeStyleableAdapter extends MultiTypeBaseAdapter {
 
     /** The currently set colors. */
     protected UberSwatch mSwatch;
@@ -15,7 +20,7 @@ public abstract class MultiTypeStyleableAdapter extends MultiTypeAdapter {
      *
      * @param swatch The colour palette to use.
      */
-    public void setColors(UberSwatch swatch) {
+    public void setStyle(UberSwatch swatch) {
         mSwatch = swatch;
 
         // Update existing items
@@ -36,10 +41,8 @@ public abstract class MultiTypeStyleableAdapter extends MultiTypeAdapter {
         // Set the colour palette
         if (mSwatch != null && item instanceof MultiTypeStyleableItem) {
             MultiTypeStyleableItem styleableItem = (MultiTypeStyleableItem) item;
-
-            if (styleableItem.getSwatch() == null || styleableItem.getSwatch() != mSwatch) {
-                styleableItem.setColors(holder, mSwatch);
-            }
+            styleableItem.setStyle(holder, mSwatch);
+            Log.d("changing style on item " + position);
         }
     }
 

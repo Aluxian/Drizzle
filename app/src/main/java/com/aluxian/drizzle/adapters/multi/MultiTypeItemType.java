@@ -1,5 +1,7 @@
 package com.aluxian.drizzle.adapters.multi;
 
+import com.aluxian.drizzle.adapters.multi.items.MultiTypeBaseItem;
+
 import java.util.Objects;
 
 /**
@@ -7,7 +9,7 @@ import java.util.Objects;
  *
  * @param <VH> The item's ViewHolder.
  */
-public class MultiTypeItemType<VH extends MultiTypeBaseItem.ViewHolder> {
+public final class MultiTypeItemType<VH extends MultiTypeBaseItem.ViewHolder> {
 
     public final Class itemClass;
     public final Class<VH> viewHolderClass;
@@ -22,7 +24,7 @@ public class MultiTypeItemType<VH extends MultiTypeBaseItem.ViewHolder> {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof MultiTypeItemType)) return false;
 
         MultiTypeItemType itemType = (MultiTypeItemType) o;
 

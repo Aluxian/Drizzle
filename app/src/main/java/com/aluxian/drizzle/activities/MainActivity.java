@@ -14,11 +14,19 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.aluxian.drizzle.R;
+import com.aluxian.drizzle.adapters.items.DividerItem;
+import com.aluxian.drizzle.adapters.items.DrawerHeaderItem;
+import com.aluxian.drizzle.adapters.items.DrawerItem;
+import com.aluxian.drizzle.adapters.items.SpacingItem;
+import com.aluxian.drizzle.adapters.items.SubHeaderItem;
+import com.aluxian.drizzle.adapters.multi.items.MultiTypeBaseItem;
 import com.aluxian.drizzle.fragments.DrawerFragment;
 import com.aluxian.drizzle.fragments.TabsFragment;
 import com.aluxian.drizzle.utils.Config;
+import com.aluxian.drizzle.utils.Dp;
 import com.aluxian.drizzle.utils.Log;
 import com.aluxian.drizzle.utils.UserManager;
 import com.aluxian.drizzle.views.toolbar.EnhancedToolbar;
@@ -27,7 +35,7 @@ import java.util.List;
 
 import static com.aluxian.drizzle.fragments.DrawerFragment.DrawerIconState;
 
-public class MainActivity extends FragmentActivity implements DrawerFragment.Callbacks {
+public class MainActivity extends FragmentActivity implements DrawerFragment.DrawerCallbacks {
 
     public static final String PREF_INTRO_FINISHED = "intro_finished";
     public static final String PREF_API_AUTH_TOKEN = "api_auth_token";
@@ -111,72 +119,90 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Cal
     }
 
     @Override
-    public boolean onDrawerItemSelected(int titleResourceId) {
-        switch (titleResourceId) {
-            case R.string.drawer_main_feed:
-                replaceFragment(TabsFragment.newInstance(TabsFragment.Type.FEED));
-                //replaceFragment(ShotsFragment.newInstance(FollowingShotsProvider.class, null));
-                return true;
+    public void onLoadDrawerItems(List<MultiTypeBaseItem<? extends MultiTypeBaseItem.ViewHolder>> items) {
+        items.add(new DrawerHeaderItem((swatch, height) -> mDrawerFragment.setStyle(swatch)));
+        items.add(new SpacingItem(ViewGroup.LayoutParams.MATCH_PARENT, Dp.PX_08));
 
-            case R.string.drawer_main_shots:
-                replaceFragment(TabsFragment.newInstance(TabsFragment.Type.SHOTS));
-                return true;
+        items.add(new DrawerItem(R.drawable.ic_feed, R.string.drawer_main_feed, position -> {
+            replaceFragment(TabsFragment.newInstance(TabsFragment.Type.FEED));
+            //replaceFragment(ShotsFragment.newInstance(FollowingShotsProvider.class, null));
+            mDrawerFragment.closeDrawer();
+            mDrawerFragment.onItemSelected(position);
+        }, true));
 
-            case R.string.drawer_personal_buckets:
+        items.add(new DrawerItem(R.drawable.ic_shots, R.string.drawer_main_shots, position -> {
+            replaceFragment(TabsFragment.newInstance(TabsFragment.Type.SHOTS));
+            mDrawerFragment.closeDrawer();
+            mDrawerFragment.onItemSelected(position);
+        }));
 
-                return true;
+        items.add(new SpacingItem(ViewGroup.LayoutParams.MATCH_PARENT, Dp.PX_08));
+        items.add(new SubHeaderItem(R.string.drawer_personal));
 
-            case R.string.drawer_personal_go_pro:
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://dribbble.com/pro?ref=getdrizzle.co")));
-                return false;
+        items.add(new DrawerItem(R.drawable.ic_bucket, R.string.drawer_personal_buckets, position -> {
 
-            case R.string.drawer_personal_account_settings:
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://dribbble.com/account")));
-                return true;
+            mDrawerFragment.closeDrawer();
+            mDrawerFragment.onItemSelected(position);
+        }, true));
 
-            case R.string.drawer_personal_sign_out:
-                UserManager.getInstance().clearAccessToken();
-                mDrawerFragment.checkAuthState();
-                return false;
+        items.add(new DrawerItem(R.drawable.ic_dribbble, R.string.drawer_personal_go_pro, position -> {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://dribbble.com/pro?ref=getdrizzle.co")));
+            mDrawerFragment.closeDrawer();
+        }, true));
 
-            case R.string.drawer_personal_sign_in:
-                startActivity(new Intent(this, AuthActivity.class));
-                return false;
+        items.add(new DrawerItem(R.drawable.ic_account, R.string.drawer_personal_account_settings, position -> {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://dribbble.com/account")));
+            mDrawerFragment.closeDrawer();
+            mDrawerFragment.onItemSelected(position);
+        }, true));
 
-            case R.string.drawer_app_rate:
-                Intent rateIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + getPackageName()));
-                List<ResolveInfo> list = getPackageManager().queryIntentActivities(rateIntent, 0);
+        items.add(new DrawerItem(R.drawable.ic_sign_out, R.string.drawer_personal_sign_out, position -> {
+            UserManager.getInstance().clearAccessToken();
+            mDrawerFragment.checkAuthState();
+            mDrawerFragment.closeDrawer();
+        }, true));
 
-                if (list.size() > 0) {
-                    startActivity(rateIntent);
-                } else {
-                    rateIntent.setData(Uri.parse("https://play.google.com/store/apps/details?id=" + getPackageName()));
-                    startActivity(rateIntent);
-                }
+        items.add(new DrawerItem(R.drawable.ic_sign_in, R.string.drawer_personal_sign_in, position -> {
+            startActivity(new Intent(this, AuthActivity.class));
+            mDrawerFragment.closeDrawer();
+        }, false));
 
-                return false;
+        items.add(new DividerItem());
 
-            case R.string.drawer_app_feedback:
-                String uri = "mailto:" + Uri.encode(Config.FEEDBACK_EMAIL)
-                        + "?subject=" + Uri.encode(getString(R.string.send_feedback_subject))
-                        + "&body=" + Uri.encode(getString(R.string.send_feedback_body));
+        items.add(new DrawerItem(R.drawable.ic_rate, R.string.drawer_app_rate, position -> {
+            Intent rateIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + getPackageName()));
+            List<ResolveInfo> list = getPackageManager().queryIntentActivities(rateIntent, 0);
 
-                try {
-                    startActivity(new Intent(Intent.ACTION_SENDTO, Uri.parse(uri)));
-                } catch (ActivityNotFoundException e) {
-                    Log.d(e);
+            if (list.size() > 0) {
+                startActivity(rateIntent);
+            } else {
+                rateIntent.setData(Uri.parse("https://play.google.com/store/apps/details?id=" + getPackageName()));
+                startActivity(rateIntent);
+            }
 
-                    new AlertDialog.Builder(this, R.style.Drizzle_Widget_Dialog)
-                            .setMessage(getString(R.string.send_feedback_error, Config.FEEDBACK_EMAIL))
-                            .setPositiveButton(R.string.dialog_ok, null)
-                            .show();
-                }
+            mDrawerFragment.closeDrawer();
+        }));
 
-                return false;
+        items.add(new DrawerItem(R.drawable.ic_feedback, R.string.drawer_app_feedback, position -> {
+            String uri = "mailto:" + Uri.encode(Config.FEEDBACK_EMAIL)
+                    + "?subject=" + Uri.encode(getString(R.string.send_feedback_subject))
+                    + "&body=" + Uri.encode(getString(R.string.send_feedback_body));
 
-            default:
-                return true;
-        }
+            try {
+                startActivity(new Intent(Intent.ACTION_SENDTO, Uri.parse(uri)));
+            } catch (ActivityNotFoundException e) {
+                Log.d(e);
+
+                new AlertDialog.Builder(this, R.style.Drizzle_Widget_Dialog)
+                        .setMessage(getString(R.string.send_feedback_error, Config.FEEDBACK_EMAIL))
+                        .setPositiveButton(R.string.dialog_ok, null)
+                        .show();
+            }
+
+            mDrawerFragment.closeDrawer();
+        }));
+
+        items.add(new SpacingItem(ViewGroup.LayoutParams.MATCH_PARENT, Dp.PX_08));
     }
 
     @SuppressWarnings("ConstantConditions")
