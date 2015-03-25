@@ -2,8 +2,8 @@ package com.aluxian.drizzle.utils;
 
 import android.text.TextUtils;
 
+import com.aluxian.drizzle.App;
 import com.aluxian.drizzle.BuildConfig;
-import com.aluxian.drizzle.api.ApiRequest;
 import com.google.gson.Gson;
 
 /**
@@ -102,7 +102,7 @@ public class Log {
             return "()";
         }
 
-        Gson gson = ApiRequest.GSON;
+        Gson gson = App.GSON;
 
         // Convert objects that don't override the toString() method to JSON
         for (int i = 0; i < messages.length; i++) {

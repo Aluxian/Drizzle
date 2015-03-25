@@ -32,7 +32,6 @@ public final class Dribbble {
     public static ApiRequest<List<Shot>> listShots(Params.List list, Params.Timeframe timeframe, Params.Sort sort) {
         return new ApiRequest<>(new TypeToken<List<Shot>>() {})
                 .accessToken(UserManager.getInstance().getAccessToken())
-                .useCache(true)
                 .queryParam("list", list.apiValue)
                 .queryParam("timeframe", timeframe.apiValue)
                 .queryParam("sort", sort.apiValue)
@@ -46,7 +45,6 @@ public final class Dribbble {
     public static ApiRequest<Shot> getShot(int id) {
         return new ApiRequest<>(new TypeToken<Shot>() {})
                 .accessToken(UserManager.getInstance().getAccessToken())
-                .useCache(true)
                 .path("shots/" + id);
     }
 
@@ -57,7 +55,6 @@ public final class Dribbble {
     public static ApiRequest<List<Shot>> listBucketShots(int bucketId) {
         return new ApiRequest<>(new TypeToken<List<Shot>>() {})
                 .accessToken(UserManager.getInstance().getAccessToken())
-                .useCache(true)
                 .path("buckets/" + bucketId + "/shots");
     }
 
@@ -75,7 +72,6 @@ public final class Dribbble {
     public static ApiRequest<List<Attachment>> listAttachments(int shotId) {
         return new ApiRequest<>(new TypeToken<List<Attachment>>() {})
                 .accessToken(UserManager.getInstance().getAccessToken())
-                .useCache(true)
                 .path("shots/" + shotId + "/attachments");
     }
 
@@ -86,7 +82,6 @@ public final class Dribbble {
     public static ApiRequest<List<Shot>> listRebounds(int shotId) {
         return new ApiRequest<>(new TypeToken<List<Shot>>() {})
                 .accessToken(UserManager.getInstance().getAccessToken())
-                .useCache(true)
                 .path("shots/" + shotId + "/rebounds");
     }
 
@@ -97,7 +92,6 @@ public final class Dribbble {
     public static ApiRequest<List<Like>> listLikes(int shotId) {
         return new ApiRequest<>(new TypeToken<List<Like>>() {})
                 .accessToken(UserManager.getInstance().getAccessToken())
-                .useCache(true)
                 .path("shots/" + shotId + "/likes");
     }
 
@@ -108,7 +102,6 @@ public final class Dribbble {
     public static ApiRequest<List<Bucket>> listBuckets(int shotId) {
         return new ApiRequest<>(new TypeToken<List<Bucket>>() {})
                 .accessToken(UserManager.getInstance().getAccessToken())
-                .useCache(true)
                 .path("shots/" + shotId + "/buckets");
     }
 
@@ -119,7 +112,6 @@ public final class Dribbble {
     public static ApiRequest<List<Project>> listProjects(int shotId) {
         return new ApiRequest<>(new TypeToken<List<Project>>() {})
                 .accessToken(UserManager.getInstance().getAccessToken())
-                .useCache(true)
                 .path("shots/" + shotId + "/projects");
     }
 
@@ -130,7 +122,6 @@ public final class Dribbble {
     public static ApiRequest<List<Shot>> listUserShots(int userId) {
         return new ApiRequest<>(new TypeToken<List<Shot>>() {})
                 .accessToken(UserManager.getInstance().getAccessToken())
-                .useCache(true)
                 .path("users/" + userId + "/shots");
     }
 
@@ -171,7 +162,6 @@ public final class Dribbble {
     public static ApiRequest<List<Shot>> listShotsFromFollowing() {
         return new ApiRequest<>(new TypeToken<List<Shot>>() {})
                 .accessToken(UserManager.getInstance().getAccessToken())
-                .useCache(true)
                 .path("user/following/shots");
     }
 
@@ -186,7 +176,6 @@ public final class Dribbble {
     public static <T> ApiRequest<List<T>> listNextPage(String nextPageUrl, TypeToken<List<T>> typeToken) {
         return new ApiRequest<>(typeToken)
                 .accessToken(UserManager.getInstance().getAccessToken())
-                .useCache(true)
                 .url(nextPageUrl);
     }
 
@@ -197,7 +186,6 @@ public final class Dribbble {
     public static ApiRequest<Object> userFollowingUser(int userId) {
         return new ApiRequest<>(null)
                 .accessToken(UserManager.getInstance().getAccessToken())
-                .useCache(true)
                 .path("user/following/" + userId);
     }
 
@@ -226,14 +214,12 @@ public final class Dribbble {
     public static ApiRequest<List<Comment>> listCommentsForShot(int shotId) {
         return new ApiRequest<>(new TypeToken<List<Comment>>() {})
                 .accessToken(UserManager.getInstance().getAccessToken())
-                .useCache(true)
                 .path("shots/" + shotId + "/comments");
     }
 
     public static ApiRequest<List<Like>> listLikesForComment(int shotId, int commentId) {
         return new ApiRequest<>(new TypeToken<List<Like>>() {})
                 .accessToken(UserManager.getInstance().getAccessToken())
-                .useCache(true)
                 .path("shots/" + shotId + "/comments/" + commentId + "/likes");
     }
 
@@ -242,7 +228,6 @@ public final class Dribbble {
     public static ApiRequest<Comment> getComment(int shotId, int commentId) {
         return new ApiRequest<>(new TypeToken<Comment>() {})
                 .accessToken(UserManager.getInstance().getAccessToken())
-                .useCache(true)
                 .path("shots/" + shotId + "/comments/" + commentId);
     }
 
@@ -258,7 +243,6 @@ public final class Dribbble {
     public static ApiRequest<Like> userLikesComment(int shotId, int commentId) {
         return new ApiRequest<>(new TypeToken<Like>() {})
                 .accessToken(UserManager.getInstance().getAccessToken())
-                .useCache(true)
                 .path("shots/" + shotId + "/comments/" + commentId + "/like");
     }
 
@@ -281,14 +265,12 @@ public final class Dribbble {
     public static ApiRequest<List<Like>> listLikesForShot(int shotId) {
         return new ApiRequest<>(new TypeToken<List<Like>>() {})
                 .accessToken(UserManager.getInstance().getAccessToken())
-                .useCache(true)
                 .path("shots/" + shotId + "/likes");
     }
 
     public static ApiRequest<Like> userLikesShot(int shotId) {
         return new ApiRequest<>(new TypeToken<Like>() {})
                 .accessToken(UserManager.getInstance().getAccessToken())
-                .useCache(true)
                 .path("shots/" + shotId + "/like");
     }
 

@@ -8,10 +8,9 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.Toolbar;
 
+import com.aluxian.drizzle.App;
 import com.aluxian.drizzle.R;
-import com.aluxian.drizzle.api.ApiRequest;
 import com.aluxian.drizzle.api.models.User;
-import com.google.gson.Gson;
 
 public class TeamActivity extends Activity {
 
@@ -23,7 +22,7 @@ public class TeamActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shot);
 
-        User user = ApiRequest.GSON.fromJson(getIntent().getStringExtra(EXTRA_TEAM_DATA), User.class);
+        User user = App.GSON.fromJson(getIntent().getStringExtra(EXTRA_TEAM_DATA), User.class);
 
         // Load the toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

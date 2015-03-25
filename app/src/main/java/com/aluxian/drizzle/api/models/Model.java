@@ -3,7 +3,7 @@ package com.aluxian.drizzle.api.models;
 import com.aluxian.drizzle.utils.FunctionA;
 import com.google.gson.JsonObject;
 
-import static com.aluxian.drizzle.api.ApiRequest.GSON;
+import static com.aluxian.drizzle.App.GSON;
 
 /**
  * Base class for models.

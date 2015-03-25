@@ -8,9 +8,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.aluxian.drizzle.App;
 import com.aluxian.drizzle.R;
 import com.aluxian.drizzle.adapters.ShotActivityAdapter;
-import com.aluxian.drizzle.api.ApiRequest;
 import com.aluxian.drizzle.multi.adapters.MultiTypeInfiniteAdapter;
 import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.api.providers.ShotCommentsProvider;
@@ -21,7 +21,6 @@ import com.aluxian.drizzle.views.CustomEdgeRecyclerView;
 import com.aluxian.drizzle.views.toolbar.NativeToolbar;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
-import com.google.gson.Gson;
 
 public class ShotActivity extends Activity implements MultiTypeHeader.StateListener, MultiTypeInfiniteAdapter.StatusListener {
 
@@ -40,11 +39,11 @@ public class ShotActivity extends Activity implements MultiTypeHeader.StateListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shot);
 
-        shot = ApiRequest.GSON.fromJson(getIntent().getStringExtra(EXTRA_SHOT_DATA), Shot.class);
+        shot = App.GSON.fromJson(getIntent().getStringExtra(EXTRA_SHOT_DATA), Shot.class);
         Shot reboundShot = null;
 
         if (getIntent().hasExtra(EXTRA_REBOUND_OF)) {
-            reboundShot = ApiRequest.GSON.fromJson(getIntent().getStringExtra(EXTRA_REBOUND_OF), Shot.class);
+            reboundShot = App.GSON.fromJson(getIntent().getStringExtra(EXTRA_REBOUND_OF), Shot.class);
         }
 
         // Load the toolbar

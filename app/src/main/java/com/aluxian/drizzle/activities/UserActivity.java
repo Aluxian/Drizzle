@@ -9,10 +9,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.aluxian.drizzle.App;
 import com.aluxian.drizzle.R;
 import com.aluxian.drizzle.adapters.items.LoadingItem;
 import com.aluxian.drizzle.adapters.UserActivityAdapter;
-import com.aluxian.drizzle.api.ApiRequest;
 import com.aluxian.drizzle.multi.adapters.MultiTypeInfiniteAdapter;
 import com.aluxian.drizzle.api.models.User;
 import com.aluxian.drizzle.api.providers.UserShotsProvider;
@@ -23,7 +23,6 @@ import com.aluxian.drizzle.views.CustomEdgeRecyclerView;
 import com.aluxian.drizzle.views.toolbar.NativeToolbar;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
-import com.google.gson.Gson;
 
 public class UserActivity extends Activity implements MultiTypeHeader.StateListener, MultiTypeInfiniteAdapter.StatusListener {
 
@@ -40,7 +39,7 @@ public class UserActivity extends Activity implements MultiTypeHeader.StateListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
 
-        mUser = ApiRequest.GSON.fromJson(getIntent().getStringExtra(EXTRA_USER_DATA), User.class);
+        mUser = App.GSON.fromJson(getIntent().getStringExtra(EXTRA_USER_DATA), User.class);
 
         // Load the toolbar
         mToolbar = (NativeToolbar) findViewById(R.id.toolbar);
