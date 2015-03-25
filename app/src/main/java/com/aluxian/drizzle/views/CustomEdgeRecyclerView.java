@@ -78,4 +78,13 @@ public class CustomEdgeRecyclerView extends ObservableRecyclerView {
         }
     }
 
+    @Override
+    protected void onScrollChanged(int l, int t, int oldL, int oldT) {
+        try {
+            super.onScrollChanged(l, t, oldL, oldT);
+        } catch (NullPointerException e) {
+            Log.e(e);
+        }
+    }
+
 }

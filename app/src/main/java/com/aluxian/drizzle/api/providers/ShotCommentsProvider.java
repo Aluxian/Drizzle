@@ -18,7 +18,7 @@ public class ShotCommentsProvider extends ItemsProvider<Comment> {
 
     @Override
     protected ApiRequest<List<Comment>> getListRequest() {
-        return Dribbble.listComments(mShotId);
+        return Dribbble.listCommentsForShot(mShotId);
     }
 
     @Override

@@ -6,8 +6,8 @@ import android.view.ViewGroup;
 
 import com.aluxian.drizzle.R;
 import com.aluxian.drizzle.adapters.items.LoadingItem;
-import com.aluxian.drizzle.multi.items.MultiTypeBaseItem;
 import com.aluxian.drizzle.api.providers.ItemsProvider;
+import com.aluxian.drizzle.multi.items.MultiTypeBaseItem;
 import com.aluxian.drizzle.recycler.ItemLoader;
 import com.aluxian.drizzle.utils.Config;
 import com.aluxian.drizzle.utils.Log;
@@ -41,7 +41,6 @@ public abstract class MultiTypeInfiniteAdapter<T> extends MultiTypeStyleableAdap
     public MultiTypeInfiniteAdapter(ItemsProvider<T> itemsProvider, StatusListener statusListener) {
         super();
         mStatusListener = statusListener;
-
         mItemLoader = new ItemLoader<>(itemsProvider, this, Config.LOAD_ITEMS_THRESHOLD);
         mItemLoader.loadFirstItems();
     }
@@ -102,10 +101,10 @@ public abstract class MultiTypeInfiniteAdapter<T> extends MultiTypeStyleableAdap
     /**
      * Converts the given list of data items into a list of {@link com.aluxian.drizzle.multi.items.MultiTypeBaseItem}s.
      *
-     * @param items The list of items to map.
+     * @param lst The list of items to map.
      * @return A list of {@link com.aluxian.drizzle.multi.items.MultiTypeBaseItem} objects.
      */
-    protected abstract List<MultiTypeBaseItem<? extends MultiTypeBaseItem.ViewHolder>> convertLoadedItems(List<T> items);
+    protected abstract List<MultiTypeBaseItem<? extends MultiTypeBaseItem.ViewHolder>> convertLoadedItems(List<T> lst);
 
     @Override
     public void onStartedLoading() {

@@ -34,7 +34,8 @@ public class PaletteTransformation implements Transformation {
 
     @Override
     public Bitmap transform(Bitmap source) {
-        Palette.generateAsync(source, palette -> CACHE.put(source, palette));
+        Palette palette = Palette.generate(source);
+        CACHE.put(source, palette);
         return source;
     }
 

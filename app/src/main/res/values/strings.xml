@@ -124,4 +124,12 @@
         <item>Most Commented</item>
     </string-array>
 
+    <string name="menu_comment_like">Like</string>
+    <string name="menu_comment_unlike">Unlike</string>
+    <string name="menu_comment_view_profile">View Profile</string>
+    <string name="menu_comment_update">Update</string>
+    <string name="menu_comment_delete">Delete</string>
+    <string name="menu_comment_likes">Likes</string>
+    <string name="menu_comment_share">Share</string>
+
 </resources>

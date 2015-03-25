@@ -2,24 +2,21 @@ package com.aluxian.drizzle.recycler;
 
 import android.os.AsyncTask;
 
-import com.aluxian.drizzle.api.exceptions.BadRequestException;
-import com.aluxian.drizzle.api.exceptions.TooManyRequestsException;
 import com.aluxian.drizzle.api.providers.ItemsProvider;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
  * Helpers that facilitates the use of {@link com.aluxian.drizzle.api.providers.ItemsProvider}s in adapters.
- * @param <T>
+ *
+ * @param <T> The type of items provided by the {@link com.aluxian.drizzle.api.providers.ItemsProvider}.
  */
 public class ItemLoader<T> {
 
     private int mItemsThreshold;
-    private boolean mPendingReload;
     private ItemsProvider<T> mItemsProvider;
     private Listener<T> mListener;
-    private LoadTask mLoadTask;
+    private LoadItemsTask<T> mLoadItemsTask;
 
     public ItemLoader(ItemsProvider<T> itemsProvider, Listener<T> listener, int itemsThreshold) {
         mItemsThreshold = itemsThreshold;
@@ -31,8 +28,8 @@ public class ItemLoader<T> {
      * Do the initial load of items.
      */
     public void loadFirstItems() {
-        mLoadTask = new LoadTask();
-        mLoadTask.execute();
+        mLoadItemsTask = new LoadItemsTask<>(mItemsProvider, mListener);
+        mLoadItemsTask.execute();
     }
 
     /**
@@ -42,9 +39,10 @@ public class ItemLoader<T> {
      * @param itemCount The total number of items in the adapter.
      */
     public void notifyBoundItemAt(int position, int itemCount) {
-        if (itemCount - position <= mItemsThreshold && (mLoadTask == null || mLoadTask.getStatus() == AsyncTask.Status.FINISHED)) {
-            mLoadTask = new LoadTask();
-            mLoadTask.execute();
+        if ((mLoadItemsTask == null || mLoadItemsTask.getStatus() == AsyncTask.Status.FINISHED)
+                && (itemCount - position <= mItemsThreshold) && !mItemsProvider.hasFinished()) {
+            mLoadItemsTask = new LoadItemsTask<>(mItemsProvider, mListener);
+            mLoadItemsTask.execute();
         }
     }
 
@@ -52,58 +50,17 @@ public class ItemLoader<T> {
      * Called when items need to be reloaded.
      */
     public void reload() {
-        if (mLoadTask != null) {
-            mLoadTask.cancel(true);
+        if (mLoadItemsTask != null) {
+            mLoadItemsTask.cancel(true);
         }
 
-        mPendingReload = true;
-        mLoadTask = new LoadTask();
-        mLoadTask.execute();
-    }
-
-    private class LoadTask extends AsyncTask<Void, Void, List<T>> {
-
-        private Exception mException;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mListener.onStartedLoading();
-        }
-
-        @Override
-        protected List<T> doInBackground(Void... params) {
-            try {
-                if (mPendingReload) {
-                    mPendingReload = false;
-                    return mItemsProvider.refresh();
-                } else {
-                    return mItemsProvider.load();
-                }
-            } catch (IOException | BadRequestException | TooManyRequestsException e) {
-                mException = e;
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(List<T> response) {
-            mListener.onFinishedLoading(response != null);
-
-            if (response != null) {
-                mListener.onItemsLoaded(response);
-            }
-
-            if (mException != null) {
-                mListener.onItemsLoadError(mException);
-            }
-        }
-
+        mLoadItemsTask = new LoadItemsTask<>(mItemsProvider, mListener);
+        mLoadItemsTask.setPendingReload(true);
+        mLoadItemsTask.execute();
     }
 
     /**
-     * Listen for loading status and result. Used by adapters.
+     * Listen for loading status and result.
      *
      * @param <T> The type of the items.
      */

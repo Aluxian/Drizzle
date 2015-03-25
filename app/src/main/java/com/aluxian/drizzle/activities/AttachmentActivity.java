@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.Toolbar;
 
 import com.aluxian.drizzle.R;
+import com.aluxian.drizzle.api.ApiRequest;
 import com.aluxian.drizzle.api.models.User;
 import com.google.gson.Gson;
 
@@ -22,7 +23,7 @@ public class AttachmentActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shot);
 
-        User user = new Gson().fromJson(getIntent().getStringExtra(EXTRA_ATTACHMENT_DATA), User.class);
+        User user = ApiRequest.GSON.fromJson(getIntent().getStringExtra(EXTRA_ATTACHMENT_DATA), User.class);
 
         // Load the toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

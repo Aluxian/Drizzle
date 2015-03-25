@@ -25,8 +25,8 @@ public class ShotsAdapter extends MultiTypeInfiniteAdapter<Shot> {
     }
 
     @Override
-    protected List<MultiTypeBaseItem<? extends MultiTypeBaseItem.ViewHolder>> convertLoadedItems(List<Shot> items) {
-        return Mapper.map(items, ShotItem::new);
+    protected List<MultiTypeBaseItem<? extends MultiTypeBaseItem.ViewHolder>> convertLoadedItems(List<Shot> lst) {
+        return Mapper.map(lst, ShotItem::new);
     }
 
     public ItemsProvider<Shot> getShotsProvider() {

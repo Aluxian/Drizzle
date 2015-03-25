@@ -10,11 +10,12 @@ import java.util.concurrent.TimeUnit;
 
 public class ApiCacheTest extends AndroidTestCase {
 
-    private ApiCache mApiCache;
+    private static final String TEST_KEY = "123";
+    private static final Dribbble.Response<List<String>> TEST_VALUE =
+            new Dribbble.Response<>(Arrays.asList("abc", "def"), "http://next.page");
+    private static final TypeToken<List<String>> TEST_TYPE = new TypeToken<List<String>>() {};
 
-    private static String mTestKey = "123";
-    private static Dribbble.Response<List<String>> mTestValue = new Dribbble.Response<>(Arrays.asList("abc", "def"), "http://next.page");
-    private static TypeToken<List<String>> mTestType = new TypeToken<List<String>>() {};
+    private ApiCache mApiCache;
 
     @Override
     protected void setUp() throws Exception {
@@ -25,35 +26,30 @@ public class ApiCacheTest extends AndroidTestCase {
     @Override
     protected void tearDown() throws Exception {
         super.tearDown();
-        mApiCache.clear();
-        mApiCache.close();
+        mApiCache.delete();
     }
 
     public void testPutGet() {
-        mApiCache.put(mTestKey, mTestValue);
-        Dribbble.Response<List<String>> response = mApiCache.get(mTestKey, mTestType);
-        assertEquals(mTestValue.data, response.data);
-        assertEquals(mTestValue.nextPageUrl, response.nextPageUrl);
+        mApiCache.put(TEST_KEY, TEST_VALUE);
+        assertEquals(TEST_VALUE, mApiCache.get(TEST_KEY, TEST_TYPE));
     }
 
     public void testRemove() {
-        mApiCache.put(mTestKey, mTestValue);
-        mApiCache.remove(mTestKey);
-        assertEquals(false, mApiCache.containsNotExpired(mTestKey));
+        mApiCache.put(TEST_KEY, TEST_VALUE);
+        mApiCache.remove(TEST_KEY);
+        assertEquals(false, mApiCache.containsNotExpired(TEST_KEY));
     }
 
     public void testExpired() {
-        mApiCache.put(mTestKey, mTestValue, System.currentTimeMillis() - TimeUnit.HOURS.toMillis(1));
-        assertEquals(false, mApiCache.containsNotExpired(mTestKey));
-        assertEquals(null, mApiCache.get(mTestKey, mTestType));
+        mApiCache.put(TEST_KEY, TEST_VALUE, System.currentTimeMillis() - TimeUnit.HOURS.toMillis(1));
+        assertEquals(false, mApiCache.containsNotExpired(TEST_KEY));
+        assertEquals(null, mApiCache.get(TEST_KEY, TEST_TYPE));
     }
 
     public void testNotExpired() {
-        mApiCache.put(mTestKey, mTestValue, System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1));
-        assertEquals(true, mApiCache.containsNotExpired(mTestKey));
-        Dribbble.Response<List<String>> response = mApiCache.get(mTestKey, mTestType);
-        assertEquals(mTestValue.data, response.data);
-        assertEquals(mTestValue.nextPageUrl, response.nextPageUrl);
+        mApiCache.put(TEST_KEY, TEST_VALUE, System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1));
+        assertEquals(true, mApiCache.containsNotExpired(TEST_KEY));
+        assertEquals(TEST_VALUE, mApiCache.get(TEST_KEY, TEST_TYPE));
     }
 
 }

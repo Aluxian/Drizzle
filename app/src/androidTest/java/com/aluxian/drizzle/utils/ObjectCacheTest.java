@@ -11,9 +11,9 @@ public class ObjectCacheTest extends AndroidTestCase {
 
     private ObjectCache mObjectCache;
 
-    private static String mTestKey = "123";
-    private static String mTestValue = "abc";
-    private static TypeToken<String> mTestType = new TypeToken<String>() {};
+    private static final String TEST_KEY = "123";
+    private static final String TEST_VALUE = "abc";
+    private static final TypeToken<String> TEST_TYPE = new TypeToken<String>() {};
 
     @Override
     protected void setUp() throws Exception {
@@ -24,31 +24,30 @@ public class ObjectCacheTest extends AndroidTestCase {
     @Override
     protected void tearDown() throws Exception {
         super.tearDown();
-        mObjectCache.clear();
-        mObjectCache.close();
+        mObjectCache.delete();
     }
 
     public void testPutGet() {
-        mObjectCache.put(mTestKey, mTestValue);
-        assertEquals(mTestValue, mObjectCache.get(mTestKey, mTestType));
+        mObjectCache.put(TEST_KEY, TEST_VALUE);
+        assertEquals(TEST_VALUE, mObjectCache.get(TEST_KEY, TEST_TYPE));
     }
 
     public void testRemove() {
-        mObjectCache.put(mTestKey, mTestValue);
-        mObjectCache.remove(mTestKey);
-        assertEquals(false, mObjectCache.containsNotExpired(mTestKey));
+        mObjectCache.put(TEST_KEY, TEST_VALUE);
+        mObjectCache.remove(TEST_KEY);
+        assertEquals(false, mObjectCache.containsNotExpired(TEST_KEY));
     }
 
     public void testExpired() {
-        mObjectCache.put(mTestKey, mTestValue, System.currentTimeMillis() - 100);
-        assertEquals(false, mObjectCache.containsNotExpired(mTestKey));
-        assertEquals(null, mObjectCache.get(mTestKey, mTestType));
+        mObjectCache.put(TEST_KEY, TEST_VALUE, System.currentTimeMillis() - 100);
+        assertEquals(false, mObjectCache.containsNotExpired(TEST_KEY));
+        assertEquals(null, mObjectCache.get(TEST_KEY, TEST_TYPE));
     }
 
     public void testNotExpired() {
-        mObjectCache.put(mTestKey, mTestValue, System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1));
-        assertEquals(true, mObjectCache.containsNotExpired(mTestKey));
-        assertEquals(mTestValue, mObjectCache.get(mTestKey, mTestType));
+        mObjectCache.put(TEST_KEY, TEST_VALUE, System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1));
+        assertEquals(true, mObjectCache.containsNotExpired(TEST_KEY));
+        assertEquals(TEST_VALUE, mObjectCache.get(TEST_KEY, TEST_TYPE));
     }
 
 }

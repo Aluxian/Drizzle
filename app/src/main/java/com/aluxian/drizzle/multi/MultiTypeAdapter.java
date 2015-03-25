@@ -12,7 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Custom implementation of RecyclerView.Adapter which supports different item view types.
+ * Custom implementation of {@link android.support.v7.widget.RecyclerView.Adapter} which supports different item view
+ * types.
  */
 public abstract class MultiTypeAdapter extends RecyclerView.Adapter<MultiTypeBaseItem.ViewHolder> {
 
@@ -39,7 +40,7 @@ public abstract class MultiTypeAdapter extends RecyclerView.Adapter<MultiTypeBas
     }
 
     /**
-     * Subclasses need to add supported {@link com.aluxian.drizzle.multi.MultiTypeItemType}s inside this method.
+     * Subclasses need to add the supported {@link com.aluxian.drizzle.multi.MultiTypeItemType}s inside this method.
      */
     protected abstract void onAddItemTypes();
 
@@ -54,12 +55,14 @@ public abstract class MultiTypeAdapter extends RecyclerView.Adapter<MultiTypeBas
     public MultiTypeBaseItem.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         try {
             // Inflate the layout specified by MultiTypeItemType
-            View view = LayoutInflater.from(parent.getContext()).inflate(mItemTypes.get(viewType).layoutId, parent, false);
+            int layoutId = mItemTypes.get(viewType).layoutId;
+            View view = LayoutInflater.from(parent.getContext()).inflate(layoutId, parent, false);
 
             // Use reflection to instantiate the corresponding ViewHolder
             return mItemTypes.get(viewType).viewHolderClass.getConstructor(View.class).newInstance(view);
-        } catch (InvocationTargetException | InstantiationException | NoSuchMethodException | IllegalAccessException e) {
-            throw new IllegalArgumentException("Invalid item type supplied for " + getClass().getSimpleName(), e);
+        } catch (InvocationTargetException | InstantiationException | NoSuchMethodException | IllegalAccessException
+                e) {
+            throw new IllegalArgumentException("Invalid ItemType supplied for " + getClass().getSimpleName(), e);
         }
     }
 

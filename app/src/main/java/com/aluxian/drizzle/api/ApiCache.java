@@ -23,11 +23,13 @@ public class ApiCache {
 
     @SuppressWarnings("unchecked")
     public <T> Dribbble.Response<T> get(String key, TypeToken<T> dataType) {
-        Dribbble.Response<JsonElement> cached = mObjectCache.get(key, new TypeToken<Dribbble.Response<JsonElement>>() {});
+        Dribbble.Response<JsonElement> cached = mObjectCache.get(key,
+                new TypeToken<Dribbble.Response<JsonElement>>() {});
 
         if (cached != null) {
             Log.d("Loaded " + key + " from cache");
-            return new Dribbble.Response<>((T) ApiRequest.GSON.fromJson(cached.data, dataType.getType()), cached.nextPageUrl);
+            T data = ApiRequest.GSON.fromJson(cached.data, dataType.getType());
+            return new Dribbble.Response<>(data, cached.nextPageUrl);
         }
 
         return null;
@@ -45,12 +47,8 @@ public class ApiCache {
         mObjectCache.remove(key);
     }
 
-    public void clear() {
-        mObjectCache.clear();
-    }
-
-    public void close() {
-        mObjectCache.close();
+    public void delete() {
+        mObjectCache.delete();
     }
 
     public boolean containsNotExpired(String key) {

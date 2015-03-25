@@ -57,7 +57,7 @@ public class ObjectCache {
 
                 if (editor != null) {
                     editor.set(DATA_INDEX, ApiRequest.GSON.toJson(value));
-                    editor.set(EXPIRES_INDEX, timeToLive <= 0 ? "0" : String.valueOf(System.currentTimeMillis() + timeToLive));
+                    editor.set(EXPIRES_INDEX, timeToLive <= 0 ? "0" : "" + (System.currentTimeMillis() + timeToLive));
                     editor.commit();
                     mDiskLruCache.flush();
                 }
@@ -82,23 +82,14 @@ public class ObjectCache {
         }).start();
     }
 
-    public void clear() {
+    public void delete() {
         new Thread(() -> {
             try {
                 mDiskLruCache.delete();
-                mDiskLruCache.flush();
             } catch (IOException e) {
                 Log.e(e);
             }
         }).start();
-    }
-
-    public void close() {
-        try {
-            mDiskLruCache.close();
-        } catch (IOException e) {
-            Log.e(e);
-        }
     }
 
     public boolean containsNotExpired(String key) {

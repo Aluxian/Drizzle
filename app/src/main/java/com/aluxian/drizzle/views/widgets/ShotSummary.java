@@ -10,7 +10,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.aluxian.drizzle.R;
 import com.aluxian.drizzle.activities.UserActivity;
 import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.utils.Dp;
@@ -107,7 +106,6 @@ public class ShotSummary extends LinearLayout {
         Picasso.with(getContext())
                 .load(shot.user.avatarUrl)
                 .transform(new CircularTransformation())
-                .placeholder(R.drawable.round_placeholder)
                 .into(mUserAvatar);
 
         mShot = shot;

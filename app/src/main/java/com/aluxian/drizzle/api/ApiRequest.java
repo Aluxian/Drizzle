@@ -204,6 +204,15 @@ public class ApiRequest<T> extends Request.Builder {
         return this;
     }
 
+    /**
+     * Mark this as a PUT request.
+     *
+     * @return This instance.
+     */
+    public ApiRequest<T> put() {
+        return put(null);
+    }
+
     @Override
     public ApiRequest<T> delete() {
         super.delete();
@@ -303,7 +312,7 @@ public class ApiRequest<T> extends Request.Builder {
      */
     @SuppressWarnings("unchecked")
     private Dribbble.Response<T> getFromCache(String key) {
-        if (API_CACHE != null) {
+        if (API_CACHE != null && mResponseType != null) {
             return API_CACHE.get(key, mResponseType);
         }
 
@@ -322,7 +331,7 @@ public class ApiRequest<T> extends Request.Builder {
     private Dribbble.Response<T> getFromNetwork(Request request)
             throws IOException, BadCredentialsException, BadRequestException, TooManyRequestsException {
         String requestHash = request.urlString();
-        Log.d("Loading " + requestHash + " from the API");
+        Log.d("Loading " + request.method() + " " + requestHash + " from the API");
 
         Response httpResponse = OK_HTTP_CLIENT.newCall(request).execute();
         String body = httpResponse.body().string();
@@ -339,6 +348,11 @@ public class ApiRequest<T> extends Request.Builder {
                 default:
                     throw new BadRequestException(httpResponse.code(), body);
             }
+        }
+
+        // Nothing to parse
+        if (mResponseType == null) {
+            return new Dribbble.Response<>(null, null);
         }
 
         // Parse the response

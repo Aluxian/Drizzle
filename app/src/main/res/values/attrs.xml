@@ -6,7 +6,6 @@
         <attr name="aspectRatioHeight" format="integer" />
     </declare-styleable>
 
-
     <declare-styleable name="ScrimInsetsView">
         <attr name="insetForeground" format="reference|color" />
         <attr name="insetApplyPadding" format="boolean" />

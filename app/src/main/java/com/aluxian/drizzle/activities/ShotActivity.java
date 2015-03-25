@@ -10,6 +10,7 @@ import android.view.View;
 
 import com.aluxian.drizzle.R;
 import com.aluxian.drizzle.adapters.ShotActivityAdapter;
+import com.aluxian.drizzle.api.ApiRequest;
 import com.aluxian.drizzle.multi.adapters.MultiTypeInfiniteAdapter;
 import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.api.providers.ShotCommentsProvider;
@@ -39,11 +40,11 @@ public class ShotActivity extends Activity implements MultiTypeHeader.StateListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shot);
 
-        shot = new Gson().fromJson(getIntent().getStringExtra(EXTRA_SHOT_DATA), Shot.class);
+        shot = ApiRequest.GSON.fromJson(getIntent().getStringExtra(EXTRA_SHOT_DATA), Shot.class);
         Shot reboundShot = null;
 
         if (getIntent().hasExtra(EXTRA_REBOUND_OF)) {
-            reboundShot = new Gson().fromJson(getIntent().getStringExtra(EXTRA_REBOUND_OF), Shot.class);
+            reboundShot = ApiRequest.GSON.fromJson(getIntent().getStringExtra(EXTRA_REBOUND_OF), Shot.class);
         }
 
         // Load the toolbar

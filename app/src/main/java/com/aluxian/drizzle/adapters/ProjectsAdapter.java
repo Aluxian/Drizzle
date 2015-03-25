@@ -22,8 +22,8 @@ public class ProjectsAdapter extends MultiTypeInfiniteAdapter<Project> {
     }
 
     @Override
-    protected List<MultiTypeBaseItem<? extends MultiTypeBaseItem.ViewHolder>> convertLoadedItems(List<Project> items) {
-        return Mapper.map(items, ProjectItem::new);
+    protected List<MultiTypeBaseItem<? extends MultiTypeBaseItem.ViewHolder>> convertLoadedItems(List<Project> lst) {
+        return Mapper.map(lst, ProjectItem::new);
     }
 
 }

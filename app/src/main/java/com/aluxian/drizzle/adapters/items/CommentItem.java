@@ -1,8 +1,10 @@
 package com.aluxian.drizzle.adapters.items;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.text.Html;
+import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
@@ -11,16 +13,23 @@ import android.widget.TextView;
 
 import com.aluxian.drizzle.R;
 import com.aluxian.drizzle.activities.UserActivity;
+import com.aluxian.drizzle.api.ApiRequest;
+import com.aluxian.drizzle.api.Dribbble;
+import com.aluxian.drizzle.api.models.Comment;
+import com.aluxian.drizzle.api.models.Like;
+import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.multi.MultiTypeItemType;
 import com.aluxian.drizzle.multi.items.MultiTypeBaseItem;
 import com.aluxian.drizzle.multi.items.MultiTypeStyleableItem;
-import com.aluxian.drizzle.api.models.Comment;
 import com.aluxian.drizzle.utils.CountableInterpolator;
 import com.aluxian.drizzle.utils.LocaleManager;
+import com.aluxian.drizzle.utils.Log;
 import com.aluxian.drizzle.utils.UberSwatch;
 import com.aluxian.drizzle.utils.transformations.CircularTransformation;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import butterknife.ButterKnife;
@@ -32,9 +41,11 @@ public class CommentItem extends MultiTypeStyleableItem<CommentItem.ViewHolder> 
     public static final MultiTypeItemType<ViewHolder> ITEM_TYPE = new MultiTypeItemType<>(CommentItem.class,
             ViewHolder.class, R.layout.item_comment);
 
+    private final Shot shot;
     private final Comment comment;
 
-    public CommentItem(Comment comment) {
+    public CommentItem(Shot shot, Comment comment) {
+        this.shot = shot;
         this.comment = comment;
     }
 
@@ -52,8 +63,79 @@ public class CommentItem extends MultiTypeStyleableItem<CommentItem.ViewHolder> 
             holder.context.startActivity(intent);
         };
 
+        View.OnLongClickListener likeClickListener = v -> {
+            Dribbble.likeComment(shot.id, comment.id).execute(new ApiRequest.Callback<Like>() {
+                @Override
+                public void onSuccess(Dribbble.Response<Like> response) {
+
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Log.e(e);
+                }
+            });
+
+            return true;
+        };
+
+//        holder.body.setOnLongClickListener(likeClickListener);
+//        holder.itemView.setOnLongClickListener(likeClickListener);
+
+        View.OnClickListener commentClickListener = v -> {
+            String likeItem = holder.context.getString(R.string.menu_comment_like);
+            String unlikeItem = holder.context.getString(R.string.menu_comment_unlike);
+            String viewProfileItem = holder.context.getString(R.string.menu_comment_view_profile);
+            String updateItem = holder.context.getString(R.string.menu_comment_update);
+            String deleteItem = holder.context.getString(R.string.menu_comment_delete);
+            String likesItem = holder.context.getString(R.string.menu_comment_likes);
+            String shareItem = holder.context.getString(R.string.menu_comment_share);
+
+            List<CharSequence> items = new ArrayList<>();
+
+
+
+
+            new AlertDialog.Builder(holder.context)
+                    .setItems(items.toArray(new CharSequence[items.size()]), (dialog, which) -> {
+                        CharSequence item = items.get(which);
+
+                        if (TextUtils.equals(item, likeItem)) {
+
+                        }
+
+                        if (TextUtils.equals(item, unlikeItem)) {
+
+                        }
+
+                        if (TextUtils.equals(item, viewProfileItem)) {
+
+                        }
+
+                        if (TextUtils.equals(item, updateItem)) {
+
+                        }
+
+                        if (TextUtils.equals(item, deleteItem)) {
+
+                        }
+
+                        if (TextUtils.equals(item, likesItem)) {
+
+                        }
+
+                        if (TextUtils.equals(item, shareItem)) {
+
+                        }
+                    })
+                    .show();
+        };
+
         holder.avatar.setOnClickListener(authorClickListener);
         holder.author.setOnClickListener(authorClickListener);
+
+//        holder.body.setOnClickListener(commentClickListener);
+//        holder.itemView.setOnClickListener(commentClickListener);
 
         Picasso.with(holder.context)
                 .load(comment.user.avatarUrl)

@@ -12,6 +12,7 @@ import android.view.View;
 import com.aluxian.drizzle.R;
 import com.aluxian.drizzle.adapters.items.LoadingItem;
 import com.aluxian.drizzle.adapters.UserActivityAdapter;
+import com.aluxian.drizzle.api.ApiRequest;
 import com.aluxian.drizzle.multi.adapters.MultiTypeInfiniteAdapter;
 import com.aluxian.drizzle.api.models.User;
 import com.aluxian.drizzle.api.providers.UserShotsProvider;
@@ -39,7 +40,7 @@ public class UserActivity extends Activity implements MultiTypeHeader.StateListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
 
-        mUser = new Gson().fromJson(getIntent().getStringExtra(EXTRA_USER_DATA), User.class);
+        mUser = ApiRequest.GSON.fromJson(getIntent().getStringExtra(EXTRA_USER_DATA), User.class);
 
         // Load the toolbar
         mToolbar = (NativeToolbar) findViewById(R.id.toolbar);

@@ -4,10 +4,10 @@
     tools:ignore="AppCompatResource">
 
     <item
-        android:id="@+id/action_link_website"
-        android:icon="@drawable/ic_website"
+        android:id="@+id/action_share"
+        android:icon="@drawable/ic_share"
         android:showAsAction="ifRoom"
-        android:title="@string/action_link_website" />
+        android:title="@string/action_share" />
 
     <item
         android:id="@+id/action_link_twitter"
@@ -16,9 +16,9 @@
         android:title="@string/action_link_twitter" />
 
     <item
-        android:id="@+id/action_share"
-        android:icon="@drawable/ic_share"
+        android:id="@+id/action_link_website"
+        android:icon="@drawable/ic_website"
         android:showAsAction="ifRoom"
-        android:title="@string/action_share" />
+        android:title="@string/action_link_website" />
 
 </menu>

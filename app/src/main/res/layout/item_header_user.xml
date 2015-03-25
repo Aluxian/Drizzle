@@ -11,10 +11,10 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
-        android:paddingBottom="36dp"
+        android:paddingBottom="32dp"
         android:paddingEnd="16dp"
         android:paddingStart="16dp"
-        android:paddingTop="60dp">
+        android:paddingTop="56dp">
 
         <ImageView
             android:id="@+id/user_avatar"
@@ -95,13 +95,13 @@
     </LinearLayout>
 
     <com.melnykov.fab.FloatingActionButton
-        android:id="@+id/fab"
+        android:id="@+id/follow_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_below="@id/header"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="-28dp"
-        android:src="@drawable/ic_heart" />
+        android:alpha="0" />
 
 </RelativeLayout>

@@ -22,8 +22,8 @@ public class BucketsAdapter extends MultiTypeInfiniteAdapter<Bucket> {
     }
 
     @Override
-    protected List<MultiTypeBaseItem<? extends MultiTypeBaseItem.ViewHolder>> convertLoadedItems(List<Bucket> items) {
-        return Mapper.map(items, BucketItem::new);
+    protected List<MultiTypeBaseItem<? extends MultiTypeBaseItem.ViewHolder>> convertLoadedItems(List<Bucket> lst) {
+        return Mapper.map(lst, BucketItem::new);
     }
 
 }

@@ -1,10 +1,10 @@
 package com.aluxian.drizzle.adapters;
 
 import com.aluxian.drizzle.adapters.items.AttachmentItem;
-import com.aluxian.drizzle.multi.adapters.MultiTypeInfiniteAdapter;
-import com.aluxian.drizzle.multi.items.MultiTypeBaseItem;
 import com.aluxian.drizzle.api.models.Attachment;
 import com.aluxian.drizzle.api.providers.ItemsProvider;
+import com.aluxian.drizzle.multi.adapters.MultiTypeInfiniteAdapter;
+import com.aluxian.drizzle.multi.items.MultiTypeBaseItem;
 import com.aluxian.drizzle.utils.Mapper;
 
 import java.util.List;
@@ -22,8 +22,9 @@ public class AttachmentsAdapter extends MultiTypeInfiniteAdapter<Attachment> {
     }
 
     @Override
-    protected List<MultiTypeBaseItem<? extends MultiTypeBaseItem.ViewHolder>> convertLoadedItems(List<Attachment> items) {
-        return Mapper.map(items, AttachmentItem::new);
+    protected List<MultiTypeBaseItem<? extends MultiTypeBaseItem.ViewHolder>> convertLoadedItems(List<Attachment>
+                                                                                                             lst) {
+        return Mapper.map(lst, AttachmentItem::new);
     }
 
 }

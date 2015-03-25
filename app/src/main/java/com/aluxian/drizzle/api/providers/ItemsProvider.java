@@ -17,6 +17,9 @@ public abstract class ItemsProvider<T> {
     /** The last received response. */
     protected Dribbble.Response<List<T>> mLastResponse;
 
+    /** True if there are no more items to be provided, false otherwise. */
+    protected boolean hasFinished;
+
     /**
      * Load more items (either the default or the next ones).
      *
@@ -30,16 +33,25 @@ public abstract class ItemsProvider<T> {
             mLastResponse = getListRequest().execute();
 
             if (mLastResponse != null) {
+                if (mLastResponse.data.size() < numberOfItemsPerPage()) {
+                    hasFinished = true;
+                }
+
                 return mLastResponse.data;
             }
         } else if (mLastResponse.nextPageUrl != null) {
             mLastResponse = getNextPageRequest().execute();
 
             if (mLastResponse != null) {
+                if (mLastResponse.data.size() < numberOfItemsPerPage()) {
+                    hasFinished = true;
+                }
+
                 return mLastResponse.data;
             }
         }
 
+        hasFinished = true;
         return new ArrayList<>();
     }
 
@@ -54,6 +66,7 @@ public abstract class ItemsProvider<T> {
     public List<T> refresh() throws IOException, BadRequestException, TooManyRequestsException {
         // TODO: invalidate the next pages too
         // instead of avoiding cache, remove the url from cache
+        hasFinished = false;
         mLastResponse = getListRequest().useCache(false).execute();
         return mLastResponse.data;
     }
@@ -63,6 +76,20 @@ public abstract class ItemsProvider<T> {
      */
     public boolean hasItemsAvailable() {
         return getListRequest().canLoadImmediately();
+    }
+
+    /**
+     * @return True if there are no more items to be provided, false otherwise.
+     */
+    public boolean hasFinished() {
+        return hasFinished;
+    }
+
+    /**
+     * @return The number of items that is expected to be returned per page.
+     */
+    public int numberOfItemsPerPage() {
+        return 30;
     }
 
     /**

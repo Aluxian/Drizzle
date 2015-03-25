@@ -1,6 +1,7 @@
 package com.aluxian.drizzle.adapters.items;
 
 import android.app.AlertDialog;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.Html;
@@ -8,6 +9,7 @@ import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -18,19 +20,22 @@ import com.aluxian.drizzle.adapters.BucketsAdapter;
 import com.aluxian.drizzle.adapters.LikesAdapter;
 import com.aluxian.drizzle.adapters.ReboundsAdapter;
 import com.aluxian.drizzle.adapters.TagsAdapter;
-import com.aluxian.drizzle.multi.MultiTypeItemType;
-import com.aluxian.drizzle.multi.adapters.MultiTypeInfiniteAdapter;
-import com.aluxian.drizzle.multi.items.MultiTypeBaseItem;
-import com.aluxian.drizzle.multi.items.MultiTypeStyleableItem;
-import com.aluxian.drizzle.multi.traits.MultiTypeHeader;
+import com.aluxian.drizzle.api.ApiRequest;
+import com.aluxian.drizzle.api.Dribbble;
+import com.aluxian.drizzle.api.models.Like;
 import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.api.providers.AttachmentsProvider;
 import com.aluxian.drizzle.api.providers.BucketsProvider;
 import com.aluxian.drizzle.api.providers.LikesProvider;
 import com.aluxian.drizzle.api.providers.ReboundsProvider;
+import com.aluxian.drizzle.multi.MultiTypeItemType;
+import com.aluxian.drizzle.multi.items.MultiTypeBaseItem;
+import com.aluxian.drizzle.multi.items.MultiTypeStyleableItem;
+import com.aluxian.drizzle.multi.traits.MultiTypeHeader;
 import com.aluxian.drizzle.utils.CountableInterpolator;
 import com.aluxian.drizzle.utils.Log;
 import com.aluxian.drizzle.utils.UberSwatch;
+import com.aluxian.drizzle.utils.UserManager;
 import com.aluxian.drizzle.utils.transformations.PaletteTransformation;
 import com.aluxian.drizzle.views.CustomEdgeRecyclerView;
 import com.aluxian.drizzle.views.ShotPreviewGifImageView;
@@ -47,6 +52,8 @@ import java.io.IOException;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import pl.droidsonroids.gif.GifDrawable;
+
+import static com.aluxian.drizzle.multi.adapters.MultiTypeInfiniteAdapter.StatusListener;
 
 public class ShotHeaderItem extends MultiTypeStyleableItem<ShotHeaderItem.ViewHolder> implements MultiTypeHeader {
 
@@ -99,6 +106,33 @@ public class ShotHeaderItem extends MultiTypeStyleableItem<ShotHeaderItem.ViewHo
         String title = countableInterpolator.apply(shot.commentsCount, R.string.section_responses, R.string.section_response);
         holder.commentsSubheader.setText(title);
 
+        if (shot.isGif()) {
+            holder.gifLoader.setVisibility(View.VISIBLE);
+
+            new AsyncTask<Void, Void, GifDrawable>() {
+                @Override
+                protected GifDrawable doInBackground(Void... params) {
+                    try {
+                        Request request = new Request.Builder().url(shot.images.largest()).build();
+                        Response response = new OkHttpClient().newCall(request).execute();
+                        return new GifDrawable(response.body().bytes());
+                    } catch (IOException e) {
+                        Log.e(e);
+                    }
+
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(GifDrawable gif) {
+                    if (gif != null) {
+                        holder.preview.setImageDrawable(gif);
+                        holder.gifLoader.setVisibility(View.INVISIBLE);
+                    }
+                }
+            }.execute();
+        }
+
         Picasso.with(holder.context)
                 .load(shot.images.largest())
                 .transform(PaletteTransformation.instance())
@@ -106,38 +140,9 @@ public class ShotHeaderItem extends MultiTypeStyleableItem<ShotHeaderItem.ViewHo
                 .into(holder.preview, new Callback() {
                     @Override
                     public void onSuccess() {
-                        holder.preview.postDelayed(() -> {
-                            if (shot.isGif()) {
-                                holder.gifLoader.setVisibility(View.VISIBLE);
-
-                                new AsyncTask<Void, Void, GifDrawable>() {
-                                    @Override
-                                    protected GifDrawable doInBackground(Void... params) {
-                                        try {
-                                            Request request = new Request.Builder().url(shot.images.largest()).build();
-                                            Response response = new OkHttpClient().newCall(request).execute();
-                                            return new GifDrawable(response.body().bytes());
-                                        } catch (IOException e) {
-                                            Log.e(e);
-                                        }
-
-                                        return null;
-                                    }
-
-                                    @Override
-                                    protected void onPostExecute(GifDrawable gif) {
-                                        if (gif != null) {
-                                            holder.preview.setImageDrawable(gif);
-                                            holder.gifLoader.setVisibility(View.INVISIBLE);
-                                        }
-                                    }
-                                }.execute();
-                            }
-
-                            UberSwatch swatch = UberSwatch.from(PaletteTransformation.getPalette(holder.preview));
-                            headerListener.onHeaderLoaded(swatch, holder.preview.getHeight());
-                            onSetStyle(holder, swatch);
-                        }, 100);
+                        UberSwatch swatch = UberSwatch.from(PaletteTransformation.getPalette(holder.preview));
+                        holder.preview.post(() -> headerListener.onHeaderLoaded(swatch, holder.preview.getHeight()));
+                        onSetStyle(holder, swatch);
                     }
 
                     @Override
@@ -155,7 +160,7 @@ public class ShotHeaderItem extends MultiTypeStyleableItem<ShotHeaderItem.ViewHo
         String title = countableInterpolator.apply(shot.reboundsCount, R.string.section_rebounds, R.string.section_rebound);
         holder.reboundsHeader.setText(title);
 
-        holder.reboundsRecycler.setAdapter(new ReboundsAdapter(shot, new ReboundsProvider(shot.id), new MultiTypeInfiniteAdapter.StatusListener() {
+        holder.reboundsRecycler.setAdapter(new ReboundsAdapter(shot, new ReboundsProvider(shot.id), new StatusListener() {
             @Override
             public void onAdapterLoadingFinished(boolean successful) {
                 // TODO
@@ -178,7 +183,7 @@ public class ShotHeaderItem extends MultiTypeStyleableItem<ShotHeaderItem.ViewHo
         String title = countableInterpolator.apply(shot.attachmentsCount, R.string.section_attachments, R.string.section_attachment);
         holder.attachmentsHeader.setText(title);
 
-        holder.attachmentsRecycler.setAdapter(new AttachmentsAdapter(new AttachmentsProvider(shot.id), new MultiTypeInfiniteAdapter.StatusListener() {
+        holder.attachmentsRecycler.setAdapter(new AttachmentsAdapter(new AttachmentsProvider(shot.id), new StatusListener() {
             @Override
             public void onAdapterLoadingFinished(boolean successful) {
                 // TODO
@@ -203,8 +208,11 @@ public class ShotHeaderItem extends MultiTypeStyleableItem<ShotHeaderItem.ViewHo
 
         holder.summary.color(swatch);
 
-        holder.reboundsRecycler.setEdgeColor(swatch.rgb);
-        holder.attachmentsRecycler.setEdgeColor(swatch.rgb);
+        holder.reboundsRecycler.post(() -> holder.reboundsRecycler.setEdgeColor(swatch.rgb));
+        holder.attachmentsRecycler.post(() -> {
+            Log.d("setting color", holder.attachmentsRecycler, swatch.rgb);
+            holder.attachmentsRecycler.setEdgeColor(swatch.rgb);
+        });
 
         holder.likes.setOnClickListener(v -> {
             LinearLayout dialogLayout = (LinearLayout) LayoutInflater.from(holder.context).inflate(R.layout.dialog_list, null);
@@ -214,7 +222,7 @@ public class ShotHeaderItem extends MultiTypeStyleableItem<ShotHeaderItem.ViewHo
             titleView.setTextColor(swatch.titleTextColor);
             titleView.setText(R.string.dialog_title_likes);
 
-            LikesAdapter likesAdapter = new LikesAdapter(new LikesProvider((int) holder.likes.getTag()), new MultiTypeInfiniteAdapter.StatusListener() {
+            LikesAdapter likesAdapter = new LikesAdapter(new LikesProvider((int) holder.likes.getTag()), new StatusListener() {
                 @Override
                 public void onAdapterLoadingFinished(boolean successful) {
 
@@ -246,7 +254,7 @@ public class ShotHeaderItem extends MultiTypeStyleableItem<ShotHeaderItem.ViewHo
             titleView.setTextColor(swatch.titleTextColor);
             titleView.setText(R.string.dialog_title_buckets);
 
-            BucketsAdapter bucketsAdapter = new BucketsAdapter(new BucketsProvider((int) holder.likes.getTag()), new MultiTypeInfiniteAdapter.StatusListener() {
+            BucketsAdapter bucketsAdapter = new BucketsAdapter(new BucketsProvider((int) holder.likes.getTag()), new StatusListener() {
                 @Override
                 public void onAdapterLoadingFinished(boolean successful) {
 
@@ -270,21 +278,71 @@ public class ShotHeaderItem extends MultiTypeStyleableItem<ShotHeaderItem.ViewHo
             new AlertDialog.Builder(holder.context, R.style.Drizzle_Widget_Dialog).setView(dialogLayout).show();
         });
 
-        holder.tags.setOnClickListener(v -> {
-            LinearLayout dialogLayout = (LinearLayout) LayoutInflater.from(holder.context).inflate(R.layout.dialog_list, null);
-            dialogLayout.setBackgroundColor(swatch.rgb);
+        if (shot.tags.size() > 0) {
+            holder.tags.setOnClickListener(v -> {
+                LinearLayout dialogLayout = (LinearLayout) LayoutInflater.from(holder.context).inflate(R.layout.dialog_list, null);
+                dialogLayout.setBackgroundColor(swatch.rgb);
 
-            TextView titleView = (TextView) dialogLayout.findViewById(R.id.title);
-            titleView.setTextColor(swatch.titleTextColor);
-            titleView.setText(R.string.dialog_title_tags);
+                TextView titleView = (TextView) dialogLayout.findViewById(R.id.title);
+                titleView.setTextColor(swatch.titleTextColor);
+                titleView.setText(R.string.dialog_title_tags);
 
-            CustomEdgeRecyclerView recyclerView = (CustomEdgeRecyclerView) dialogLayout.findViewById(R.id.list);
-            recyclerView.setLayoutManager(new LinearLayoutManager(holder.context));
-            recyclerView.setHasFixedSize(true);
-            recyclerView.setAdapter(new TagsAdapter(shot.tags));
+                CustomEdgeRecyclerView recyclerView = (CustomEdgeRecyclerView) dialogLayout.findViewById(R.id.list);
+                recyclerView.setLayoutManager(new LinearLayoutManager(holder.context));
+                recyclerView.setHasFixedSize(true);
+                recyclerView.setAdapter(new TagsAdapter(shot.tags));
 
-            recyclerView.postDelayed(() -> recyclerView.setEdgeColor(swatch.rgb), 500);
-            new AlertDialog.Builder(holder.context, R.style.Drizzle_Widget_Dialog).setView(dialogLayout).show();
+                recyclerView.postDelayed(() -> recyclerView.setEdgeColor(swatch.rgb), 500);
+                new AlertDialog.Builder(holder.context, R.style.Drizzle_Widget_Dialog).setView(dialogLayout).show();
+            });
+        }
+
+        if (UserManager.getInstance().isAuthenticated()) {
+            Dribbble.userLikesShot(shot.id).execute(new ApiRequest.Callback<Like>() {
+                @Override
+                public void onSuccess(Dribbble.Response<Like> response) {
+                    holder.likeButton.getDrawable().setTint(swatch.rgb);
+                    holder.likeButton.setTag(1);
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    int color = Color.parseColor("#999999");
+                    holder.likeButton.getDrawable().setTint(color);
+                    holder.likeButton.setTag(0);
+                }
+            });
+        }
+
+        holder.likeButton.setOnClickListener(v -> {
+            if (((int) holder.likeButton.getTag()) == 0) {
+                Dribbble.likeShot(shot.id).execute(new ApiRequest.Callback<Like>() {
+                    @Override
+                    public void onSuccess(Dribbble.Response<Like> response) {
+                        holder.likeButton.getDrawable().setTint(swatch.rgb);
+                        holder.likeButton.setTag(1);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.e(e);
+                    }
+                });
+            } else {
+                Dribbble.unlikeShot(shot.id).execute(new ApiRequest.Callback<Object>() {
+                    @Override
+                    public void onSuccess(Dribbble.Response response) {
+                        int color = Color.parseColor("#999999");
+                        holder.likeButton.getDrawable().setTint(color);
+                        holder.likeButton.setTag(0);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.e(e);
+                    }
+                });
+            }
         });
     }
 
@@ -306,10 +364,13 @@ public class ShotHeaderItem extends MultiTypeStyleableItem<ShotHeaderItem.ViewHo
         @InjectView(R.id.shot_description) TextView description;
         @InjectView(R.id.subheader_comments) TextView commentsSubheader;
 
+        @InjectView(R.id.shot_like) ImageView likeButton;
+        @InjectView(R.id.shot_bucket) ImageView bucketButton;
+
         @InjectView(R.id.shot_likes) TextView likes;
         @InjectView(R.id.shot_buckets) TextView buckets;
         @InjectView(R.id.shot_views) TextView views;
-        @InjectView(R.id.shot_projects) TextView tags;
+        @InjectView(R.id.shot_tags) TextView tags;
 
         public ViewHolder(View itemView) {
             super(itemView);

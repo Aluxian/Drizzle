@@ -11,6 +11,7 @@ public class UberSwatch {
     public final int titleTextColor;
     public final int bodyTextColor;
     public final int accentColor;
+    public final int hoverColor;
 
     public static UberSwatch from(Palette palette) {
         return new UberSwatch(palette);
@@ -22,6 +23,7 @@ public class UberSwatch {
         this.titleTextColor = swatch.getTitleTextColor();
         this.bodyTextColor = swatch.getBodyTextColor();
         this.accentColor = generateAccent(rgb);
+        this.hoverColor = generateHover(rgb);
     }
 
     private Palette.Swatch getSwatch(Palette palette) {
@@ -42,6 +44,19 @@ public class UberSwatch {
             hsv[2] += 0.15;
         } else if (hsv[2] >= 0.15) {
             hsv[2] -= 0.15;
+        }
+
+        return Color.HSVToColor(hsv);
+    }
+
+    private int generateHover(int rgb) {
+        float[] hsv = new float[3];
+        Color.colorToHSV(rgb, hsv);
+
+        if (hsv[2] <= 0.85) {
+            hsv[2] += 0.25;
+        } else if (hsv[2] >= 0.15) {
+            hsv[2] -= 0.25;
         }
 
         return Color.HSVToColor(hsv);

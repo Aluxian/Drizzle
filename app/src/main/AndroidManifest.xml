@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.aluxian.drizzle" >
+<manifest
+    package="com.aluxian.drizzle"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -9,38 +10,44 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Drizzle.Theme" >
+        android:theme="@style/Drizzle.Theme">
+
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/Drizzle.Activity.Main" >
+            android:theme="@style/Drizzle.Activity.Main">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activities.AuthActivity"
             android:parentActivityName=".activities.MainActivity"
             android:theme="@style/Drizzle.Activity.Auth" />
+
         <activity
             android:name=".activities.IntroActivity"
             android:parentActivityName=".activities.MainActivity"
             android:theme="@style/Drizzle.Activity.Intro" />
+
         <activity
             android:name=".activities.ShotActivity"
             android:theme="@style/Drizzle.Activity.Shot" />
+
         <activity
             android:name=".activities.AttachmentActivity"
             android:theme="@style/Drizzle.Activity.Attachment" />
+
         <activity
             android:name=".activities.TeamActivity"
             android:theme="@style/Drizzle.Activity.Team" />
+
         <activity
             android:name=".activities.UserActivity"
-            android:theme="@style/Drizzle.Activity.User" >
-            <intent-filter>
+            android:theme="@style/Drizzle.Activity.User">
+            <!--<intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -50,8 +57,9 @@
                     android:host="dribbble.com"
                     android:pathPattern="/.*"
                     android:scheme="https" />
-            </intent-filter>
+            </intent-filter>-->
         </activity>
+
     </application>
 
 </manifest>

@@ -22,14 +22,15 @@ public abstract class Model {
     /**
      * Convert this model into a JSON string.
      *
-     * @return A JSON object..
+     * @return A JSON object.
      */
     public JsonObject toJsonObject() {
         return GSON.toJsonTree(this).getAsJsonObject();
     }
 
     /**
-     * Clone this model and update some fields. Used to edit models without giving up immutability and {@code public final} fields.
+     * Clone this model and update some fields. Used to edit models without giving up immutability or {@code public
+     * final} fields.
      */
     public <T extends Model> T cloneAndUpdate(FunctionA<JsonObject> updateFunction) {
         JsonObject json = GSON.toJsonTree(this).getAsJsonObject();

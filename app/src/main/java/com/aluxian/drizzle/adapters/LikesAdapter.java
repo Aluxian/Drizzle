@@ -22,8 +22,8 @@ public class LikesAdapter extends MultiTypeInfiniteAdapter<Like> {
     }
 
     @Override
-    protected List<MultiTypeBaseItem<? extends MultiTypeBaseItem.ViewHolder>> convertLoadedItems(List<Like> items) {
-        return Mapper.map(items, LikeItem::new);
+    protected List<MultiTypeBaseItem<? extends MultiTypeBaseItem.ViewHolder>> convertLoadedItems(List<Like> lst) {
+        return Mapper.map(lst, LikeItem::new);
     }
 
 }

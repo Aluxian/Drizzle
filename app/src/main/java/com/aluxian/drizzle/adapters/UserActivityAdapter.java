@@ -32,8 +32,8 @@ public class UserActivityAdapter extends MultiTypeInfiniteAdapter<Shot> {
     }
 
     @Override
-    protected List<MultiTypeBaseItem<? extends MultiTypeBaseItem.ViewHolder>> convertLoadedItems(List<Shot> items) {
-        return Mapper.map(items, shot -> new ShotItemUserActivity(shot.cloneAndUpdate(json -> json.add("user", mUser.toJsonObject()))));
+    protected List<MultiTypeBaseItem<? extends MultiTypeBaseItem.ViewHolder>> convertLoadedItems(List<Shot> lst) {
+        return Mapper.map(lst, shot -> new ShotItemUserActivity(shot.cloneAndUpdate(json -> json.add("user", mUser.toJsonObject()))));
     }
 
 }

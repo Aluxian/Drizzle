@@ -7,9 +7,9 @@ import android.widget.ImageView;
 
 import com.aluxian.drizzle.R;
 import com.aluxian.drizzle.activities.AttachmentActivity;
+import com.aluxian.drizzle.api.models.Attachment;
 import com.aluxian.drizzle.multi.MultiTypeItemType;
 import com.aluxian.drizzle.multi.items.MultiTypeBaseItem;
-import com.aluxian.drizzle.api.models.Attachment;
 import com.aluxian.drizzle.utils.Dp;
 import com.squareup.picasso.Picasso;
 
@@ -30,7 +30,7 @@ public class AttachmentItem extends MultiTypeBaseItem<AttachmentItem.ViewHolder>
 
     @Override
     protected void onBindViewHolder(ViewHolder holder, int position) {
-        holder.image.setOnClickListener(this);
+//        holder.image.setOnClickListener(this);
 
         Picasso.with(holder.context)
                 .load(attachment.thumbnailUrl)
@@ -38,6 +38,7 @@ public class AttachmentItem extends MultiTypeBaseItem<AttachmentItem.ViewHolder>
                 .into(holder.image);
 
         RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) holder.itemView.getLayoutParams();
+
         if (position == 0) {
             params.leftMargin = Dp.PX_16;
         } else {

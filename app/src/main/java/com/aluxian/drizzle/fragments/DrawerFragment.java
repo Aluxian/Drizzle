@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -23,6 +25,7 @@ import com.aluxian.drizzle.utils.UberSwatch;
 import com.aluxian.drizzle.utils.UserManager;
 import com.aluxian.drizzle.views.CustomEdgeRecyclerView;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 import static com.aluxian.drizzle.utils.UserManager.AuthStateChangeListener;

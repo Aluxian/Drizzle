@@ -104,7 +104,7 @@ public class ShotsFragment extends Fragment implements ShotsAdapter.StatusListen
         });
 
         mRecyclerView.setLayoutManager(layoutManager);
-        //mRecyclerView.setItemAnimator(animator);
+//        mRecyclerView.setItemAnimator(animator);
         mRecyclerView.setAdapter(mShotsAdapter);
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);

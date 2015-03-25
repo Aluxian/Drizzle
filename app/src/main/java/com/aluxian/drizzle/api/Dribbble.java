@@ -1,5 +1,7 @@
 package com.aluxian.drizzle.api;
 
+import android.text.TextUtils;
+
 import com.aluxian.drizzle.api.models.Attachment;
 import com.aluxian.drizzle.api.models.Bucket;
 import com.aluxian.drizzle.api.models.Comment;
@@ -9,10 +11,10 @@ import com.aluxian.drizzle.api.models.Project;
 import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.utils.Config;
 import com.aluxian.drizzle.utils.UserManager;
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.List;
+import java.util.Objects;
 
 public final class Dribbble {
 
@@ -86,17 +88,6 @@ public final class Dribbble {
                 .accessToken(UserManager.getInstance().getAccessToken())
                 .useCache(true)
                 .path("shots/" + shotId + "/rebounds");
-    }
-
-    /**
-     * @param shotId The id of the shot whose comments to get.
-     * @return The list of comments for the given shot id.
-     */
-    public static ApiRequest<List<Comment>> listComments(int shotId) {
-        return new ApiRequest<>(new TypeToken<List<Comment>>() {})
-                .accessToken(UserManager.getInstance().getAccessToken())
-                .useCache(true)
-                .path("shots/" + shotId + "/comments");
     }
 
     /**
@@ -199,6 +190,122 @@ public final class Dribbble {
                 .url(nextPageUrl);
     }
 
+    // Users
+
+    // Users / Followers
+
+    public static ApiRequest<Object> userFollowingUser(int userId) {
+        return new ApiRequest<>(null)
+                .accessToken(UserManager.getInstance().getAccessToken())
+                .useCache(true)
+                .path("user/following/" + userId);
+    }
+
+    public static ApiRequest<Object> followUser(int userId) {
+        return new ApiRequest<>(null)
+                .accessToken(UserManager.getInstance().getAccessToken())
+                .path("users/" + userId + "/follow")
+                .put();
+    }
+
+    public static ApiRequest<Object> unfollowUser(int userId) {
+        return new ApiRequest<>(null)
+                .accessToken(UserManager.getInstance().getAccessToken())
+                .path("users/" + userId + "/follow")
+                .delete();
+    }
+
+    // Shots
+
+    // Shots / Comments
+
+    /**
+     * @param shotId The id of the shot whose comments to get.
+     * @return The list of comments for the given shot id.
+     */
+    public static ApiRequest<List<Comment>> listCommentsForShot(int shotId) {
+        return new ApiRequest<>(new TypeToken<List<Comment>>() {})
+                .accessToken(UserManager.getInstance().getAccessToken())
+                .useCache(true)
+                .path("shots/" + shotId + "/comments");
+    }
+
+    public static ApiRequest<List<Like>> listLikesForComment(int shotId, int commentId) {
+        return new ApiRequest<>(new TypeToken<List<Like>>() {})
+                .accessToken(UserManager.getInstance().getAccessToken())
+                .useCache(true)
+                .path("shots/" + shotId + "/comments/" + commentId + "/likes");
+    }
+
+    // create comment
+
+    public static ApiRequest<Comment> getComment(int shotId, int commentId) {
+        return new ApiRequest<>(new TypeToken<Comment>() {})
+                .accessToken(UserManager.getInstance().getAccessToken())
+                .useCache(true)
+                .path("shots/" + shotId + "/comments/" + commentId);
+    }
+
+    // update comment
+
+    public static ApiRequest<Object> deleteComment(int shotId, int commentId) {
+        return new ApiRequest<>(null)
+                .accessToken(UserManager.getInstance().getAccessToken())
+                .path("shots/" + shotId + "/comments/" + commentId)
+                .delete();
+    }
+
+    public static ApiRequest<Like> userLikesComment(int shotId, int commentId) {
+        return new ApiRequest<>(new TypeToken<Like>() {})
+                .accessToken(UserManager.getInstance().getAccessToken())
+                .useCache(true)
+                .path("shots/" + shotId + "/comments/" + commentId + "/like");
+    }
+
+    public static ApiRequest<Like> likeComment(int shotId, int commentId) {
+        return new ApiRequest<>(new TypeToken<Like>() {})
+                .accessToken(UserManager.getInstance().getAccessToken())
+                .path("shots/" + shotId + "/comments/" + commentId + "/like")
+                .post();
+    }
+
+    public static ApiRequest<Object> unlikeComment(int shotId, int commentId) {
+        return new ApiRequest<>(null)
+                .accessToken(UserManager.getInstance().getAccessToken())
+                .path("shots/" + shotId + "/comments/" + commentId + "/like")
+                .delete();
+    }
+
+    // Shots / Likes
+
+    public static ApiRequest<List<Like>> listLikesForShot(int shotId) {
+        return new ApiRequest<>(new TypeToken<List<Like>>() {})
+                .accessToken(UserManager.getInstance().getAccessToken())
+                .useCache(true)
+                .path("shots/" + shotId + "/likes");
+    }
+
+    public static ApiRequest<Like> userLikesShot(int shotId) {
+        return new ApiRequest<>(new TypeToken<Like>() {})
+                .accessToken(UserManager.getInstance().getAccessToken())
+                .useCache(true)
+                .path("shots/" + shotId + "/like");
+    }
+
+    public static ApiRequest<Like> likeShot(int shotId) {
+        return new ApiRequest<>(new TypeToken<Like>() {})
+                .accessToken(UserManager.getInstance().getAccessToken())
+                .path("shots/" + shotId + "/like")
+                .post();
+    }
+
+    public static ApiRequest<Object> unlikeShot(int shotId) {
+        return new ApiRequest<>(null)
+                .accessToken(UserManager.getInstance().getAccessToken())
+                .path("shots/" + shotId + "/like")
+                .delete();
+    }
+
     /**
      * Stores a parsed response from the Dribbble API.
      *
@@ -212,6 +319,22 @@ public final class Dribbble {
         public Response(T data, String nextPageUrl) {
             this.data = data;
             this.nextPageUrl = nextPageUrl;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Response)) return false;
+
+            Response response = (Response) o;
+
+            return data.equals(response.data)
+                    && TextUtils.equals(nextPageUrl, response.nextPageUrl);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(data, nextPageUrl);
         }
 
     }
