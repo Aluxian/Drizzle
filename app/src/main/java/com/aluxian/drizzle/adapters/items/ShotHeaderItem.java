@@ -92,7 +92,8 @@ public class ShotHeaderItem extends MultiTypeStyleableItem<ShotHeaderItem.ViewHo
         CountableInterpolator countableInterpolator = new CountableInterpolator(holder.context);
 
         holder.likes.setText(countableInterpolator.apply(shot.likesCount, R.string.stats_likes, R.string.stats_like));
-        holder.buckets.setText(countableInterpolator.apply(shot.bucketsCount, R.string.stats_buckets, R.string.stats_bucket));
+        holder.buckets.setText(countableInterpolator.apply(shot.bucketsCount, R.string.stats_buckets,
+                R.string.stats_bucket));
         holder.views.setText(countableInterpolator.apply(shot.viewsCount, R.string.stats_views, R.string.stats_view));
         holder.tags.setText(countableInterpolator.apply(shot.tags.size(), R.string.stats_tags, R.string.stats_tag));
 
@@ -103,7 +104,8 @@ public class ShotHeaderItem extends MultiTypeStyleableItem<ShotHeaderItem.ViewHo
             holder.description.setVisibility(View.GONE);
         }
 
-        String title = countableInterpolator.apply(shot.commentsCount, R.string.section_responses, R.string.section_response);
+        String title = countableInterpolator.apply(shot.commentsCount, R.string.section_responses,
+                R.string.section_response);
         holder.commentsSubheader.setText(title);
 
         if (shot.isGif()) {
@@ -157,10 +159,12 @@ public class ShotHeaderItem extends MultiTypeStyleableItem<ShotHeaderItem.ViewHo
         }
 
         CountableInterpolator countableInterpolator = new CountableInterpolator(holder.context);
-        String title = countableInterpolator.apply(shot.reboundsCount, R.string.section_rebounds, R.string.section_rebound);
+        String title = countableInterpolator.apply(shot.reboundsCount, R.string.section_rebounds,
+                R.string.section_rebound);
         holder.reboundsHeader.setText(title);
 
-        holder.reboundsRecycler.setAdapter(new ReboundsAdapter(shot, new ReboundsProvider(shot.id), new StatusListener() {
+        holder.reboundsRecycler.setAdapter(new ReboundsAdapter(shot, new ReboundsProvider(shot.id),
+                new StatusListener() {
             @Override
             public void onAdapterLoadingFinished(boolean successful) {
                 // TODO
@@ -180,10 +184,12 @@ public class ShotHeaderItem extends MultiTypeStyleableItem<ShotHeaderItem.ViewHo
         }
 
         CountableInterpolator countableInterpolator = new CountableInterpolator(holder.context);
-        String title = countableInterpolator.apply(shot.attachmentsCount, R.string.section_attachments, R.string.section_attachment);
+        String title = countableInterpolator.apply(shot.attachmentsCount, R.string.section_attachments,
+                R.string.section_attachment);
         holder.attachmentsHeader.setText(title);
 
-        holder.attachmentsRecycler.setAdapter(new AttachmentsAdapter(new AttachmentsProvider(shot.id), new StatusListener() {
+        holder.attachmentsRecycler.setAdapter(new AttachmentsAdapter(new AttachmentsProvider(shot.id),
+                new StatusListener() {
             @Override
             public void onAdapterLoadingFinished(boolean successful) {
                 // TODO
@@ -215,14 +221,16 @@ public class ShotHeaderItem extends MultiTypeStyleableItem<ShotHeaderItem.ViewHo
         });
 
         holder.likes.setOnClickListener(v -> {
-            LinearLayout dialogLayout = (LinearLayout) LayoutInflater.from(holder.context).inflate(R.layout.dialog_list, null);
+            LinearLayout dialogLayout = (LinearLayout) LayoutInflater.from(holder.context).inflate(R.layout
+                    .dialog_list, null);
             dialogLayout.setBackgroundColor(swatch.rgb);
 
             TextView titleView = (TextView) dialogLayout.findViewById(R.id.title);
             titleView.setTextColor(swatch.titleTextColor);
             titleView.setText(R.string.dialog_title_likes);
 
-            LikesAdapter likesAdapter = new LikesAdapter(new LikesProvider((int) holder.likes.getTag()), new StatusListener() {
+            LikesAdapter likesAdapter = new LikesAdapter(new LikesProvider((int) holder.likes.getTag()),
+                    new StatusListener() {
                 @Override
                 public void onAdapterLoadingFinished(boolean successful) {
 
@@ -247,14 +255,16 @@ public class ShotHeaderItem extends MultiTypeStyleableItem<ShotHeaderItem.ViewHo
         });
 
         holder.buckets.setOnClickListener(v -> {
-            LinearLayout dialogLayout = (LinearLayout) LayoutInflater.from(holder.context).inflate(R.layout.dialog_list, null);
+            LinearLayout dialogLayout = (LinearLayout) LayoutInflater.from(holder.context).inflate(R.layout
+                    .dialog_list, null);
             dialogLayout.setBackgroundColor(swatch.rgb);
 
             TextView titleView = (TextView) dialogLayout.findViewById(R.id.title);
             titleView.setTextColor(swatch.titleTextColor);
             titleView.setText(R.string.dialog_title_buckets);
 
-            BucketsAdapter bucketsAdapter = new BucketsAdapter(new BucketsProvider((int) holder.likes.getTag()), new StatusListener() {
+            BucketsAdapter bucketsAdapter = new BucketsAdapter(new BucketsProvider((int) holder.likes.getTag()),
+                    new StatusListener() {
                 @Override
                 public void onAdapterLoadingFinished(boolean successful) {
 
@@ -280,7 +290,8 @@ public class ShotHeaderItem extends MultiTypeStyleableItem<ShotHeaderItem.ViewHo
 
         if (shot.tags.size() > 0) {
             holder.tags.setOnClickListener(v -> {
-                LinearLayout dialogLayout = (LinearLayout) LayoutInflater.from(holder.context).inflate(R.layout.dialog_list, null);
+                LinearLayout dialogLayout = (LinearLayout) LayoutInflater.from(holder.context).inflate(R.layout
+                        .dialog_list, null);
                 dialogLayout.setBackgroundColor(swatch.rgb);
 
                 TextView titleView = (TextView) dialogLayout.findViewById(R.id.title);
@@ -380,7 +391,8 @@ public class ShotHeaderItem extends MultiTypeStyleableItem<ShotHeaderItem.ViewHo
             reboundsRecycler.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
 
             attachmentsRecycler.setHasFixedSize(true);
-            attachmentsRecycler.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+            attachmentsRecycler.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,
+                    false));
         }
 
     }

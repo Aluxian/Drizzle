@@ -64,10 +64,8 @@ public abstract class ItemsProvider<T> {
      * @throws TooManyRequestsException When too many API requests in a short timeframe were made.
      */
     public List<T> refresh() throws IOException, BadRequestException, TooManyRequestsException {
-        // TODO: invalidate the next pages too
-        // instead of avoiding cache, remove the url from cache
         hasFinished = false;
-        mLastResponse = getListRequest().useCache(false).execute();
+        mLastResponse = getListRequest().execute();
         return mLastResponse.data;
     }
 

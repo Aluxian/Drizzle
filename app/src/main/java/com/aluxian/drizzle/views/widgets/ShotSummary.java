@@ -2,6 +2,7 @@ package com.aluxian.drizzle.views.widgets;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import com.aluxian.drizzle.activities.UserActivity;
 import com.aluxian.drizzle.api.models.Shot;
 import com.aluxian.drizzle.utils.Dp;
+import com.aluxian.drizzle.utils.FadeColor;
 import com.aluxian.drizzle.utils.UberSwatch;
 import com.aluxian.drizzle.utils.transformations.CircularBorderedTransformation;
 import com.aluxian.drizzle.utils.transformations.CircularTransformation;
@@ -112,10 +114,13 @@ public class ShotSummary extends LinearLayout {
     }
 
     public void color(UberSwatch swatch) {
-        setBackgroundColor(swatch.rgb);
-        mShotTitle.setTextColor(swatch.titleTextColor);
-        mAuthorDescription.setTextColor(swatch.bodyTextColor);
-
+        FadeColor.apply(Color.WHITE, swatch.rgb, animation
+                -> setBackgroundColor((Integer) animation.getAnimatedValue()));
+        FadeColor.apply(mShotTitle.getCurrentTextColor(), swatch.titleTextColor, animation
+                -> mShotTitle.setTextColor((Integer) animation.getAnimatedValue()));
+        FadeColor.apply(mAuthorDescription.getCurrentTextColor(), swatch.bodyTextColor, animation
+                -> mAuthorDescription.setTextColor((Integer) animation.getAnimatedValue()));
+        
         mAuthorDescription.setLinkTextColor(swatch.bodyTextColor);
 
         if (mShot.team != null) {
