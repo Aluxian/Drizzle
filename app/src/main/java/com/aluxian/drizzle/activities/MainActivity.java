@@ -3,11 +3,9 @@ package com.aluxian.drizzle.activities;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
@@ -16,12 +14,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.aluxian.drizzle.Preferences;
 import com.aluxian.drizzle.R;
 import com.aluxian.drizzle.adapters.items.DividerItem;
 import com.aluxian.drizzle.adapters.items.DrawerHeaderItem;
 import com.aluxian.drizzle.adapters.items.DrawerItem;
 import com.aluxian.drizzle.adapters.items.SpacingItem;
-import com.aluxian.drizzle.adapters.items.SubHeaderItem;
 import com.aluxian.drizzle.multi.items.MultiTypeBaseItem;
 import com.aluxian.drizzle.fragments.DrawerFragment;
 import com.aluxian.drizzle.fragments.TabsFragment;
@@ -31,16 +29,13 @@ import com.aluxian.drizzle.utils.Log;
 import com.aluxian.drizzle.utils.UserManager;
 import com.aluxian.drizzle.views.toolbar.EnhancedToolbar;
 
+import net.orange_box.storebox.StoreBox;
+
 import java.util.List;
 
 import static com.aluxian.drizzle.fragments.DrawerFragment.DrawerIconState;
 
 public class MainActivity extends FragmentActivity implements DrawerFragment.DrawerCallbacks {
-
-    public static final String PREF_INTRO_FINISHED = "intro_finished";
-    public static final String PREF_API_AUTH_TOKEN = "api_auth_token";
-
-    private SharedPreferences mSharedPrefs;
 
     private DrawerFragment mDrawerFragment;
     private EnhancedToolbar mToolbar;
@@ -51,10 +46,10 @@ public class MainActivity extends FragmentActivity implements DrawerFragment.Dra
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        Preferences prefs = StoreBox.create(this, Preferences.class);
 
         // Intro activity
-        if (!mSharedPrefs.getBoolean(PREF_INTRO_FINISHED, false)) {
+        if (!prefs.introActivityShown(false)) {
             startActivity(new Intent(this, IntroActivity.class));
         }
 

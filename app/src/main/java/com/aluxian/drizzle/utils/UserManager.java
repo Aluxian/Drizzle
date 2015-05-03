@@ -1,20 +1,16 @@
 package com.aluxian.drizzle.utils;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
-import com.aluxian.drizzle.activities.MainActivity;
+import com.aluxian.drizzle.Preferences;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.aluxian.drizzle.activities.MainActivity.PREF_API_AUTH_TOKEN;
-
 public class UserManager {
 
     private static UserManager mInstance;
-    private SharedPreferences mSharedPrefs;
+    private Preferences mPrefs;
     private List<AuthStateChangeListener> mListeners = new ArrayList<>();
 
     public static void init(Context context) {
@@ -30,14 +26,14 @@ public class UserManager {
     }
 
     private UserManager(Context context) {
-        mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        mPrefs = Preferences.get(context);
     }
 
     /**
      * @return Whether there is an authenticated user, and thus a saved access token.
      */
     public boolean isAuthenticated() {
-        return mSharedPrefs.contains(PREF_API_AUTH_TOKEN);
+        return mPrefs.getApiAuthToken(null) != null;
     }
 
     /**
@@ -45,7 +41,7 @@ public class UserManager {
      */
     public void clearAccessToken() {
         Log.d("Clearing access token");
-        mSharedPrefs.edit().remove(PREF_API_AUTH_TOKEN).apply();
+        mPrefs.setApiAuthToken(null);
         stateChanged(false);
     }
 
@@ -56,7 +52,7 @@ public class UserManager {
      */
     public void putAccessToken(String accessToken) {
         Log.d("Storing access token");
-        mSharedPrefs.edit().putString(MainActivity.PREF_API_AUTH_TOKEN, accessToken).apply();
+        mPrefs.setApiAuthToken(accessToken);
         stateChanged(true);
     }
 
@@ -64,11 +60,7 @@ public class UserManager {
      * @return The stored access token if it exists, otherwise the default (public) client token.
      */
     public String getAccessToken() {
-        if (mSharedPrefs.contains(PREF_API_AUTH_TOKEN)) {
-            return mSharedPrefs.getString(PREF_API_AUTH_TOKEN, null);
-        }
-
-        return Config.API_CLIENT_TOKEN;
+        return mPrefs.getApiAuthToken(Config.API_CLIENT_TOKEN);
     }
 
     @SuppressWarnings("Convert2streamapi")
@@ -91,7 +83,7 @@ public class UserManager {
     /**
      * Interface to be implemented by objects who wish to be notified by authentication state changes.
      */
-    public static interface AuthStateChangeListener {
+    public interface AuthStateChangeListener {
 
         /**
          * Called when the user signs in or out. May not always be called on the UI thread.

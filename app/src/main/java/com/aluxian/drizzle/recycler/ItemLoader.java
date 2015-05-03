@@ -7,7 +7,7 @@ import com.aluxian.drizzle.api.providers.ItemsProvider;
 import java.util.List;
 
 /**
- * Helpers that facilitates the use of {@link com.aluxian.drizzle.api.providers.ItemsProvider}s in adapters.
+ * Helper that facilitates the use of {@link com.aluxian.drizzle.api.providers.ItemsProvider}s in adapters.
  *
  * @param <T> The type of items provided by the {@link com.aluxian.drizzle.api.providers.ItemsProvider}.
  */
@@ -19,8 +19,8 @@ public class ItemLoader<T> {
     private LoadItemsTask<T> mLoadItemsTask;
 
     public ItemLoader(ItemsProvider<T> itemsProvider, Listener<T> listener, int itemsThreshold) {
-        mItemsThreshold = itemsThreshold;
         mItemsProvider = itemsProvider;
+        mItemsThreshold = itemsThreshold;
         mListener = listener;
     }
 
@@ -64,7 +64,7 @@ public class ItemLoader<T> {
      *
      * @param <T> The type of the items.
      */
-    public static interface Listener<T> {
+    public interface Listener<T> {
 
         /**
          * Called when more items are loaded.

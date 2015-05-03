@@ -32,7 +32,7 @@ public class App extends Application {
         }
 
         // Init the cache for http requests
-        App.OK_HTTP_CLIENT.setCache(new Cache(new File(getCacheDir(), App.class.getName()), Config.CACHE_SIZE));
+        OK_HTTP_CLIENT.setCache(new Cache(new File(getCacheDir(), App.class.getName()), Config.CACHE_SIZE));
 
         // Create a UserManager instance
         UserManager.init(this);

@@ -1,17 +1,18 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.github.ben-manes.versions'
 apply plugin: 'me.tatarka.retrolambda'
-apply plugin: 'aar-link-sources'
+apply plugin: 'com.github.ben-manes.versions'
 apply plugin: 'com.noveogroup.android.check'
+apply plugin: 'com.droidtitan.lintcleaner'
+apply plugin: 'aar-link-sources'
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.2"
+    compileSdkVersion 22
+    buildToolsVersion "22.0.1"
 
     defaultConfig {
         applicationId "com.aluxian.drizzle"
         minSdkVersion 21
-        targetSdkVersion 21
+        targetSdkVersion 22
         versionCode 1
         versionName "1.0"
     }
@@ -24,10 +25,9 @@ android {
         release {
             buildConfigField 'boolean', 'STRICT_MODE', 'false'
 
-            //minifyEnabled true
-            //shrinkResources true
+            minifyEnabled true
+            shrinkResources true
 
-            //noinspection GrUnresolvedAccess
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -43,33 +43,47 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:21.0.3'
-    compile 'com.android.support:recyclerview-v7:21.0.3'
-    compile 'com.android.support:palette-v7:21.0.3'
-    compile 'com.android.support:cardview-v7:21.0.3'
-    compile 'com.github.navasmdc:MaterialDesign:1.4'
+    compile 'com.android.support:appcompat-v7:22.1.1'
+
+    compile 'com.android.support:recyclerview-v7:22.1.1'
+    aarLinkSources 'com.android.support:recyclerview-v7:22.1.1:sources@jar'
+
+    compile 'com.android.support:palette-v7:22.1.1'
+    aarLinkSources 'com.android.support:palette-v7:22.1.1:sources@jar'
+
+    compile 'com.android.support:cardview-v7:22.1.1'
+    aarLinkSources 'com.android.support:cardview-v7:22.1.1:sources@jar'
+
     compile 'com.jpardogo.materialtabstrip:library:1.0.9'
-    compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'com.squareup.okhttp:okhttp:2.3.0'
-    compile 'com.squareup.okhttp:okhttp-urlconnection:2.3.0'
-    compile 'com.google.code.gson:gson:2.3.1'
-    compile 'com.jakewharton:disklrucache:2.0.2'
-    compile 'com.jakewharton:butterknife:6.1.0'
-    compile 'com.github.ksoichiro:android-observablescrollview:1.5.0'
-    compile 'pl.droidsonroids.gif:android-gif-drawable:1.1.2'
-    compile 'com.melnykov:floatingactionbutton:1.2.0'
-    aarLinkSources 'com.android.support:recyclerview-v7:21.0.3:sources@jar'
-    aarLinkSources 'com.android.support:palette-v7:21.0.3:sources@jar'
-    aarLinkSources 'com.android.support:cardview-v7:21.0.3:sources@jar'
-    aarLinkSources 'com.github.navasmdc:MaterialDesign:1.4:sources@jar'
     aarLinkSources 'com.jpardogo.materialtabstrip:library:1.0.9:sources@jar'
+
+    compile 'com.squareup.picasso:picasso:2.5.2'
     aarLinkSources 'com.squareup.picasso:picasso:2.5.0:sources@jar'
+
+    compile 'com.squareup.okhttp:okhttp:2.3.0'
     aarLinkSources 'com.squareup.okhttp:okhttp:2.2.0:sources@jar'
+
+    compile 'com.squareup.okhttp:okhttp-urlconnection:2.3.0'
     aarLinkSources 'com.squareup.okhttp:okhttp-urlconnection:2.2.0:sources@jar'
+
+    compile 'com.google.code.gson:gson:2.3.1'
     aarLinkSources 'com.google.code.gson:gson:2.3.1:sources@jar'
+
+    compile 'com.jakewharton:disklrucache:2.0.2'
     aarLinkSources 'com.jakewharton:disklrucache:2.0.2:sources@jar'
+
+    compile 'com.jakewharton:butterknife:6.1.0'
     aarLinkSources 'com.jakewharton:butterknife:6.1.0:sources@jar'
+
+    compile 'com.github.ksoichiro:android-observablescrollview:1.5.0'
     aarLinkSources 'com.github.ksoichiro:android-observablescrollview:1.5.0:sources@jar'
+
+    compile 'pl.droidsonroids.gif:android-gif-drawable:1.1.2'
     aarLinkSources 'pl.droidsonroids.gif:android-gif-drawable:1.1.2:sources@jar'
-    aarLinkSources 'com.melnykov:floatingactionbutton:1.2.0:sources@jar'
+
+    compile 'com.melnykov:floatingactionbutton:1.3.0'
+    aarLinkSources 'com.melnykov:floatingactionbutton:1.3.0:sources@jar'
+
+    compile 'net.orange-box.storebox:storebox-lib:1.0.0'
+    aarLinkSources 'net.orange-box.storebox:storebox-lib:1.0.0:sources@jar'
 }
