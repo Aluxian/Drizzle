@@ -34,28 +34,23 @@
     </style>
 
     <style name="Drizzle.Activity.Main" parent="Drizzle.Theme">
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+
     </style>
 
     <style name="Drizzle.Activity.Shot" parent="Drizzle.Theme">
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+
     </style>
 
     <style name="Drizzle.Activity.Team" parent="Drizzle.Theme">
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+
     </style>
 
     <style name="Drizzle.Activity.User" parent="Drizzle.Theme">
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+
     </style>
 
     <style name="Drizzle.Activity.Attachment" parent="Drizzle.Theme">
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+
     </style>
 
     <style name="Drizzle.Widget" />
