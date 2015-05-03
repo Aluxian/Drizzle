@@ -39,6 +39,9 @@ public class UserActivity extends Activity implements MultiTypeHeader.StateListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
 
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+
         mUser = App.GSON.fromJson(getIntent().getStringExtra(EXTRA_USER_DATA), User.class);
 
         // Load the toolbar

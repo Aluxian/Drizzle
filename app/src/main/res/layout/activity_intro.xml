@@ -3,23 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.IntroActivity"
-    android:background="?android:attr/colorPrimary"
-    android:orientation="vertical">
-
-    <!--<ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:contentDescription="@null"
-        android:scaleType="centerCrop"
-        android:src="@drawable/bg_dribbble_ball"/>-->
+    android:orientation="vertical"
+    android:padding="8dp"
+    tools:context="com.aluxian.drizzle.activities.IntroActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:ignore="UseCompoundDrawables">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -28,27 +22,18 @@
             android:src="@drawable/type_drizzle" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="48dp"
-            android:fontFamily="sans-serif-light"
-            android:text="@string/intro_title"
-            android:textSize="36sp" />
-
-        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="36dp"
             android:gravity="center_horizontal"
             android:text="@string/intro_description"
-            android:textSize="18sp" />
+            android:textAppearance="@android:style/TextAppearance.Material.Subhead" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:orientation="vertical">
 
         <LinearLayout

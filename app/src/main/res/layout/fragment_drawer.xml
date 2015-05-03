@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@android:color/white"
     android:fitsSystemWindows="true"
-    app:insetForeground="#4000">
+    app:insetForeground="#0000">
 
     <com.aluxian.drizzle.views.CustomEdgeRecyclerView
         android:id="@+id/recycler_view"

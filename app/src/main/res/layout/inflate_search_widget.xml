@@ -3,8 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:color/transparent"
-    android:theme="@style/Drizzle.Theme.SearchWidget"
-    android:visibility="gone">
+    android:visibility="gone"><!--android:theme="@style/Drizzle.Theme.SearchWidget"-->
 
     <ImageButton
         android:id="@+id/clear"

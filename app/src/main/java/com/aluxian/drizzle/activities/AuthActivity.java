@@ -13,7 +13,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.aluxian.drizzle.R;
 import com.aluxian.drizzle.api.Dribbble;
@@ -48,7 +47,7 @@ public class AuthActivity extends Activity {
         setContentView(R.layout.activity_auth);
 
         // Load the toolbar
-        setActionBar((Toolbar) findViewById(R.id.toolbar));
+        //setActionBar((Toolbar) findViewById(R.id.toolbar));
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_left);
 
@@ -56,7 +55,7 @@ public class AuthActivity extends Activity {
         CookieManager.getInstance().removeAllCookies(null);
 
         // Initialise the WebView
-        WebView webView = (WebView) findViewById(R.id.web_view);
+        WebView webView = (WebView) findViewById(R.id.webview);
         webView.setWebViewClient(new AuthWebViewClient());
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setSaveFormData(false);

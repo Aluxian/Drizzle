@@ -83,7 +83,4 @@ dependencies {
 
     compile 'com.melnykov:floatingactionbutton:1.3.0'
     aarLinkSources 'com.melnykov:floatingactionbutton:1.3.0:sources@jar'
-
-    compile 'net.orange-box.storebox:storebox-lib:1.0.0'
-    aarLinkSources 'net.orange-box.storebox:storebox-lib:1.0.0:sources@jar'
 }

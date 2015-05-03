@@ -13,7 +13,6 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:contentInsetStart="72dp"
-        android:theme="@style/Drizzle.Theme.Dark" />
+        android:contentInsetStart="72dp"/>
 
 </com.aluxian.drizzle.views.ScrimInsetsFrameLayout>

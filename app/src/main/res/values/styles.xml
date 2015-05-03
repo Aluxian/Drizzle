@@ -1,56 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Drizzle" />
-
-    <style name="Drizzle.Theme" parent="android:Theme.Material.Light.NoActionBar">
+    <style name="Drizzle" parent="android:Theme.Material.Light.DarkActionBar">
         <item name="android:colorAccent">@color/accent</item>
         <item name="android:colorPrimary">@color/primary</item>
         <item name="android:colorPrimaryDark">@color/primaryDark</item>
+        <item name="android:colorControlHighlight">@color/ripple_material_lightly</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:navigationBarColor">@color/charcoal</item>
+        <item name="android:windowBackground">@color/background</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <!--<style name="Drizzle.Theme" parent="android:Theme.Material.Light.NoActionBar.TranslucentDecor">
+        <item name="android:colorAccent">@color/accent</item>
+        <item name="android:colorPrimary">@color/primary</item>
+        <item name="android:colorPrimaryDark">@color/primary</item>
         <item name="android:colorControlActivated">@color/accent</item>
         <item name="android:colorControlHighlight">@color/ripple_material_lightly</item>
         <item name="android:navigationBarColor">@color/charcoal</item>
         <item name="android:windowBackground">@color/background</item>
     </style>
 
-    <style name="Drizzle.Theme.Dark" parent="android:Theme.Material.NoActionBar">
+    <style name="Drizzle.Theme.Dark" parent="android:Theme.Material.NoActionBar.TranslucentDecor">
+        <item name="android:colorAccent">@color/accent</item>
+        <item name="android:colorPrimary">@color/primary</item>
+        <item name="android:colorPrimaryDark">@color/primary</item>
+        <item name="android:navigationBarColor">@color/charcoal</item>
+        <item name="android:popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+    </style>-->
+
+    <!--<style name="Drizzle.SearchWidget">-->
+    <!--<item name="android:colorAccent">@android:color/white</item>-->
+    <!--</style>-->
+
+    <style name="Drizzle.Activity" />
+
+    <style name="Drizzle.Activity.Auth">
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="Drizzle.Activity.Intro">
+        <item name="android:colorButtonNormal">@color/primaryDark</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:windowBackground">@color/primary</item>
+    </style>
+
+    <style name="Drizzle.Activity.Main" parent="android:Theme.Material.Light.DarkActionBar">
         <item name="android:colorAccent">@color/accent</item>
         <item name="android:colorPrimary">@color/primary</item>
         <item name="android:colorPrimaryDark">@color/primaryDark</item>
+        <item name="android:colorControlHighlight">@color/ripple_material_lightly</item>
         <item name="android:navigationBarColor">@color/charcoal</item>
-        <item name="android:popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="android:windowBackground">@color/background</item>
+
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+
+        <item name="android:windowTranslucentStatus">true</item>
     </style>
 
-    <style name="Drizzle.Theme.SearchWidget" parent="Drizzle.Theme.Dark">
-        <item name="android:colorAccent">@android:color/white</item>
-    </style>
-
-    <style name="Drizzle.Activity.Auth" parent="Drizzle.Theme.Dark">
-
-    </style>
-
-    <style name="Drizzle.Activity.Intro" parent="Drizzle.Theme.Dark">
-        <item name="android:colorButtonNormal">@color/primaryDark</item>
-    </style>
-
-    <style name="Drizzle.Activity.Main" parent="Drizzle.Theme">
+    <style name="Drizzle.Activity.Shot">
 
     </style>
 
-    <style name="Drizzle.Activity.Shot" parent="Drizzle.Theme">
+    <style name="Drizzle.Activity.Team">
 
     </style>
 
-    <style name="Drizzle.Activity.Team" parent="Drizzle.Theme">
+    <style name="Drizzle.Activity.User">
 
     </style>
 
-    <style name="Drizzle.Activity.User" parent="Drizzle.Theme">
+    <style name="Drizzle.Activity.Attachment">
 
     </style>
 
-    <style name="Drizzle.Activity.Attachment" parent="Drizzle.Theme">
+    <style name="Theme.MyTheme" parent="Theme.AppCompat">
+        <item name="searchViewStyle">@style/MySearchViewStyle</item>
+    </style>
 
+    <style name="MySearchViewStyle" parent="Widget.AppCompat.SearchView">
+        <!-- The layout for the search view. Be careful. -->
+        <!--<item name="layout">...</item>-->
+        <!-- Background for the search query section (e.g. EditText) -->
+        <!--<item name="queryBackground">...</item>-->
+        <!-- Background for the actions section (e.g. voice, submit) -->
+        <!--<item name="submitBackground">...</item>-->
+        <!-- Close button icon -->
+        <!--<item name="closeIcon">...</item>-->
+        <!-- Search button icon -->
+        <!--<item name="searchIcon">...</item>-->
+        <!-- Go/commit button icon -->
+        <!--<item name="goIcon">...</item>-->
+        <!-- Voice search button icon -->
+        <!--<item name="voiceIcon">...</item>-->
+        <!-- Commit icon shown in the query suggestion row -->
+        <!--<item name="commitIcon">...</item>-->
+        <!-- Layout for query suggestion rows -->
+        <!--<item name="suggestionRowLayout">...</item>-->
     </style>
 
     <style name="Drizzle.Widget" />

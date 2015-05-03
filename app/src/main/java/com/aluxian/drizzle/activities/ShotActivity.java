@@ -39,6 +39,9 @@ public class ShotActivity extends Activity implements MultiTypeHeader.StateListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shot);
 
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+
         shot = App.GSON.fromJson(getIntent().getStringExtra(EXTRA_SHOT_DATA), Shot.class);
         Shot reboundShot = null;
 

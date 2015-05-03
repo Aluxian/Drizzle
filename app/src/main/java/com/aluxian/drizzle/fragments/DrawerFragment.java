@@ -5,8 +5,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -25,7 +23,6 @@ import com.aluxian.drizzle.utils.UberSwatch;
 import com.aluxian.drizzle.utils.UserManager;
 import com.aluxian.drizzle.views.CustomEdgeRecyclerView;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 import static com.aluxian.drizzle.utils.UserManager.AuthStateChangeListener;
@@ -88,7 +85,8 @@ public class DrawerFragment extends Fragment implements AuthStateChangeListener 
         onItemSelected(mIsAuthenticated ? 2 : 3);
         mAdapter.updateItems(mIsAuthenticated);
 
-        rootView.post(() -> ((DrawerItem) mAdapter.itemsList().get(mSelectedItemPosition)).onClick(mSelectedItemPosition));
+        rootView.post(() ->
+                ((DrawerItem) mAdapter.itemsList().get(mSelectedItemPosition)).onClick(mSelectedItemPosition));
         return rootView;
     }
 
@@ -103,7 +101,8 @@ public class DrawerFragment extends Fragment implements AuthStateChangeListener 
         mDrawerLayout = drawerLayout;
 
         // ActionBarDrawerToggle ties together the proper interactions between the drawer and the toolbar drawer icon
-        mDrawerToggle = new ActionBarDrawerToggle(getActivity(), drawerLayout, R.string.drawer_open, R.string.drawer_close) {};
+        mDrawerToggle = new ActionBarDrawerToggle(getActivity(), drawerLayout,
+                R.string.drawer_open, R.string.drawer_close) {};
 
         // Defer code dependent on restoration of previous instance state
         drawerLayout.post(mDrawerToggle::syncState);
@@ -122,7 +121,8 @@ public class DrawerFragment extends Fragment implements AuthStateChangeListener 
      */
     public void toggleDrawerIcon(DrawerIconState state) {
         ValueAnimator iconAnimator = ValueAnimator.ofFloat(state.from, state.to);
-        iconAnimator.addUpdateListener(animator -> mDrawerToggle.onDrawerSlide(null, (Float) animator.getAnimatedValue()));
+        iconAnimator.addUpdateListener(animator
+                -> mDrawerToggle.onDrawerSlide(null, (Float) animator.getAnimatedValue()));
         iconAnimator.start();
     }
 
@@ -130,7 +130,8 @@ public class DrawerFragment extends Fragment implements AuthStateChangeListener 
      * @param locked Whether the drawer should be locked (cannot be opened) or not.
      */
     public void setDrawerLocked(boolean locked) {
-        mDrawerLayout.setDrawerLockMode(locked ? DrawerLayout.LOCK_MODE_LOCKED_CLOSED : DrawerLayout.LOCK_MODE_UNLOCKED);
+        mDrawerLayout.setDrawerLockMode(locked ?
+                DrawerLayout.LOCK_MODE_LOCKED_CLOSED : DrawerLayout.LOCK_MODE_UNLOCKED);
     }
 
     /**

@@ -1,8 +1,10 @@
 package com.aluxian.drizzle.utils;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
-import com.aluxian.drizzle.Preferences;
+import com.aluxian.drizzle.Keys;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +12,7 @@ import java.util.List;
 public class UserManager {
 
     private static UserManager mInstance;
-    private Preferences mPrefs;
+    private SharedPreferences mSharedPrefs;
     private List<AuthStateChangeListener> mListeners = new ArrayList<>();
 
     public static void init(Context context) {
@@ -26,14 +28,14 @@ public class UserManager {
     }
 
     private UserManager(Context context) {
-        mPrefs = Preferences.get(context);
+        mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     /**
      * @return Whether there is an authenticated user, and thus a saved access token.
      */
     public boolean isAuthenticated() {
-        return mPrefs.getApiAuthToken(null) != null;
+        return mSharedPrefs.contains(Keys.API_AUTH_TOKEN);
     }
 
     /**
@@ -41,7 +43,7 @@ public class UserManager {
      */
     public void clearAccessToken() {
         Log.d("Clearing access token");
-        mPrefs.setApiAuthToken(null);
+        mSharedPrefs.edit().remove(Keys.API_AUTH_TOKEN).apply();
         stateChanged(false);
     }
 
@@ -52,7 +54,7 @@ public class UserManager {
      */
     public void putAccessToken(String accessToken) {
         Log.d("Storing access token");
-        mPrefs.setApiAuthToken(accessToken);
+        mSharedPrefs.edit().putString(Keys.API_AUTH_TOKEN, accessToken).apply();
         stateChanged(true);
     }
 
@@ -60,7 +62,7 @@ public class UserManager {
      * @return The stored access token if it exists, otherwise the default (public) client token.
      */
     public String getAccessToken() {
-        return mPrefs.getApiAuthToken(Config.API_CLIENT_TOKEN);
+        return mSharedPrefs.getString(Keys.API_AUTH_TOKEN, Config.API_CLIENT_TOKEN);
     }
 
     @SuppressWarnings("Convert2streamapi")

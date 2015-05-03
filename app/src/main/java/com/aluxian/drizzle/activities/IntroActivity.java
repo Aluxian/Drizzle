@@ -4,8 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 
-import com.aluxian.drizzle.Preferences;
+import com.aluxian.drizzle.Keys;
 import com.aluxian.drizzle.R;
 
 public class IntroActivity extends Activity {
@@ -28,7 +29,7 @@ public class IntroActivity extends Activity {
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://dribbble.com/signup"))));
 
         // Don't show this activity again when the app starts
-        Preferences.get(this).setIntroActivityShown(true);
+        PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean(Keys.INTRO_SHOWN, true).apply();
     }
 
 }
